@@ -19,13 +19,15 @@ const SuperAdminLogin: React.FC = () => {
     setIsLoading(true);
     try {
       if (password.length < 8) {
-        toast.error('Password must be atleast 8 characters');
+        return toast.error('Password must be at least 8 characters');
       }
-      if (password.length >= 8) {
-        await login(email, password);
-        toast.success('Welcome, Super Admin!');
-        navigate('/super-admin/dashboard');
+
+      if (password.includes(' ')) {
+        return toast.error('Password cannot contain spaces');
       }
+      await login(email, password);
+      toast.success('Welcome, Super Admin!');
+      navigate('/super-admin/dashboard');
     } catch {
       toast.error('Login failed');
     } finally {

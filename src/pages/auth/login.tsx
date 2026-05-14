@@ -19,14 +19,14 @@ const Login: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      if (password.length < 8) {
-        toast.error('Password must be atleast 8 characters');
+      if (password.length < 8 || password.includes(' ')) {
+        return toast.error(
+          'Password must be at least 8 characters and contain no spaces',
+        );
       }
-      if (password.length >= 8) {
-        await login(email, password);
-        toast.success('Welcome back!');
-        navigate('/dashboard');
-      }
+      await login(email, password);
+      toast.success('Welcome back!');
+      navigate('/dashboard');
     } catch (error) {
       toast.error('Login failed');
     } finally {
