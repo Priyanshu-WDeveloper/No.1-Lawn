@@ -1,15 +1,50 @@
 import React from 'react';
 import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
-import { Shield, Plus, Search, MoreHorizontal, Bell, ChevronDown } from 'lucide-react';
+import {
+  Shield,
+  Plus,
+  Search,
+  MoreHorizontal,
+  Bell,
+  ChevronDown,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 const admins = [
-  { id: 1, name: 'John Smith', email: 'john@no1lawns.com', role: 'Admin', status: 'Active', createdAt: '2024-01-15' },
-  { id: 2, name: 'Sarah Johnson', email: 'sarah@no1lawns.com', role: 'Admin', status: 'Active', createdAt: '2024-02-20' },
-  { id: 3, name: 'Mike Brown', email: 'mike@no1lawns.com', role: 'Admin', status: 'Inactive', createdAt: '2023-11-05' },
-  { id: 4, name: 'Emily Davis', email: 'emily@no1lawns.com', role: 'Admin', status: 'Active', createdAt: '2024-03-10' },
+  {
+    id: 1,
+    name: 'John Smith',
+    email: 'john@no1lawns.com',
+    role: 'Admin',
+    status: 'Active',
+    createdAt: '2024-01-15',
+  },
+  {
+    id: 2,
+    name: 'Sarah Johnson',
+    email: 'sarah@no1lawns.com',
+    role: 'Admin',
+    status: 'Active',
+    createdAt: '2024-02-20',
+  },
+  {
+    id: 3,
+    name: 'Mike Brown',
+    email: 'mike@no1lawns.com',
+    role: 'Admin',
+    status: 'Inactive',
+    createdAt: '2023-11-05',
+  },
+  {
+    id: 4,
+    name: 'Emily Davis',
+    email: 'emily@no1lawns.com',
+    role: 'Admin',
+    status: 'Active',
+    createdAt: '2024-03-10',
+  },
 ];
 
 const SuperAdminAdminsPage: React.FC = () => {
@@ -17,8 +52,8 @@ const SuperAdminAdminsPage: React.FC = () => {
     <SuperAdminLayout>
       <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
         <div className="min-h-full w-full">
-          <div className="mb-1 flex items-center justify-between">
-            <div>
+          <div className="mb-3 px-4 flex flex-col-reverse items-center justify-between sm:flex-row">
+            <div className="pb-4">
               <h2 className="text-[24px] font-bold text-[#151515]">
                 Admin Users
               </h2>
@@ -27,7 +62,7 @@ const SuperAdminAdminsPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex pb-4 items-center gap-2.5">
               <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#e5e5e5] bg-white">
                 <Bell className="h-4 w-4" />
                 <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[9px] text-white">
@@ -40,7 +75,9 @@ const SuperAdminAdminsPage: React.FC = () => {
                     SA
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-semibold">Super Admin</span>
+                <span className="text-sm font-semibold">
+                  Super Admin
+                </span>
                 <ChevronDown className="h-4 w-4 text-gray-500" />
               </div>
             </div>
@@ -69,40 +106,68 @@ const SuperAdminAdminsPage: React.FC = () => {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-[#ececec]">
-                    <th className="text-left text-[#777] text-sm font-medium pb-3">Name</th>
-                    <th className="text-left text-[#777] text-sm font-medium pb-3">Email</th>
-                    <th className="text-left text-[#777] text-sm font-medium pb-3">Role</th>
-                    <th className="text-left text-[#777] text-sm font-medium pb-3">Status</th>
-                    <th className="text-left text-[#777] text-sm font-medium pb-3">Created</th>
-                    <th className="text-right text-[#777] text-sm font-medium pb-3">Actions</th>
+                    <th className="text-left text-[#777] text-sm font-medium pb-3">
+                      Name
+                    </th>
+                    <th className="text-left text-[#777] text-sm font-medium pb-3">
+                      Email
+                    </th>
+                    <th className="text-left text-[#777] text-sm font-medium pb-3">
+                      Role
+                    </th>
+                    <th className="text-left text-[#777] text-sm font-medium pb-3">
+                      Status
+                    </th>
+                    <th className="text-left text-[#777] text-sm font-medium pb-3">
+                      Created
+                    </th>
+                    <th className="text-right text-[#777] text-sm font-medium pb-3">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {admins.map((admin) => (
-                    <tr key={admin.id} className="border-b border-[#ececec] hover:bg-[#f4f7ef]">
+                    <tr
+                      key={admin.id}
+                      className="border-b border-[#ececec] hover:bg-[#f4f7ef]"
+                    >
                       <td className="py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-full bg-[#edf8e7] flex items-center justify-center">
                             <Shield className="size-5 text-[#16610E]" />
                           </div>
-                          <span className="text-sm font-medium text-[#151515]">{admin.name}</span>
+                          <span className="text-sm font-medium text-[#151515]">
+                            {admin.name}
+                          </span>
                         </div>
                       </td>
-                      <td className="py-4 text-sm text-[#777]">{admin.email}</td>
+                      <td className="py-4 text-sm text-[#777]">
+                        {admin.email}
+                      </td>
                       <td className="py-4">
-                        <Badge variant="default" className="bg-[#f4f7ef] text-[#16610E] border-[#ececec]">
+                        <Badge
+                          variant="default"
+                          className="bg-[#f4f7ef] text-[#16610E] border-[#ececec]"
+                        >
                           {admin.role}
                         </Badge>
                       </td>
                       <td className="py-4">
                         <Badge
                           variant="default"
-                          className={admin.status === 'Active' ? 'bg-[#edf8e7] text-[#16610E] border-[#16610E]/20' : 'bg-gray-100 text-gray-500 border-gray-200'}
+                          className={
+                            admin.status === 'Active'
+                              ? 'bg-[#edf8e7] text-[#16610E] border-[#16610E]/20'
+                              : 'bg-gray-100 text-gray-500 border-gray-200'
+                          }
                         >
                           {admin.status}
                         </Badge>
                       </td>
-                      <td className="py-4 text-sm text-[#777]">{admin.createdAt}</td>
+                      <td className="py-4 text-sm text-[#777]">
+                        {admin.createdAt}
+                      </td>
                       <td className="py-4 text-right">
                         <button className="p-2 hover:bg-[#f4f7ef] rounded-lg transition-colors">
                           <MoreHorizontal className="size-5 text-[#777]" />

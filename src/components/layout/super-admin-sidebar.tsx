@@ -16,7 +16,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/components/ui/sidebar';
+import { PanelLeftIcon } from 'lucide-react';
 
 const items = [
   {
@@ -39,18 +41,25 @@ const items = [
 export function SuperAdminSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { toggleSidebar } = useSidebar();
 
   return (
     <Sidebar className="border-r-0 w-78 bg-gradient-to-b from-[#0f5b0c] to-[#0b4308]">
       <SidebarHeader className="bg-gradient-to-b from-[#0f5b0c] to-[#0b4308] text-white border-b border-[#0a3a0a]">
-        <div className="flex items-center gap-3 px-4 py-6">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
-            <Shield className="h-5 w-5 text-[#0b4308]" />
+        <div className="flex items-center justify-between px-4 py-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
+              <Shield className="h-5 w-5 text-[#0b4308]" />
+            </div>
+            <h2 className="text-xl font-bold text-white">Super Admin</h2>
           </div>
-
-          <h2 className="text-xl font-bold text-white">
-            Super Admin
-          </h2>
+          {/* Mobile menu button */}
+          <button
+            onClick={toggleSidebar}
+            className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+          >
+            <PanelLeftIcon className="h-5 w-5 text-white" />
+          </button>
         </div>
       </SidebarHeader>
 
@@ -62,15 +71,7 @@ export function SuperAdminSidebar() {
                 <SidebarMenuButton
                   onClick={() => navigate(item.url)}
                   isActive={location.pathname === item.url}
-                  className="
-                    h-12
-                    rounded-xl
-                    text-sm
-                    text-white
-                    hover:bg-[#2a7d20]
-                    data-[active=true]:bg-[#2a7d20]
-                    data-[active=true]:text-white
-                  "
+                  className="h-12 rounded-xl text-sm text-white hover:bg-[#2a7d20] data-[active=true]:bg-[#2a7d20] data-[active=true]:text-white"
                 >
                   <item.icon className="h-5 w-5" />
                   <span>{item.title}</span>
@@ -87,12 +88,8 @@ export function SuperAdminSidebar() {
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
               <Shield className="h-5 w-5 text-[#0b4308]" />
             </div>
-
             <div>
-              <h4 className="font-semibold text-white text-sm">
-                Super Admin
-              </h4>
-
+              <h4 className="font-semibold text-white text-sm">Super Admin</h4>
               <p className="text-xs text-white/70">Control Panel</p>
             </div>
           </div>

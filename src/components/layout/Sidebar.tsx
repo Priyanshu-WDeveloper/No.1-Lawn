@@ -17,7 +17,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/components/ui/sidebar';
+import { PanelLeftIcon } from 'lucide-react';
 
 const items = [
   {
@@ -25,7 +27,6 @@ const items = [
     icon: Home,
     url: '/dashboard',
   },
-  // Removed 'User Management' item
   {
     title: 'Customer Management',
     icon: ShoppingCart,
@@ -50,18 +51,27 @@ const items = [
 
 export function DashboardSidebar() {
   const location = useLocation();
+  const { toggleSidebar } = useSidebar();
 
   return (
     <Sidebar className="border-r-0 w-78">
       <SidebarHeader className="bg-gradient-to-b from-[#0f5b0c] to-[#0b4308] text-white">
-        <div className="flex items-center gap-3 px-4 py-6">
-          <img
-            src="/image.png"
-            alt="logo"
-            className="h-10 w-10 rounded-full"
-          />
-
-          <h2 className="text-2xl font-bold">No. 1 Lawns</h2>
+        <div className="flex items-center justify-between px-4 py-6">
+          <div className="flex items-center gap-3">
+            <img
+              src="/image.png"
+              alt="logo"
+              className="h-10 w-10 rounded-full"
+            />
+            <h2 className="text-2xl font-bold">No. 1 Lawns</h2>
+          </div>
+          {/* Mobile menu button */}
+          <button
+            onClick={toggleSidebar}
+            className="md:hidden p-2 rounded-lg hover:bg-white/10 transition-colors"
+          >
+            <PanelLeftIcon className="h-5 w-5 text-white" />
+          </button>
         </div>
       </SidebarHeader>
 
@@ -73,17 +83,7 @@ export function DashboardSidebar() {
                 <SidebarMenuButton
                   asChild
                   isActive={location.pathname === item.url}
-                  className="
-                    h-14
-                    rounded-2xl
-                    text-base
-                    text-white
-                    hover:bg-[#2a7d20]
-                    hover:text-blue-50
-
-                    data-[active=true]:bg-[#2a7d20]
-                    data-[active=true]:text-white
-                  "
+                  className="h-14 rounded-2xl text-base text-white hover:bg-[#2a7d20] hover:text-blue-50 data-[active=true]:bg-[#2a7d20] data-[active=true]:text-white"
                 >
                   <a href={item.url}>
                     <item.icon className="h-5 w-5" />
@@ -102,15 +102,9 @@ export function DashboardSidebar() {
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
               <span className="font-bold text-[#0b4308]">A</span>
             </div>
-
             <div>
-              <h4 className="font-semibold text-white text-base">
-                Admin
-              </h4>
-
-              <p className="text-sm text-white/70">
-                Super Administrator
-              </p>
+              <h4 className="font-semibold text-white text-base">Admin</h4>
+              <p className="text-sm text-white/70">Super Administrator</p>
             </div>
           </div>
         </div>

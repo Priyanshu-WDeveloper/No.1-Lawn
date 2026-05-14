@@ -93,8 +93,8 @@ export default function DashboardPage() {
       <main className="flex-1 overflow-y-auto px-4 pt-9">
         <div className="min-h-full">
           {/* Header */}
-          <div className="mb-3 px-4 flex items-center justify-between">
-            <div>
+          <div className="mb-3 px-4 flex items-center justify-between flex-col sm:flex-row">
+            <div className="pb-4">
               <h2 className="text-[24px]  font-bold text-[#151515]">
                 Welcome back, Admin! 👋
               </h2>
