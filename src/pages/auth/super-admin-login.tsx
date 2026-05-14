@@ -20,10 +20,10 @@ const SuperAdminLogin: React.FC = () => {
     try {
       if (password.length < 8) {
         alert('Password must be atleast 8 characters');
+        await login(email, password);
+        toast.success('Welcome, Super Admin!');
+        navigate('/super-admin/dashboard');
       }
-      await login(email, password);
-      toast.success('Welcome, Super Admin!');
-      navigate('/super-admin/dashboard');
     } catch {
       toast.error('Login failed');
     } finally {

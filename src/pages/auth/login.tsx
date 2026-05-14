@@ -21,10 +21,10 @@ const Login: React.FC = () => {
     try {
       if (password.length < 8) {
         alert('Password must be atleast 8 characters');
+        await login(email, password);
+        toast.success('Welcome back!');
+        navigate('/dashboard');
       }
-      await login(email, password);
-      toast.success('Welcome back!');
-      navigate('/dashboard');
     } catch (error) {
       toast.error('Login failed');
     } finally {
