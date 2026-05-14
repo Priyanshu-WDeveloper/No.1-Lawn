@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 
-import { FileText, LogOutIcon } from 'lucide-react';
+import { LogOutIcon } from 'lucide-react';
 
 import Dashboard from '@/assets/dashboard.png';
 import Customer from '@/assets/customer.png';

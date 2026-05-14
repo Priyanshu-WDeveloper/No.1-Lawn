@@ -36,7 +36,7 @@ export default function CreateJobPage() {
 
           <div className="bg-card rounded-xl border shadow-sm">
             <div className="px-6 py-5 border-b">
-              <h2 className="text-xl font-semibold">Create New Job</h2>
+              <h2 className="text-xl font-semibold">Add Job</h2>
               <p className="text-sm text-muted-foreground mt-1">
                 Add a new job to the system
               </p>

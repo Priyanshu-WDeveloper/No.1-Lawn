@@ -1,6 +1,5 @@
 import React from 'react';
 import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
-import { useSidebar } from '@/components/ui/sidebar';
 import {
   Users,
   Shield,
