@@ -41,7 +41,7 @@ export function SuperAdminSidebar() {
   const navigate = useNavigate();
 
   return (
-    <Sidebar style={{ width: '19rem' }} className="border-r-0 bg-gradient-to-b from-[#0f5b0c] to-[#0b4308]">
+    <Sidebar className="border-r-0 w-78 bg-gradient-to-b from-[#0f5b0c] to-[#0b4308]">
       <SidebarHeader className="bg-gradient-to-b from-[#0f5b0c] to-[#0b4308] text-white border-b border-[#0a3a0a]">
         <div className="flex items-center gap-3 px-4 py-6">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
