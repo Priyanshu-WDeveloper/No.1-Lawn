@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { LogOutIcon } from 'lucide-react';
 
@@ -45,12 +45,13 @@ const items = [
   {
     title: 'Invoice',
     icon: Invoices,
-    url: '/invoices',
+    // url: '/invoices',
   },
 ];
 
 export function DashboardSidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { toggleSidebar } = useSidebar();
 
   return (
@@ -104,8 +105,7 @@ export function DashboardSidebar() {
         <button
           className="w-full rounded-2xl bg-white/10 p-4 text-left backdrop-blur transition hover:bg-white/20"
           onClick={() => {
-            // logout logic
-            console.log('Logout');
+            navigate('/login');
           }}
         >
           <div className="flex items-center gap-3">

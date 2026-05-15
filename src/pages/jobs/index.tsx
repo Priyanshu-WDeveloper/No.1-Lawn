@@ -9,8 +9,6 @@ import DataTable, {
   ActionButton,
 } from '@/components/data-table/DataTable';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // Define the structure for Job data
@@ -88,86 +86,75 @@ const Jobs: Job[] = [
     assignedTo: 'Vikram Joshi',
   },
 ];
-// Define columns for the Job DataTable
-const JobColumns: ColumnDef<Job>[] = [
-  // {
-  //   accessorKey: 'id',
-  //   header: 'Job ID',
-  // },
-  {
-    accessorKey: 'address',
-    header: 'Address',
-  },
-  {
-    accessorKey: 'date',
-    header: 'Date',
-  },
-  {
-    accessorKey: 'paymentType',
-    header: 'Payment Type',
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    filterField: 'status',
-    filterOptions: ['Active', 'Inactive'],
-  },
-  {
-    accessorKey: 'jobType',
-    header: 'Job type',
-  },
-  {
-    accessorKey: 'particulars',
-    header: 'Particulars',
-  },
-
-  {
-    accessorKey: 'assignedTo',
-    header: 'Assigned To',
-  },
-
-  {
-    accessorKey: 'actions',
-    header: 'Actions',
-    cell: (row: Job) => (
-      <div className="flex flex-wrap gap-2">
-        <ActionButton
-          icon={<Eye className="h-4 w-4" />}
-          onClick={() =>
-            console.log('Viewing job details for ID:', row.id)
-          }
-        />
-        {/* <ActionButton
-          icon={<FileText className="h-4 w-4" />}
-          onClick={() => console.log('Completing invoice:', row.id)}
-        /> */}
-        <ActionButton
-          icon={<Pencil className="h-4 w-4" />}
-          onClick={() => console.log('Editing job with ID:', row.id)}
-        />
-        <ActionButton
-          className="bg-red-600 text-white"
-          icon={<Trash className="h-4 w-4 " />}
-          onClick={() =>
-            console.log('Deleting access for job ID:', row.id)
-          }
-        />
-      </div>
-    ),
-  },
-];
 
 // Main Job Management Page Component
 export default function JobManagementPage() {
   const navigate = useNavigate();
+
+  // Define columns inside component to access navigate
+  const JobColumns: ColumnDef<Job>[] = [
+    {
+      accessorKey: 'address',
+      header: 'Address',
+    },
+    {
+      accessorKey: 'date',
+      header: 'Date',
+    },
+    {
+      accessorKey: 'paymentType',
+      header: 'Payment Type',
+    },
+    {
+      accessorKey: 'status',
+      header: 'Status',
+      filterField: 'status',
+      filterOptions: ['Active', 'Inactive'],
+    },
+    {
+      accessorKey: 'jobType',
+      header: 'Job type',
+    },
+    {
+      accessorKey: 'particulars',
+      header: 'Particulars',
+    },
+    {
+      accessorKey: 'assignedTo',
+      header: 'Assigned To',
+    },
+    {
+      accessorKey: 'actions',
+      header: 'Actions',
+      cell: (row: Job) => (
+        <div className="flex flex-wrap gap-2">
+          <ActionButton
+            icon={<Eye className="h-4 w-4" />}
+            onClick={() => navigate(`/jobs/${row.id}`)}
+          />
+          <ActionButton
+            icon={<Pencil className="h-4 w-4" />}
+            onClick={() => console.log('Editing job with ID:', row.id)}
+          />
+          <ActionButton
+            className="bg-red-600 text-white"
+            icon={<Trash className="h-4 w-4 " />}
+            onClick={() =>
+              console.log('Deleting access for job ID:', row.id)
+            }
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <AppLayout>
       {/* <main className="flex-1 w-full overflow-y-auto px-4 pt-9 pb-9"> */}
       <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
         <div className="min-h-full w-full">
-          <div className=" pb-2 flex items-center justify-between">
-            <div>
+          <div className="pb-3 flex items-center justify-between">
+            <div className="px-3">
               <h2 className="text-[24px] font-bold text-[#151515]">
                 Job Management
               </h2>
@@ -195,16 +182,6 @@ export default function JobManagementPage() {
             </div>
           </div>
 
-          <div className="mb-4 flex justify-end">
-            <Button
-              onClick={() => navigate('/jobs/create')}
-              className="rounded-xl gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              Add Job
-            </Button>
-          </div>
-
           <DataTable<Job>
             data={Jobs}
             columns={JobColumns}
@@ -213,6 +190,8 @@ export default function JobManagementPage() {
             searchPlaceholder="Search Jobs..."
             filterField="status"
             filterOptions={['Active', 'Inactive']}
+            addButtonLabel="Add Job"
+            onAddClick={() => navigate('/jobs/create')}
           />
         </div>
       </main>

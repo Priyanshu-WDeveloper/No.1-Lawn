@@ -4,6 +4,7 @@ import { ChevronDownIcon, CheckIcon } from "lucide-react"
 
 interface SelectContextValue {
   value: string
+  displayValue: string
   onValueChange: (value: string) => void
   open: boolean
   setOpen: (open: boolean) => void
@@ -24,13 +25,15 @@ interface SelectProps {
   defaultValue?: string
   onValueChange?: (value: string) => void
   children?: React.ReactNode
+  displayMap?: Record<string, string>
 }
 
-function Select({ value, defaultValue, onValueChange, children }: SelectProps) {
+function Select({ value, defaultValue, onValueChange, children, displayMap = {} }: SelectProps) {
   const [internalValue, setInternalValue] = React.useState(defaultValue || "")
   const [open, setOpen] = React.useState(false)
 
   const currentValue = value !== undefined ? value : internalValue
+  const displayValue = displayMap[currentValue] || currentValue
 
   const handleValueChange = (newValue: string) => {
     if (value === undefined) {
@@ -44,12 +47,15 @@ function Select({ value, defaultValue, onValueChange, children }: SelectProps) {
     <SelectContext.Provider
       value={{
         value: currentValue,
+        displayValue,
         onValueChange: handleValueChange,
         open,
-        setOpen,
+        setOpen: (isOpen: boolean) => {
+          setOpen(isOpen);
+        },
       }}
     >
-      <div className="relative">{children}</div>
+      <div className="relative w-full">{children}</div>
     </SelectContext.Provider>
   )
 }
@@ -65,10 +71,10 @@ function SelectGroup({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function SelectValue({ placeholder, ...props }: React.ComponentProps<"span"> & { placeholder?: string }) {
-  const { value } = useSelectContext()
+  const { displayValue, value } = useSelectContext()
   return (
     <span data-slot="select-value" {...props}>
-      {value || placeholder}
+      {displayValue || value || placeholder}
     </span>
   )
 }
@@ -86,7 +92,7 @@ function SelectTrigger({ className, size = "default", children, ...props }: Sele
       data-size={size}
       type="button"
       className={cn(
-        "flex w-fit items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-muted-foreground data-[size=default]:h-8 data-[size=sm]:h-7",
+        "flex w-full sm:w-fit items-center justify-between gap-1.5 rounded-xl border border-[#e5e5e5] bg-[#fafaf8] py-2.5 pr-3 pl-4 text-sm whitespace-nowrap transition-all outline-none select-none focus-visible:border-[#16610E] focus-visible:ring-2 focus-visible:ring-[#16610E] focus:bg-white disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-[#999] data-[size=default]:h-10 sm:h-11 data-[size=sm]:h-9",
         className
       )}
       onClick={() => setOpen(!open)}
@@ -111,7 +117,7 @@ function SelectContent({ className, children, position = "item-aligned", ...prop
     <div
       data-slot="select-content"
       className={cn(
-        "absolute top-full left-0 z-50 mt-1 min-w-36 overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md",
+        "absolute top-full left-0 z-50 mt-1 min-w-[180px] overflow-hidden rounded-xl bg-white text-[#151515] shadow-lg border border-[#e5e5e5]",
         className
       )}
       {...props}
@@ -148,7 +154,7 @@ function SelectItem({ className, children, value, ...props }: SelectItemProps) {
     <div
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-pointer items-center gap-1.5 rounded-md py-1.5 pr-8 pl-2.5 text-sm outline-none select-none data-[selected]:bg-accent",
+        "relative flex w-full cursor-pointer items-center gap-2 rounded-lg py-2.5 pr-8 pl-4 text-sm outline-none select-none transition-colors hover:bg-[#edf8e7] data-[selected]:bg-[#edf8e7] data-[selected]:text-[#16610E]",
         className
       )}
       onClick={() => onValueChange(value)}

@@ -6,6 +6,7 @@ import {
   Filter,
   ChevronLeft,
   ChevronRight,
+  Plus,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -198,22 +199,28 @@ export default function DataTable<T extends DataTableData>({
   };
 
   return (
-    <Card className="rounded-2xl h-full w-full bg-white shadow-sm">
+    <Card className="rounded-2xl w-full min-h-[70vh] bg-white shadow-sm">
+      {/* <Card className="flex h-full min-h-[calc(100vh-180px)] w-full flex-col rounded-2xl bg-white shadow-sm"> */}
       <CardHeader className="flex w-full flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="px-4">
           <CardTitle className="text-2xl">{title}</CardTitle>
           <CardDescription>{description}</CardDescription>
         </div>
         {addButtonLabel && onAddClick && (
-          <Button className="h-10 rounded-xl" onClick={onAddClick}>
-            {addButtonLabel}
-          </Button>
+          <>
+            <Button
+              className="h-10 rounded-xl p-5"
+              onClick={onAddClick}
+            >
+              <Plus className="h-7 w-7 mr-2" />
+              {addButtonLabel}
+            </Button>
+          </>
         )}
       </CardHeader>
-
       <CardContent className="space-y-6">
         {/* Top Filters */}
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className=" flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           {searchPlaceholder && (
             <div className="relative w-full max-w-sm">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -257,10 +264,9 @@ export default function DataTable<T extends DataTableData>({
             )}
           </div>
         </div>
-
         {/* Table */}
-        <div className="overflow-x-auto rounded-2xl border">
-          <table className="w-full min-w-[1100px]">
+        <div className="rounded-2xl border ">
+          <table className="w-full min-h-[calc(100vh-400px)] ">
             <thead className="bg-muted/40">
               <tr className="border-b text-left">
                 {columns.map((column) => (
@@ -293,7 +299,6 @@ export default function DataTable<T extends DataTableData>({
             </tbody>
           </table>
         </div>
-
         {/* Footer - Pagination is handled by Button components imported from Buttons.tsx */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <p className="text-sm text-muted-foreground">

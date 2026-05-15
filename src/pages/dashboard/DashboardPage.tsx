@@ -25,22 +25,26 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 import { AppLayout } from '../../components/layout/AppLayout'; // Corrected import path
+import { useNavigate } from 'react-router-dom';
 
 const stats = [
   {
-    title: 'Total Users',
+    title: 'Total Customers',
     value: '245',
     icon: Users,
+    url: '/customers',
   },
   {
     title: 'Total Employees',
     value: '158',
     icon: UserSquare2,
+    url: '/employees',
   },
   {
     title: 'Total Jobs',
     value: '89',
     icon: Briefcase,
+    url: 'jobs',
   },
   {
     title: 'Total Invoices',
@@ -86,11 +90,12 @@ const chartData = [
 ];
 
 export default function DashboardPage() {
+  const navigate = useNavigate();
   return (
     <AppLayout>
       {/* This div contains the main dashboard content */}
       {/* Sidebar is handled by AppLayout */}
-      <main className="flex-1 overflow-y-auto px-4 pt-9">
+      <main className="flex-1 h-full px-4 pt-9">
         <div className="min-h-full">
           {/* Header */}
           <div className="mb-3 px-4 flex items-center justify-between flex-col sm:flex-row">
@@ -106,7 +111,10 @@ export default function DashboardPage() {
 
             <div className="flex items-center gap-2.5">
               <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#e5e5e5] bg-white">
-                <Bell className="h-4 w-4" />
+                <Bell
+                  className="h-4 w-4"
+                  onClick={() => navigate('/notifications')}
+                />
 
                 <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[9px] text-white">
                   3
@@ -150,7 +158,10 @@ export default function DashboardPage() {
                       {item.title}
                     </p>
 
-                    <button className="mt-2 text-[12px] font-medium text-[#1d7a16]">
+                    <button
+                      className="mt-2 text-[12px] font-medium text-[#1d7a16]"
+                      onClick={() => item.url && navigate(item.url)}
+                    >
                       View all →
                     </button>
                   </CardContent>

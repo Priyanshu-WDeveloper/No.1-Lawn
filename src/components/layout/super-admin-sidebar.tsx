@@ -44,6 +44,21 @@ export function SuperAdminSidebar() {
   const navigate = useNavigate();
   const { toggleSidebar } = useSidebar();
 
+  const handleLogout = async () => {
+    try {
+      // await logout().unwrap();
+
+      // remove auth data manually if needed
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+
+      // redirect to login page
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   return (
     <Sidebar className="border-r-0 w-78 bg-gradient-to-b from-[#0f5b0c] to-[#0b4308]">
       <SidebarHeader className="bg-gradient-to-b from-[#0f5b0c] to-[#0b4308] text-white border-b border-[#0a3a0a]">
@@ -85,20 +100,27 @@ export function SuperAdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="bg-[#0b4308] border-t border-[#0a3a0a] p-4">
-        <div className="rounded-xl bg-white/10 p-4 backdrop-blur">
+      <SidebarFooter className="bg-[#0b4308] p-4">
+        <button
+          className="w-full rounded-2xl bg-white/10 p-4 text-left backdrop-blur transition hover:bg-white/20"
+          onClick={handleLogout}
+        >
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
-              <LogOutIcon />
+              <span className="font-bold text-[#0b4308]">
+                <LogOutIcon />
+              </span>
             </div>
+
             <div>
-              <h4 className="font-semibold text-white text-sm">
+              <h4 className="text-base font-semibold text-white">
                 Logout (Super Admin)
               </h4>
-              <p className="text-xs text-white/70">Control Panel</p>
+
+              <p className="text-sm text-white/70">Control Panel</p>
             </div>
           </div>
-        </div>
+        </button>
       </SidebarFooter>
     </Sidebar>
   );

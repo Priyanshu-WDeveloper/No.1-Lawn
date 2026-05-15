@@ -1,9 +1,30 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+  createApi,
+  fetchBaseQuery,
+} from '@reduxjs/toolkit/query/react';
 
 export const api = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
-  tagTypes: ['Customers', 'Employees', 'Jobs', 'Invoices', 'Admins', 'Billing'],
+  baseQuery: fetchBaseQuery({
+    baseUrl: '/api',
+    prepareHeaders: (headers) => {
+      const token = localStorage.getItem('token');
+
+      if (token) {
+        headers.set('authorization', `Bearer ${token}`);
+      }
+
+      return headers;
+    },
+  }),
+  tagTypes: [
+    'Customers',
+    'Employees',
+    'Jobs',
+    'Invoices',
+    'Admins',
+    'Billing',
+  ],
   endpoints: (builder) => ({
     // Auth endpoints
     login: builder.mutation({
@@ -13,6 +34,26 @@ export const api = createApi({
         body: credentials,
       }),
     }),
+    logout: builder.mutation({
+      query: () => ({
+        url: '/auth/logout',
+        method: 'POST',
+      }),
+
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+
+          // remove token
+          localStorage.removeItem('token');
+
+          // optional: clear other auth data
+          localStorage.removeItem('user');
+        } catch (error) {
+          console.error('Logout failed', error);
+        }
+      },
+    }),
 
     // Customer endpoints
     getCustomers: builder.query({
@@ -21,7 +62,9 @@ export const api = createApi({
     }),
     getCustomerById: builder.query({
       query: (id) => `/customers/${id}`,
-      providesTags: (_result, _error, id) => [{ type: 'Customers', id }],
+      providesTags: (_result, _error, id) => [
+        { type: 'Customers', id },
+      ],
     }),
     createCustomer: builder.mutation({
       query: (customer) => ({
@@ -37,7 +80,9 @@ export const api = createApi({
         method: 'PATCH',
         body: customer,
       }),
-      invalidatesTags: (_result, _error, { id }) => [{ type: 'Customers', id }],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'Customers', id },
+      ],
     }),
     deleteCustomer: builder.mutation({
       query: (id) => ({
@@ -54,7 +99,9 @@ export const api = createApi({
     }),
     getEmployeeById: builder.query({
       query: (id) => `/employees/${id}`,
-      providesTags: (_result, _error, id) => [{ type: 'Employees', id }],
+      providesTags: (_result, _error, id) => [
+        { type: 'Employees', id },
+      ],
     }),
     createEmployee: builder.mutation({
       query: (employee) => ({
@@ -70,7 +117,9 @@ export const api = createApi({
         method: 'PATCH',
         body: employee,
       }),
-      invalidatesTags: (_result, _error, { id }) => [{ type: 'Employees', id }],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'Employees', id },
+      ],
     }),
     deleteEmployee: builder.mutation({
       query: (id) => ({
@@ -103,7 +152,9 @@ export const api = createApi({
         method: 'PATCH',
         body: job,
       }),
-      invalidatesTags: (_result, _error, { id }) => [{ type: 'Jobs', id }],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'Jobs', id },
+      ],
     }),
     deleteJob: builder.mutation({
       query: (id) => ({
@@ -120,7 +171,9 @@ export const api = createApi({
     }),
     getInvoiceById: builder.query({
       query: (id) => `/invoices/${id}`,
-      providesTags: (_result, _error, id) => [{ type: 'Invoices', id }],
+      providesTags: (_result, _error, id) => [
+        { type: 'Invoices', id },
+      ],
     }),
     createInvoice: builder.mutation({
       query: (invoice) => ({
@@ -136,7 +189,9 @@ export const api = createApi({
         method: 'PATCH',
         body: invoice,
       }),
-      invalidatesTags: (_result, _error, { id }) => [{ type: 'Invoices', id }],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'Invoices', id },
+      ],
     }),
     deleteInvoice: builder.mutation({
       query: (id) => ({
@@ -169,7 +224,9 @@ export const api = createApi({
         method: 'PATCH',
         body: admin,
       }),
-      invalidatesTags: (_result, _error, { id }) => [{ type: 'Admins', id }],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'Admins', id },
+      ],
     }),
     deleteAdminUser: builder.mutation({
       query: (id) => ({
@@ -193,6 +250,8 @@ export const api = createApi({
 
 export const {
   useLoginMutation,
+  useLogoutMutation,
+
   useGetCustomersQuery,
   useGetCustomerByIdQuery,
   useCreateCustomerMutation,

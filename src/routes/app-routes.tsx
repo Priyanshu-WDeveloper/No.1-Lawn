@@ -1,6 +1,10 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { PublicRoute, ProtectedRoute, SuperAdminRoute } from '@/components/route-guards';
+import {
+  PublicRoute,
+  ProtectedRoute,
+  SuperAdminRoute,
+} from '@/components/route-guards';
 import { ROUTES } from '@/constants';
 import Login from '../pages/auth/login';
 import SuperAdminLogin from '../pages/auth/super-admin-login';
@@ -10,10 +14,14 @@ import SuperAdminAdminsPage from '../pages/super-admin/admins';
 import SuperAdminBillingPage from '../pages/super-admin/billing';
 import CustomerManagementPage from '../pages/customers';
 import CreateCustomerPage from '../pages/customers/create';
+import CustomerViewPage from '../pages/customers/view';
 import EmployeeManagementPage from '../pages/employees';
 import CreateEmployeePage from '../pages/employees/create';
+import EmployeeViewPage from '../pages/employees/view';
 import JobManagementPage from '../pages/jobs';
 import CreateJobPage from '../pages/jobs/create';
+import JobViewPage from '../pages/jobs/view';
+import NotificationsPage from '../pages/notification';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -62,6 +70,14 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
+        path={ROUTES.CUSTOMERS_VIEW}
+        element={
+          <ProtectedRoute redirectTo={ROUTES.LOGIN}>
+            <CustomerViewPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path={ROUTES.EMPLOYEES}
         element={
           <ProtectedRoute redirectTo={ROUTES.LOGIN}>
@@ -78,6 +94,14 @@ const AppRoutes: React.FC = () => {
         }
       />
       <Route
+        path={ROUTES.EMPLOYEES_VIEW}
+        element={
+          <ProtectedRoute redirectTo={ROUTES.LOGIN}>
+            <EmployeeViewPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path={ROUTES.JOBS}
         element={
           <ProtectedRoute redirectTo={ROUTES.LOGIN}>
@@ -90,6 +114,22 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute redirectTo={ROUTES.LOGIN}>
             <CreateJobPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.JOBS_VIEW}
+        element={
+          <ProtectedRoute redirectTo={ROUTES.LOGIN}>
+            <JobViewPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.NOTIFICATIONS}
+        element={
+          <ProtectedRoute redirectTo={ROUTES.LOGIN}>
+            <NotificationsPage />
           </ProtectedRoute>
         }
       />
@@ -116,6 +156,14 @@ const AppRoutes: React.FC = () => {
         element={
           <SuperAdminRoute redirectTo={ROUTES.SUPER_ADMIN_LOGIN}>
             <SuperAdminBillingPage />
+          </SuperAdminRoute>
+        }
+      />
+      <Route
+        path={ROUTES.SUPER_ADMIN_NOTIFICATIONS}
+        element={
+          <SuperAdminRoute redirectTo={ROUTES.SUPER_ADMIN_LOGIN}>
+            <NotificationsPage />
           </SuperAdminRoute>
         }
       />

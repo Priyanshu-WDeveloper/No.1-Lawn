@@ -38,9 +38,9 @@ const SuperAdminLogin: React.FC = () => {
   return (
     <div className="max-h-min bg-[#eef5df] flex flex-col px-6 pt-6 pb-3">
       <div className="flex-1 flex items-center justify-center">
-        <div className="w-full max-w-8xl bg-[#f8f8f4] rounded-[28px] shadow-xl overflow-hidden flex flex-col">
+        <div className="w-full h-full max-w-8xl bg-[#f8f8f4] rounded-[28px] shadow-xl overflow-hidden flex flex-col">
           <div className="flex-1 overflow-y-auto">
-            <div className="grid lg:grid-cols-2">
+            <div className="h-full grid lg:grid-cols-2">
               {/* Left Section */}
               <div className="relative overflow-hidden hidden lg:block">
                 <img

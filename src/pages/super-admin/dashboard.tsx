@@ -11,8 +11,10 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useNavigate } from 'react-router-dom';
 
 const SuperAdminDashboardPage: React.FC = () => {
+  const navigate = useNavigate();
   // const { / } = useSidebar();
 
   return (
@@ -36,7 +38,12 @@ const SuperAdminDashboardPage: React.FC = () => {
                 <PanelLeftIcon className="h-4 w-4 text-[#151515]" />
               </button>
               <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#e5e5e5] bg-white">
-                <Bell className="h-4 w-4" />
+                <Bell
+                  className="h-4 w-4"
+                  onClick={() =>
+                    navigate('super-admin/notifications')
+                  }
+                />
                 <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[9px] text-white">
                   3
                 </span>

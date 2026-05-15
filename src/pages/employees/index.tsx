@@ -24,8 +24,6 @@ import DataTable, {
   ActionButton,
 } from '@/components/data-table/DataTable'; // ActionButton is now imported directly from DataTable
 import { AppLayout } from '@/components/layout/AppLayout';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // Define the structure for Employee data
@@ -88,67 +86,67 @@ const employees: Employee[] = [
   },
 ];
 
-// Define columns for the Employee DataTable
-const employeeColumns: ColumnDef<Employee>[] = [
-  {
-    accessorKey: 'id',
-    header: 'Employee ID',
-  },
-  {
-    accessorKey: 'name',
-    header: 'Name',
-  },
-  {
-    accessorKey: 'email',
-    header: 'Email',
-  },
-  {
-    accessorKey: 'phone',
-    header: 'Phone',
-  },
-  {
-    accessorKey: 'role',
-    header: 'Role',
-  },
-  {
-    accessorKey: 'department',
-    header: 'Department',
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    filterField: 'status',
-    filterOptions: ['Active', 'Inactive'],
-  },
-  {
-    accessorKey: 'actions',
-    header: 'Actions',
-    cell: (row: Employee) => (
-      <div className="flex flex-wrap gap-2">
-        <ActionButton
-          icon={<Eye className="h-4 w-4" />}
-          onClick={() => console.log('View employee:', row.id)}
-        />
-        <ActionButton
-          icon={<Pencil className="h-4 w-4" />}
-          onClick={() => console.log('Edit employee:', row.id)}
-        />
-      </div>
-    ),
-  },
-];
-
 // Main Employee Management Page Component
 export default function EmployeeManagementPage() {
   const navigate = useNavigate();
+
+  // Define columns inside component to access navigate
+  const employeeColumns: ColumnDef<Employee>[] = [
+    {
+      accessorKey: 'id',
+      header: 'Employee ID',
+    },
+    {
+      accessorKey: 'name',
+      header: 'Name',
+    },
+    {
+      accessorKey: 'email',
+      header: 'Email',
+    },
+    {
+      accessorKey: 'phone',
+      header: 'Phone',
+    },
+    {
+      accessorKey: 'role',
+      header: 'Role',
+    },
+    {
+      accessorKey: 'department',
+      header: 'Department',
+    },
+    {
+      accessorKey: 'status',
+      header: 'Status',
+      filterField: 'status',
+      filterOptions: ['Active', 'Inactive'],
+    },
+    {
+      accessorKey: 'actions',
+      header: 'Actions',
+      cell: (row: Employee) => (
+        <div className="flex flex-wrap gap-2">
+          <ActionButton
+            icon={<Eye className="h-4 w-4" />}
+            onClick={() => navigate(`/employees/${row.id}`)}
+          />
+          <ActionButton
+            icon={<Pencil className="h-4 w-4" />}
+            onClick={() => console.log('Edit employee:', row.id)}
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
     <AppLayout>
       {/* <main className="flex-1 w-full overflow-y-auto px-4 pt-9 pb-9"> */}
       <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
         <div className="min-h-full w-full">
-          <div className="mb-1 flex items-center justify-between">
-            <div>
+          <div className="pb-3 flex items-center justify-between">
+            <div className="px-3">
               <h2 className="text-[24px] font-bold text-[#151515]">
                 Employee Management
               </h2>
@@ -176,16 +174,6 @@ export default function EmployeeManagementPage() {
             </div>
           </div>
 
-          <div className="mb-4 flex justify-end">
-            <Button
-              onClick={() => navigate('/employees/create')}
-              className="rounded-xl gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              Add Employee
-            </Button>
-          </div>
-
           <DataTable<Employee>
             data={employees}
             columns={employeeColumns}
@@ -194,6 +182,8 @@ export default function EmployeeManagementPage() {
             searchPlaceholder="Search employees..."
             filterField="status"
             filterOptions={['Active', 'Inactive']}
+            addButtonLabel="Add Employee"
+            onAddClick={() => navigate('/employees/create')}
           />
         </div>
       </main>

@@ -21,22 +21,67 @@ function buildZodSchema(fields: FormFieldConfig[]) {
 
     switch (field.type) {
       case 'email':
-        fieldSchema = z.string();
+        // Email validation with required check
+        if (field.required) {
+          fieldSchema = z.string().min(1, `${field.label} is required`).email('Please enter a valid email address');
+        } else {
+          fieldSchema = z.string().email('Please enter a valid email address').or(z.literal(''));
+        }
         break;
       case 'number':
-        fieldSchema = z.coerce.number();
+        if (field.required) {
+          fieldSchema = z.coerce.number().min(0, 'Value must be positive');
+        } else {
+          fieldSchema = z.coerce.number().optional();
+        }
         break;
       case 'location':
-        fieldSchema = z.object({
-          latitude: z.string(),
-          longitude: z.string(),
-        });
+        if (field.required) {
+          fieldSchema = z.object({
+            latitude: z.string().min(1, 'Latitude is required'),
+            longitude: z.string().min(1, 'Longitude is required'),
+          });
+        } else {
+          fieldSchema = z.object({
+            latitude: z.string().optional(),
+            longitude: z.string().optional(),
+          }).optional();
+        }
+        break;
+      case 'address':
+        if (field.required) {
+          fieldSchema = z.string().min(1, `${field.label} is required`);
+        } else {
+          fieldSchema = z.string().optional();
+        }
         break;
       case 'file':
-        fieldSchema = z.instanceof(File).nullable().optional();
+        if (field.required) {
+          fieldSchema = z.instanceof(File);
+        } else {
+          fieldSchema = z.instanceof(File).nullable().optional();
+        }
+        break;
+      case 'select':
+        if (field.required) {
+          fieldSchema = z.string().min(1, `Please select a ${field.label.toLowerCase()}`);
+        } else {
+          fieldSchema = z.string().optional();
+        }
+        break;
+      case 'date':
+        if (field.required) {
+          fieldSchema = z.string().min(1, `${field.label} is required`);
+        } else {
+          fieldSchema = z.string().optional();
+        }
         break;
       default:
-        fieldSchema = z.string();
+        if (field.required) {
+          fieldSchema = z.string().min(1, `${field.label} is required`);
+        } else {
+          fieldSchema = z.string().optional();
+        }
     }
 
     shape[field.name] = fieldSchema;
@@ -98,11 +143,18 @@ export function DynamicForm({
           />
         );
       })}
-      <div className="flex justify-end gap-3 pt-4 border-t">
-        <Button type="button" variant="outline" className="rounded-xl">
+      <div className="flex justify-end gap-3 pt-6 border-t border-[#ececec]">
+        <Button
+          type="button"
+          variant="outline"
+          className="h-12 px-6 rounded-xl border-[#e5e5e5] text-[#777] hover:text-[#16610E] hover:border-[#16610E] hover:bg-[#edf8e7] transition-all"
+        >
           Cancel
         </Button>
-        <Button type="submit" className="rounded-xl">
+        <Button
+          type="submit"
+          className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
+        >
           Save Details
         </Button>
       </div>

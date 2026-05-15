@@ -6,6 +6,7 @@ export type FieldType =
   | 'select'
   | 'date'
   | 'location'
+  | 'address'
   | 'file';
 
 export interface FieldOption {

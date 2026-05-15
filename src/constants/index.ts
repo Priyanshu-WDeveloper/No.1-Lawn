@@ -8,16 +8,23 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   CUSTOMERS: '/customers',
   CUSTOMERS_CREATE: '/customers/create',
+  CUSTOMERS_VIEW: '/customers/:id',
   EMPLOYEES: '/employees',
   EMPLOYEES_CREATE: '/employees/create',
+  EMPLOYEES_VIEW: '/employees/:id',
   JOBS: '/jobs',
   JOBS_CREATE: '/jobs/create',
+  JOBS_VIEW: '/jobs/:id',
   INVOICES: '/invoices',
+  NOTIFICATIONS: '/notifications',
 
   // Super Admin routes
   SUPER_ADMIN_DASHBOARD: '/super-admin/dashboard',
   SUPER_ADMIN_ADMINS: '/super-admin/admins',
   SUPER_ADMIN_BILLING: '/super-admin/billing',
+  SUPER_ADMIN_NOTIFICATIONS: '/super-admin/notifications',
+
+  //Notification
 
   // Default redirects
   DEFAULT_REDIRECT: '/dashboard',

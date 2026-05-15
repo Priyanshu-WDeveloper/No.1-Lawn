@@ -23,8 +23,6 @@ import DataTable, {
   ActionButton,
 } from '@/components/data-table/DataTable'; // ActionButton is now imported directly from DataTable
 import { AppLayout } from '@/components/layout/AppLayout';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 // Define the structure for Customer data
@@ -87,137 +85,127 @@ const customers: Customer[] = [
   },
 ];
 
-// Define columns for the Customer DataTable
-const customerColumns: ColumnDef<Customer>[] = [
-  {
-    accessorKey: 'id',
-    header: 'Customer ID',
-  },
-  {
-    accessorKey: 'name',
-    header: 'Name',
-  },
-  {
-    accessorKey: 'email',
-    header: 'Email',
-  },
-  {
-    accessorKey: 'phone',
-    header: 'Phone',
-  },
-  {
-    accessorKey: 'city',
-    header: 'City',
-  },
-  {
-    accessorKey: 'status',
-    header: 'Status',
-    filterField: 'status',
-    filterOptions: ['Active', 'Inactive'],
-  },
-  {
-    accessorKey: 'balance',
-    header: 'Balance',
-    cell: (row: Customer) => (
-      <span
-        className={
-          row.balance < 0 ? 'text-red-500' : 'text-green-600'
-        }
-      >
-        ${row.balance.toFixed(2)}
-      </span>
-    ),
-  },
-  {
-    accessorKey: 'actions',
-    header: 'Actions',
-    cell: (row: Customer) => (
-      <div className="flex flex-wrap gap-2">
-        <ActionButton
-          icon={<Eye className="h-4 w-4" />}
-          onClick={() => console.log('View customer:', row.id)}
-        />
-        <ActionButton
-          icon={<Pencil className="h-4 w-4" />}
-          onClick={() => console.log('Edit customer:', row.id)}
-        />
-        {/* <ActionButton
-          icon={<Wallet className="h-4 w-4" />}
-          onClick={() =>
-            console.log('Manage Billing for customer:', row.id)
-          }
-        /> */}
-        <ActionButton
-          className="bg-red-600 text-white"
-          icon={<LucideTrash2 className="h-3 w-3" />}
-          onClick={() =>
-            console.log('Deleting access for job ID:', row.id)
-          }
-        />
-      </div>
-    ),
-  },
-];
-
 // Main Customer Management Page Component
 export default function CustomerManagementPage() {
   const navigate = useNavigate();
 
+  // Define columns inside component to access navigate
+  const customerColumns: ColumnDef<Customer>[] = [
+    {
+      accessorKey: 'id',
+      header: 'Customer ID',
+    },
+    {
+      accessorKey: 'name',
+      header: 'Name',
+    },
+    {
+      accessorKey: 'email',
+      header: 'Email',
+    },
+    {
+      accessorKey: 'phone',
+      header: 'Phone',
+    },
+    {
+      accessorKey: 'city',
+      header: 'City',
+    },
+    {
+      accessorKey: 'status',
+      header: 'Status',
+      filterField: 'status',
+      filterOptions: ['Active', 'Inactive'],
+    },
+    {
+      accessorKey: 'balance',
+      header: 'Balance',
+      cell: (row: Customer) => (
+        <span
+          className={
+            row.balance < 0 ? 'text-red-500' : 'text-green-600'
+          }
+        >
+          ${row.balance.toFixed(2)}
+        </span>
+      ),
+    },
+    {
+      accessorKey: 'actions',
+      header: 'Actions',
+      cell: (row: Customer) => (
+        <div className="flex flex-wrap gap-2">
+          <ActionButton
+            icon={<Eye className="h-4 w-4" />}
+            onClick={() => navigate(`/customers/${row.id}`)}
+          />
+          <ActionButton
+            icon={<Pencil className="h-4 w-4" />}
+            onClick={() => console.log('Edit customer:', row.id)}
+          />
+          <ActionButton
+            className="bg-red-600 text-white"
+            icon={<LucideTrash2 className="h-3 w-3" />}
+            onClick={() =>
+              console.log('Deleting access for job ID:', row.id)
+            }
+          />
+        </div>
+      ),
+    },
+  ];
+
   return (
     <AppLayout>
       {/* <main className="flex-1 w-full overflow-y-auto px-4 pt-9 pb-9"> */}
-      <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
-        <div className="min-h-full w-full">
-          <div className="mb-1 flex items-center justify-between">
-            <div>
-              <h2 className="text-[24px] font-bold text-[#151515]">
-                Customer Management
-              </h2>
-              <p className="mt-1 text-[13px] text-[#777]">
-                Manage your customers and view their details.
-              </p>
-            </div>
+      {/* <main className="flex-1 h-[90vh] border border-blue-600 w-full overflow-y-auto px-4 pt-5 pb-5">
+        <div className="min-h-full w-full h-[90vh] border border-blue-600"> */}
+      <div className="flex h-full flex-col">
+        <div className="flex-1 w-full overflow-y-auto px-4 py-5">
+          <div className="flex w-full flex-col">
+            <div className="mb-1 p-1 flex items-center justify-between">
+              <div className=" px-3">
+                <h2 className="text-[24px] font-bold text-[#151515]">
+                  Customer Management
+                </h2>
+                <p className="mt-1 text-[13px] text-[#777]">
+                  Manage your customers and view their details.
+                </p>
+              </div>
 
-            <div className="flex items-center gap-2.5">
-              <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#e5e5e5] bg-white">
-                <Bell className="h-4 w-4" />
-                <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[9px] text-white">
-                  3
-                </span>
-              </button>
-              <div className="flex items-center gap-2 rounded-xl border border-[#ececec] bg-white px-3 py-1.5 shadow-sm">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback className="text-xs">
-                    A
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-sm font-semibold">Admin</span>
-                <ChevronDown className="h-4 w-4 text-gray-500" />
+              <div className="flex items-center gap-2.5">
+                <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#e5e5e5] bg-white">
+                  <Bell className="h-4 w-4" />
+                  <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[9px] text-white">
+                    3
+                  </span>
+                </button>
+                <div className="flex items-center gap-2 rounded-xl border border-[#ececec] bg-white px-3 py-1.5 shadow-sm">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="text-xs">
+                      A
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-semibold">Admin</span>
+                  <ChevronDown className="h-4 w-4 text-gray-500" />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="mb-4 flex justify-end">
-            <Button
-              onClick={() => navigate('/customers/create')}
-              className="rounded-xl gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              Add Customer
-            </Button>
+            <DataTable<Customer>
+              data={customers}
+              columns={customerColumns}
+              title="Customers"
+              description="Manage all your customers in one place."
+              searchPlaceholder="Search customers..."
+              filterField="status"
+              filterOptions={['Active', 'Inactive']}
+              addButtonLabel="Add Customer"
+              onAddClick={() => navigate('/customers/create')}
+            />
           </div>
-
-          <DataTable<Customer>
-            data={customers}
-            columns={customerColumns}
-            title="Customers"
-            description="Manage all your customers in one place."
-            searchPlaceholder="Search customers..."
-            filterField="status"
-            filterOptions={['Active', 'Inactive']}
-          />
         </div>
-      </main>
+      </div>
     </AppLayout>
   );
 }

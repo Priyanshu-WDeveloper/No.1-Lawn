@@ -19,6 +19,9 @@ const Login: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
+      if (!email || !password) {
+        return toast.error('Please fill out the form first');
+      }
       if (password.length < 8 || password.includes(' ')) {
         return toast.error(
           'Password must be at least 8 characters and contain no spaces',
@@ -35,11 +38,11 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="max-h-full bg-[#eef5df] flex flex-col px-6 pt-6 pb-3">
+    <div className="max-h-full h-screen bg-[#eef5df] flex flex-col px-6 pt-6 pb-3">
       <div className="flex-1 flex items-center justify-center">
-        <div className="w-full max-w-8xl bg-[#f8f8f4] rounded-[28px] shadow-xl overflow-hidden flex flex-col">
+        <div className="w-full h-full max-w-8xl bg-[#f8f8f4] rounded-[28px] shadow-xl overflow-hidden flex flex-col">
           <div className="flex-1 overflow-y-auto">
-            <div className="grid lg:grid-cols-2">
+            <div className="grid h-full lg:grid-cols-2">
               {/* Left Section */}
               <div className="relative overflow-hidden hidden lg:block">
                 <img
@@ -130,13 +133,13 @@ const Login: React.FC = () => {
 
                         <div className="mt-2">
                           <InputWithIcon
-                            type="email"
+                            // type="email"
                             placeholder="example@mail.com"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             icon={<Mail />}
-                            required
-                            autoComplete="on"
+                            // autoComplete="off"
+                            name="email"
                           />
                         </div>
                       </div>
@@ -167,8 +170,8 @@ const Login: React.FC = () => {
                                 <Eye className="size-5" />
                               </button>
                             }
-                            required
-                            autoComplete="current-password"
+                            autoComplete="off"
+                            name="password"
                           />
                         </div>
                       </div>
