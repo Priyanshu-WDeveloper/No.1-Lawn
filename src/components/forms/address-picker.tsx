@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useRef, useEffect } from 'react';
 import { MapPin, Search, Navigation, X, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -23,11 +21,23 @@ interface PlacePrediction {
 
 // Mock predictions for demo - replace with Google Places API in production
 const mockPredictions: PlacePrediction[] = [
-  { description: '383A Richardson Road, Mount Roskill, Auckland', place_id: '1' },
-  { description: '383 Richardson Road, Mount Roskill, Auckland', place_id: '2' },
-  { description: '38 Richardson Road, Mount Roskill, Auckland', place_id: '3' },
+  {
+    description: '383A Richardson Road, Mount Roskill, Auckland',
+    place_id: '1',
+  },
+  {
+    description: '383 Richardson Road, Mount Roskill, Auckland',
+    place_id: '2',
+  },
+  {
+    description: '38 Richardson Road, Mount Roskill, Auckland',
+    place_id: '3',
+  },
   { description: 'Auckland, New Zealand', place_id: '4' },
-  { description: 'Mount Roskill, Auckland, New Zealand', place_id: '5' },
+  {
+    description: 'Mount Roskill, Auckland, New Zealand',
+    place_id: '5',
+  },
   { description: '1041 Mount Roskill Road, Auckland', place_id: '6' },
   { description: 'New Zealand', place_id: '7' },
 ];
@@ -40,21 +50,29 @@ export function AddressPicker({
   apiKey,
 }: AddressPickerProps) {
   const [searchQuery, setSearchQuery] = useState(value || '');
-  const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
+  const [predictions, setPredictions] = useState<PlacePrediction[]>(
+    [],
+  );
   const [showPredictions, setShowPredictions] = useState(false);
-  const [selectedAddress, setSelectedAddress] = useState<string>(value || '');
+  const [selectedAddress, setSelectedAddress] = useState<string>(
+    value || '',
+  );
   const [isLoading, setIsLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowPredictions(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () =>
+      document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleSearch = async (query: string) => {
@@ -72,7 +90,7 @@ export function AddressPicker({
     if (apiKey) {
       try {
         const response = await fetch(
-          `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(query)}&key=${apiKey}&components=country:nz`
+          `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(query)}&key=${apiKey}&components=country:nz`,
         );
         const data = await response.json();
         if (data.predictions) {
@@ -93,8 +111,8 @@ export function AddressPicker({
   };
 
   const filterMockPredictions = (query: string) => {
-    const filtered = mockPredictions.filter(p =>
-      p.description.toLowerCase().includes(query.toLowerCase())
+    const filtered = mockPredictions.filter((p) =>
+      p.description.toLowerCase().includes(query.toLowerCase()),
     );
     setPredictions(filtered);
     setShowPredictions(true);
@@ -115,7 +133,9 @@ export function AddressPicker({
     onChange?.('');
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     handleSearch(e.target.value);
   };
 
@@ -136,7 +156,9 @@ export function AddressPicker({
             placeholder="Search for an address..."
             value={searchQuery}
             onChange={handleInputChange}
-            onFocus={() => searchQuery.length >= 2 && setShowPredictions(true)}
+            onFocus={() =>
+              searchQuery.length >= 2 && setShowPredictions(true)
+            }
             className="h-12 pl-11 pr-10 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all placeholder:text-[#999]"
           />
           {isLoading && (
@@ -166,11 +188,16 @@ export function AddressPicker({
                 <MapPin className="h-4 w-4 text-[#16610E] mt-0.5 shrink-0" />
                 <div>
                   <span className="text-sm text-[#151515] block">
-                    {prediction.structured_formatting?.main_text || prediction.description}
+                    {prediction.structured_formatting?.main_text ||
+                      prediction.description}
                   </span>
-                  {prediction.structured_formatting?.secondary_text && (
+                  {prediction.structured_formatting
+                    ?.secondary_text && (
                     <span className="text-xs text-[#777]">
-                      {prediction.structured_formatting.secondary_text}
+                      {
+                        prediction.structured_formatting
+                          .secondary_text
+                      }
                     </span>
                   )}
                 </div>
@@ -188,8 +215,12 @@ export function AddressPicker({
               <Navigation className="h-4 w-4" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-[#16610E] font-medium">Selected Address</p>
-              <p className="text-sm text-[#151515] truncate">{selectedAddress}</p>
+              <p className="text-xs text-[#16610E] font-medium">
+                Selected Address
+              </p>
+              <p className="text-sm text-[#151515] truncate">
+                {selectedAddress}
+              </p>
             </div>
           </div>
         </div>
@@ -202,7 +233,9 @@ export function AddressPicker({
             <MapPin className="h-8 w-8 text-[#ccc] mx-auto mb-2" />
             <p className="text-sm text-[#999]">Map preview</p>
             <p className="text-xs text-[#bbb] mt-1">
-              {apiKey ? 'Google Maps connected' : 'Add Google API key for live map'}
+              {apiKey
+                ? 'Google Maps connected'
+                : 'Add Google API key for live map'}
             </p>
           </div>
         </div>

@@ -8,6 +8,7 @@ import {
 import { ROUTES } from '@/constants';
 import Login from '../pages/auth/login';
 import SuperAdminLogin from '../pages/auth/super-admin-login';
+import ForgotPassword from '../pages/auth/forgot-password';
 import DashboardPage from '../pages/dashboard/DashboardPage';
 import SuperAdminDashboardPage from '../pages/super-admin/dashboard';
 import SuperAdminAdminsPage from '../pages/super-admin/admins';
@@ -22,6 +23,7 @@ import JobManagementPage from '../pages/jobs';
 import CreateJobPage from '../pages/jobs/create';
 import JobViewPage from '../pages/jobs/view';
 import NotificationsPage from '../pages/notification';
+import InvoiceManagementPage from '../pages/invoices';
 
 const AppRoutes: React.FC = () => {
   return (
@@ -32,6 +34,14 @@ const AppRoutes: React.FC = () => {
         element={
           <PublicRoute redirectTo={ROUTES.DASHBOARD}>
             <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path={ROUTES.FORGOT_PASSWORD}
+        element={
+          <PublicRoute redirectTo={ROUTES.DASHBOARD}>
+            <ForgotPassword />
           </PublicRoute>
         }
       />
@@ -122,6 +132,14 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute redirectTo={ROUTES.LOGIN}>
             <JobViewPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.INVOICES}
+        element={
+          <ProtectedRoute redirectTo={ROUTES.LOGIN}>
+            <InvoiceManagementPage />
           </ProtectedRoute>
         }
       />

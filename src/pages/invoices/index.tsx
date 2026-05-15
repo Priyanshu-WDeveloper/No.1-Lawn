@@ -1,10 +1,4 @@
-'use client';
-
-import {
-  Bell,
-  ChevronDown,
-  Eye,
-} from 'lucide-react';
+import { Bell, ChevronDown, Eye } from 'lucide-react';
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
@@ -151,6 +145,7 @@ const InvoiceColumns: ColumnDef<Invoice>[] = [
     cell: (row: Invoice) => (
       <div className="flex flex-wrap gap-2">
         <ActionButton
+          intent="view"
           icon={<Eye className="h-4 w-4" />}
           onClick={() => console.log('Viewing invoice:', row.id)}
         />
@@ -203,7 +198,7 @@ export default function InvoiceManagementPage() {
             columns={InvoiceColumns}
             title="Invoices"
             description="View and manage invoices linked to jobs."
-            addButtonLabel="+ Add Invoice"
+            addButtonLabel="Add Invoice"
             onAddClick={handleAddInvoice}
             searchPlaceholder="Search Invoices..."
             filterField="paymentStatus"

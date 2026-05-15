@@ -1,5 +1,3 @@
-'use client';
-
 import { Upload, FileText, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
@@ -11,9 +9,22 @@ interface UploadFieldProps {
   acceptedTypes?: string[];
 }
 
-const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+const ALLOWED_TYPES = [
+  'application/pdf',
+  'image/jpeg',
+  'image/png',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+];
 
-const ALLOWED_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png', '.doc', '.docx'];
+const ALLOWED_EXTENSIONS = [
+  '.pdf',
+  '.jpg',
+  '.jpeg',
+  '.png',
+  '.doc',
+  '.docx',
+];
 
 export function UploadField({
   label,
@@ -22,7 +33,9 @@ export function UploadField({
   required,
   acceptedTypes = ALLOWED_TYPES,
 }: UploadFieldProps) {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = e.target.files?.[0] || null;
     if (file) {
       if (!acceptedTypes.includes(file.type)) {
@@ -51,8 +64,12 @@ export function UploadField({
             <FileText className="h-5 w-5 text-primary" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">{value.name}</p>
-            <p className="text-xs text-muted-foreground">{(value.size / 1024).toFixed(1)} KB</p>
+            <p className="text-sm font-medium truncate">
+              {value.name}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {(value.size / 1024).toFixed(1)} KB
+            </p>
           </div>
           <button
             type="button"

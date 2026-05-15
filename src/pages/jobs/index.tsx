@@ -1,15 +1,12 @@
-'use client';
-
-import { Bell, ChevronDown, Eye, Pencil, Trash } from 'lucide-react';
-
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Eye, LucideTrash2, Pencil } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 import type { ColumnDef } from '@/components/data-table/DataTable';
 import DataTable, {
   ActionButton,
 } from '@/components/data-table/DataTable';
 import { AppLayout } from '@/components/layout/AppLayout';
-import { useNavigate } from 'react-router-dom';
+import { Navbar } from '@/components/layout/Navbar';
 
 // Define the structure for Job data
 interface Job {
@@ -17,7 +14,7 @@ interface Job {
   address: string;
   date: string;
   paymentType: 'Cash' | 'Card' | 'Online' | 'UPI' | 'Bank Transfer';
-  status: 'Active' | 'Inactive';
+  status: 'Pending' | 'Completed' | 'Cancelled';
   jobType: string;
   particulars: string;
   assignedTo?: string;
@@ -35,7 +32,7 @@ const Jobs: Job[] = [
     address: '123 Main Street, Delhi',
     date: '2026-05-10',
     paymentType: 'Cash',
-    status: 'Active',
+    status: 'Completed',
     jobType: 'Installation',
     particulars: 'AC installation service',
     assignedTo: 'Rahul Verma',
@@ -50,7 +47,7 @@ const Jobs: Job[] = [
     address: '45 Park Avenue, Mumbai',
     date: '2026-05-11',
     paymentType: 'Card',
-    status: 'Active',
+    status: 'Pending',
     jobType: 'Repair',
     particulars: 'Washing machine repair',
     assignedTo: 'Amit Singh',
@@ -60,7 +57,7 @@ const Jobs: Job[] = [
     address: '78 Lake View, Bangalore',
     date: '2026-05-12',
     paymentType: 'UPI',
-    status: 'Inactive',
+    status: 'Cancelled',
     jobType: 'Maintenance',
     particulars: 'Electrical maintenance',
     assignedTo: 'Karan Mehta',
@@ -70,7 +67,7 @@ const Jobs: Job[] = [
     address: '12 Green Colony, Chandigarh',
     date: '2026-05-13',
     paymentType: 'Bank Transfer',
-    status: 'Active',
+    status: 'Completed',
     jobType: 'Inspection',
     particulars: 'Generator inspection',
     assignedTo: 'Sandeep Kumar',
@@ -80,7 +77,7 @@ const Jobs: Job[] = [
     address: '90 River Road, Pune',
     date: '2026-05-14',
     paymentType: 'Cash',
-    status: 'Inactive',
+    status: 'Pending',
     jobType: 'Cleaning',
     particulars: 'Water tank cleaning',
     assignedTo: 'Vikram Joshi',
@@ -106,12 +103,6 @@ export default function JobManagementPage() {
       header: 'Payment Type',
     },
     {
-      accessorKey: 'status',
-      header: 'Status',
-      filterField: 'status',
-      filterOptions: ['Active', 'Inactive'],
-    },
-    {
       accessorKey: 'jobType',
       header: 'Job type',
     },
@@ -124,23 +115,32 @@ export default function JobManagementPage() {
       header: 'Assigned To',
     },
     {
+      accessorKey: 'status',
+      header: 'Status',
+      filterField: 'status',
+      filterOptions: ['Pending', 'Completed', 'Cancelled'],
+    },
+    {
       accessorKey: 'actions',
       header: 'Actions',
       cell: (row: Job) => (
         <div className="flex flex-wrap gap-2">
           <ActionButton
+            intent="view"
             icon={<Eye className="h-4 w-4" />}
             onClick={() => navigate(`/jobs/${row.id}`)}
           />
           <ActionButton
+            intent="edit"
             icon={<Pencil className="h-4 w-4" />}
             onClick={() =>
               console.log('Editing job with ID:', row.id)
             }
           />
           <ActionButton
+            intent="delete"
             className="hover:text-white hover:bg-red-600"
-            icon={<Trash className="h-4 w-4 " />}
+            icon={<LucideTrash2 className="h-4 w-4 " />}
             onClick={() =>
               console.log('Deleting access for job ID:', row.id)
             }
@@ -155,34 +155,11 @@ export default function JobManagementPage() {
       {/* <main className="flex-1 w-full overflow-y-auto px-4 pt-9 pb-9"> */}
       <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
         <div className="min-h-full w-full">
-          <div className="pb-3 flex items-center justify-between">
-            <div className="px-3">
-              <h2 className="text-[24px] font-bold text-[#151515]">
-                Job Management
-              </h2>
-              <p className="mt-1 text-[13px] text-[#777]">
-                Manage your Jobs and view their details.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#e5e5e5] bg-white">
-                <Bell className="h-4 w-4" />
-                <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[9px] text-white">
-                  3
-                </span>
-              </button>
-              <div className="flex items-center gap-2 rounded-xl border border-[#ececec] bg-white px-3 py-1.5 shadow-sm">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback className="text-xs">
-                    A
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-sm font-semibold">Admin</span>
-                <ChevronDown className="h-4 w-4 text-gray-500" />
-              </div>
-            </div>
-          </div>
+          <Navbar
+            title="Job Management"
+            subtitle="Manage your Jobs and view their details."
+            showWelcome={false}
+          />
 
           <DataTable<Job>
             data={Jobs}

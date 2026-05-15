@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Leaf, Mail, Lock, Eye, Shield, Globe } from 'lucide-react';
+import {
+  Leaf,
+  Mail,
+  Lock,
+  Eye,
+  Shield,
+  Globe,
+  EyeOff,
+} from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import toast from 'react-hot-toast';
 import { InputWithIcon } from '../../components/forms/input-with-icon';
@@ -184,7 +192,11 @@ const SuperAdminLogin: React.FC = () => {
                                 }
                                 className="focus:outline-none"
                               >
-                                <Eye className="size-5" />
+                                {showPassword ? (
+                                  <EyeOff className="size-5 mt-1" />
+                                ) : (
+                                  <Eye className="size-5 mt-1" />
+                                )}
                               </button>
                             }
                             autoComplete="off"

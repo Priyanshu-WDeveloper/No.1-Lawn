@@ -1,7 +1,12 @@
-'use client';
-
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, User, MapPin, CreditCard, Clock, RefreshCw } from 'lucide-react';
+import {
+  ArrowLeft,
+  User,
+  MapPin,
+  CreditCard,
+  Clock,
+  RefreshCw,
+} from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -61,57 +66,57 @@ interface JobData {
 }
 
 const mockJob: JobData = {
-  jobId: "JOB-001",
+  jobId: 'JOB-001',
   assignedCustomer: {
-    customerId: "CUST-001",
-    name: "Babu",
-    email: "babu_kondepudi@yahoo.co.nz",
-    phone: "0211470500",
-    address: "383A Richardson Road Mount Roskill",
-    postalCode: "",
-    city: "",
-    state: "",
-    country: "",
+    customerId: 'CUST-001',
+    name: 'Babu',
+    email: 'babu_kondepudi@yahoo.co.nz',
+    phone: '0211470500',
+    address: '383A Richardson Road Mount Roskill',
+    postalCode: '',
+    city: '',
+    state: '',
+    country: '',
     active: true,
-    status: "Active",
-    createdBy: "Aman",
-    createdAt: "2026-05-12T12:58:00Z",
-    updatedAt: "2026-05-12T12:58:00Z",
-    balance: 0
+    status: 'Active',
+    createdBy: 'Aman',
+    createdAt: '2026-05-12T12:58:00Z',
+    updatedAt: '2026-05-12T12:58:00Z',
+    balance: 0,
   },
   assignedEmployee: {
-    employeeId: "EMP-001",
-    name: "Sarah Miller",
-    address: "Auckland, New Zealand",
+    employeeId: 'EMP-001',
+    name: 'Sarah Miller',
+    address: 'Auckland, New Zealand',
     contact: {
-      email: "sarah.m@clovant.com",
-      phone: "+64-XX-XXX-XXXX"
+      email: 'sarah.m@clovant.com',
+      phone: '+64-XX-XXX-XXXX',
     },
-    status: "Active"
+    status: 'Active',
   },
   jobAddress: {
-    addressLine: "383A Richardson Road Mount Roskill",
-    postalCode: "1041",
-    city: "Auckland",
-    state: "Auckland",
-    country: "New Zealand",
+    addressLine: '383A Richardson Road Mount Roskill',
+    postalCode: '1041',
+    city: 'Auckland',
+    state: 'Auckland',
+    country: 'New Zealand',
     location: {
-      lat: -36.9090,
-      lng: 174.7310
-    }
+      lat: -36.909,
+      lng: 174.731,
+    },
   },
-  jobType: "Recurring",
+  jobType: 'Recurring',
   frequency: {
     value: 2,
-    unit: "Week"
+    unit: 'Week',
   },
-  paymentType: "Bank Transfer",
-  notes: "Customer requested weekend servicing only.",
-  status: "Pending",
+  paymentType: 'Bank Transfer',
+  notes: 'Customer requested weekend servicing only.',
+  status: 'Pending',
   active: true,
-  createdBy: "Aman",
-  createdAt: "2026-05-14T10:30:00Z",
-  updatedAt: "2026-05-14T10:30:00Z"
+  createdBy: 'Aman',
+  createdAt: '2026-05-14T10:30:00Z',
+  updatedAt: '2026-05-14T10:30:00Z',
 };
 
 export default function JobViewPage() {
@@ -127,7 +132,7 @@ export default function JobViewPage() {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     });
   };
 
@@ -155,8 +160,8 @@ export default function JobViewPage() {
   return (
     <AppLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto px-4 py-5">
-          <div className="max-w-4xl mx-auto">
+        <div className="flex-1 w-full overflow-y-auto p-10">
+          <div className="mx-auto">
             {/* Back Button */}
             <Button
               variant="ghost"
@@ -176,19 +181,29 @@ export default function JobViewPage() {
                   </div>
                   <div>
                     <div className="flex items-center gap-3">
-                      <h1 className="text-2xl font-bold text-[#151515]">{job.jobId}</h1>
-                      <Badge className={`border ${getJobTypeColor(job.jobType)}`}>
+                      <h1 className="text-2xl font-bold text-[#151515]">
+                        {job.jobId}
+                      </h1>
+                      <Badge
+                        className={`border ${getJobTypeColor(job.jobType)}`}
+                      >
                         {job.jobType}
                       </Badge>
                     </div>
-                    <p className="text-[#777] text-sm mt-1">Job Details</p>
+                    <p className="text-[#777] text-sm mt-1">
+                      Job Details
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge className={`border ${getStatusColor(job.status)} px-3 py-1`}>
+                  <Badge
+                    className={`border ${getStatusColor(job.status)} px-3 py-1`}
+                  >
                     {job.status}
                   </Badge>
-                  <Badge className={`border ${job.active ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-700 border-gray-200'}`}>
+                  <Badge
+                    className={`border ${job.active ? 'bg-green-100 text-green-700 border-green-200' : 'bg-gray-100 text-gray-700 border-gray-200'}`}
+                  >
                     {job.active ? 'Active' : 'Inactive'}
                   </Badge>
                 </div>
@@ -203,24 +218,36 @@ export default function JobViewPage() {
                   <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
                     <User className="h-4 w-4 text-[#16610E]" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">Customer Details</h3>
+                  <h3 className="text-lg font-semibold text-[#151515]">
+                    Customer Details
+                  </h3>
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-sm text-[#777]">Name</span>
-                    <span className="text-[#151515] font-medium">{job.assignedCustomer.name}</span>
+                    <span className="text-[#151515] font-medium">
+                      {job.assignedCustomer.name}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-[#777]">Email</span>
-                    <span className="text-[#151515] font-medium">{job.assignedCustomer.email}</span>
+                    <span className="text-[#151515] font-medium">
+                      {job.assignedCustomer.email}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-[#777]">Phone</span>
-                    <span className="text-[#151515] font-medium">{job.assignedCustomer.phone}</span>
+                    <span className="text-[#151515] font-medium">
+                      {job.assignedCustomer.phone}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-[#777]">Status</span>
-                    <Badge className={`${job.assignedCustomer.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'} text-xs`}>
+                    <span className="text-sm text-[#777]">
+                      Status
+                    </span>
+                    <Badge
+                      className={`${job.assignedCustomer.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'} text-xs`}
+                    >
                       {job.assignedCustomer.status}
                     </Badge>
                   </div>
@@ -233,28 +260,46 @@ export default function JobViewPage() {
                   <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
                     <User className="h-4 w-4 text-[#16610E]" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">Assigned Employee</h3>
+                  <h3 className="text-lg font-semibold text-[#151515]">
+                    Assigned Employee
+                  </h3>
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm text-[#777]">Employee</span>
-                    <span className="text-[#151515] font-medium">{job.assignedEmployee.name}</span>
+                    <span className="text-sm text-[#777]">
+                      Employee
+                    </span>
+                    <span className="text-[#151515] font-medium">
+                      {job.assignedEmployee.name}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-[#777]">Employee ID</span>
-                    <span className="text-[#151515] font-medium">{job.assignedEmployee.employeeId}</span>
+                    <span className="text-sm text-[#777]">
+                      Employee ID
+                    </span>
+                    <span className="text-[#151515] font-medium">
+                      {job.assignedEmployee.employeeId}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-[#777]">Email</span>
-                    <span className="text-[#151515] font-medium">{job.assignedEmployee.contact.email}</span>
+                    <span className="text-[#151515] font-medium">
+                      {job.assignedEmployee.contact.email}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-[#777]">Phone</span>
-                    <span className="text-[#151515] font-medium">{job.assignedEmployee.contact.phone}</span>
+                    <span className="text-[#151515] font-medium">
+                      {job.assignedEmployee.contact.phone}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-[#777]">Status</span>
-                    <Badge className={`${job.assignedEmployee.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'} text-xs`}>
+                    <span className="text-sm text-[#777]">
+                      Status
+                    </span>
+                    <Badge
+                      className={`${job.assignedEmployee.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'} text-xs`}
+                    >
                       {job.assignedEmployee.status}
                     </Badge>
                   </div>
@@ -267,33 +312,46 @@ export default function JobViewPage() {
                   <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
                     <MapPin className="h-4 w-4 text-[#16610E]" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">Job Location</h3>
+                  <h3 className="text-lg font-semibold text-[#151515]">
+                    Job Location
+                  </h3>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div className="col-span-2 md:col-span-3">
                     <p className="text-sm text-[#777]">Address</p>
-                    <p className="text-[#151515] font-medium mt-1">{job.jobAddress.addressLine}</p>
+                    <p className="text-[#151515] font-medium mt-1">
+                      {job.jobAddress.addressLine}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-[#777]">City</p>
-                    <p className="text-[#151515] font-medium">{job.jobAddress.city}</p>
+                    <p className="text-[#151515] font-medium">
+                      {job.jobAddress.city}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-[#777]">State</p>
-                    <p className="text-[#151515] font-medium">{job.jobAddress.state}</p>
+                    <p className="text-[#151515] font-medium">
+                      {job.jobAddress.state}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-[#777]">Postal Code</p>
-                    <p className="text-[#151515] font-medium">{job.jobAddress.postalCode}</p>
+                    <p className="text-[#151515] font-medium">
+                      {job.jobAddress.postalCode}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-[#777]">Country</p>
-                    <p className="text-[#151515] font-medium">{job.jobAddress.country}</p>
+                    <p className="text-[#151515] font-medium">
+                      {job.jobAddress.country}
+                    </p>
                   </div>
                   <div className="col-span-2 md:col-span-3">
                     <p className="text-sm text-[#777]">Coordinates</p>
                     <p className="text-[#151515] font-medium mt-1">
-                      {job.jobAddress.location.lat}, {job.jobAddress.location.lng}
+                      {job.jobAddress.location.lat},{' '}
+                      {job.jobAddress.location.lng}
                     </p>
                   </div>
                 </div>
@@ -318,21 +376,30 @@ export default function JobViewPage() {
                   <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
                     <RefreshCw className="h-4 w-4 text-[#16610E]" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">Schedule</h3>
+                  <h3 className="text-lg font-semibold text-[#151515]">
+                    Schedule
+                  </h3>
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm text-[#777]">Job Type</span>
-                    <Badge className={`border ${getJobTypeColor(job.jobType)}`}>
+                    <span className="text-sm text-[#777]">
+                      Job Type
+                    </span>
+                    <Badge
+                      className={`border ${getJobTypeColor(job.jobType)}`}
+                    >
                       {job.jobType}
                     </Badge>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-[#777]">Frequency</span>
+                    <span className="text-sm text-[#777]">
+                      Frequency
+                    </span>
                     <div className="flex items-center gap-2">
                       <RefreshCw className="h-4 w-4 text-[#16610E]" />
                       <span className="text-[#151515] font-medium">
-                        Every {job.frequency.value} {job.frequency.unit}
+                        Every {job.frequency.value}{' '}
+                        {job.frequency.unit}
                       </span>
                     </div>
                   </div>
@@ -345,16 +412,24 @@ export default function JobViewPage() {
                   <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
                     <CreditCard className="h-4 w-4 text-[#16610E]" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">Payment & Notes</h3>
+                  <h3 className="text-lg font-semibold text-[#151515]">
+                    Payment & Notes
+                  </h3>
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm text-[#777]">Payment Type</span>
-                    <span className="text-[#151515] font-medium">{job.paymentType}</span>
+                    <span className="text-sm text-[#777]">
+                      Payment Type
+                    </span>
+                    <span className="text-[#151515] font-medium">
+                      {job.paymentType}
+                    </span>
                   </div>
                   <div>
                     <p className="text-sm text-[#777]">Notes</p>
-                    <p className="text-[#151515] font-medium mt-1">{job.notes || '-'}</p>
+                    <p className="text-[#151515] font-medium mt-1">
+                      {job.notes || '-'}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -365,20 +440,30 @@ export default function JobViewPage() {
                   <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
                     <Clock className="h-4 w-4 text-[#16610E]" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">Timestamps</h3>
+                  <h3 className="text-lg font-semibold text-[#151515]">
+                    Timestamps
+                  </h3>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
                     <p className="text-sm text-[#777]">Created By</p>
-                    <p className="text-[#151515] font-medium mt-1">{job.createdBy}</p>
+                    <p className="text-[#151515] font-medium mt-1">
+                      {job.createdBy}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-[#777]">Created At</p>
-                    <p className="text-[#151515] font-medium mt-1">{formatDate(job.createdAt)}</p>
+                    <p className="text-[#151515] font-medium mt-1">
+                      {formatDate(job.createdAt)}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-sm text-[#777]">Last Updated</p>
-                    <p className="text-[#151515] font-medium mt-1">{formatDate(job.updatedAt)}</p>
+                    <p className="text-sm text-[#777]">
+                      Last Updated
+                    </p>
+                    <p className="text-[#151515] font-medium mt-1">
+                      {formatDate(job.updatedAt)}
+                    </p>
                   </div>
                 </div>
               </div>

@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -309,8 +307,8 @@ export default function CreateCustomerPage() {
 
   return (
     <AppLayout>
-      <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
-        <div className="max-w-4xl mx-auto">
+      <div className="flex-1 w-full overflow-y-auto p-10">
+        <div className="mx-auto">
           {/* Back Button */}
           <Button
             variant="ghost"
@@ -395,7 +393,7 @@ export default function CreateCustomerPage() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </AppLayout>
   );
 }

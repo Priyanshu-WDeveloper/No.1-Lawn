@@ -1,7 +1,4 @@
-'use client';
-
 import {
-  Bell,
   Briefcase,
   CalendarDays,
   ClipboardList,
@@ -24,6 +21,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 import { AppLayout } from '../../components/layout/AppLayout'; // Corrected import path
+import { Navbar } from '@/components/layout/Navbar';
 import { useNavigate } from 'react-router-dom';
 import AccountDropdown from '../../components/account-dropdown';
 
@@ -98,45 +96,10 @@ export default function DashboardPage() {
       <main className="flex-1 h-full px-4 pt-9">
         <div className="min-h-full">
           {/* Header */}
-          <div className="mb-3 px-4 flex items-center justify-between flex-col sm:flex-row">
-            <div className="pb-4">
-              <h2 className="text-[24px]  font-bold text-[#151515]">
-                Welcome back, Admin! 👋
-              </h2>
-
-              <p className="mt-1 text-[13px] text-[#777]">
-                Here's what's happening with your system today.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#e5e5e5] bg-white">
-                <Bell
-                  className="h-4 w-4"
-                  onClick={() => navigate('/notifications')}
-                />
-
-                <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[9px] text-white">
-                  3
-                </span>
-              </button>
-
-              <div className="flex items-center justify-end p-6">
-                <AccountDropdown superAccess={false} />
-              </div>
-              {/* <div className="flex items-center gap-2 rounded-xl border border-[#ececec] bg-white px-3 py-1.5 shadow-sm"> */}
-              {/* <Avatar className="h-8 w-8">
-                  <AvatarFallback className="text-xs">
-                    A
-                  </AvatarFallback>
-                </Avatar>
-
-                <span className="text-sm font-semibold">Admin</span> */}
-              {/* <AccountDropdown /> */}
-              {/* <ChevronDown className="h-4 w-4 text-gray-500" /> */}
-              {/* </div> */}
-            </div>
-          </div>
+          <Navbar
+            title="Dashboard"
+            subtitle="Here's what's happening with your system today."
+          />
 
           {/* Stats */}
           <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">

@@ -1,5 +1,3 @@
-'use client';
-
 import * as React from 'react';
 import {
   Search,
@@ -66,27 +64,70 @@ interface DataTableProps<T extends DataTableData> {
 /* -------------------------- */
 /* Reusable Action Button */
 /* -------------------------- */
+// interface ActionButtonProps {
+//   icon: React.ReactNode;
+//   onClick?: () => void;
+//   variant?: 'outline' | 'default';
+//   className?: string;
+// }
+
+// export function ActionButton({
+//   icon,
+//   onClick,
+//   variant = 'outline',
+//   className = '',
+// }: ActionButtonProps) {
+//   return (
+//     <Button
+//       variant={variant}
+//       size="icon-sm"
+//       className={`gap-2 rounded-full ${className}`}
+//       onClick={onClick}
+//     >
+//       {icon}
+//     </Button>
+//   );
+// }
+
 interface ActionButtonProps {
   icon: React.ReactNode;
   onClick?: () => void;
   variant?: 'outline' | 'default';
+  intent?: 'default' | 'view' | 'edit' | 'delete';
   className?: string;
 }
+
+import { cn } from '@/lib/utils';
 
 export function ActionButton({
   icon,
   onClick,
   variant = 'outline',
+  intent = 'default',
   className = '',
 }: ActionButtonProps) {
+  const intentStyles: Record<string, string> = {
+    default: 'hover:bg-muted',
+    view: 'border-blue-100 bg-blue-50/60 text-blue-500 hover:border-blue-500 hover:bg-blue-600 hover:text-white hover:shadow-blue-200',
+    edit: 'border-amber-100 bg-amber-50/60 text-amber-500 hover:border-amber-500 hover:bg-amber-500 hover:text-white hover:shadow-amber-200',
+    delete:
+      'border-red-100 bg-red-50/60 text-red-500 hover:border-red-500 hover:bg-red-600 hover:text-white hover:shadow-red-200',
+  };
+
   return (
     <Button
       variant={variant}
       size="icon-sm"
-      className={`gap-2 rounded-full ${className}`}
       onClick={onClick}
+      className={cn(
+        'group h-9 w-9 rounded-full border transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95',
+        intentStyles[intent],
+        className,
+      )}
     >
-      {icon}
+      <span className="transition-transform duration-200 group-hover:rotate-6 group-hover:scale-110">
+        {icon}
+      </span>
     </Button>
   );
 }
@@ -132,7 +173,7 @@ export default function DataTable<T extends DataTableData>({
   customFilterFn,
 }: DataTableProps<T>) {
   const [search, setSearch] = React.useState('');
-  const [filterValue, setFilterValue] = React.useState<string>('all'); // Default filter value
+  const [filterValue, setFilterValue] = React.useState<string>('All'); // Default filter value
 
   const handleFilterChange = (value: string) => {
     setFilterValue(value);
@@ -158,7 +199,7 @@ export default function DataTable<T extends DataTableData>({
       const matchesFilter =
         !filterField ||
         !filterValue ||
-        filterValue === 'all' ||
+        filterValue === 'All' ||
         (filterField in row &&
           row[filterField]?.toLowerCase() ===
             filterValue?.toLowerCase());
@@ -249,7 +290,7 @@ export default function DataTable<T extends DataTableData>({
                     <SelectValue placeholder={`All ${filterField}`} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
+                    <SelectItem value="All">All</SelectItem>
                     {filterOptions.map((option) => (
                       <SelectItem
                         key={option}
@@ -282,21 +323,40 @@ export default function DataTable<T extends DataTableData>({
             </thead>
 
             <tbody>
-              {filteredData.map((row: T, rowIndex) => (
-                <tr
-                  key={row.id || rowIndex} // Use 'id' if available, otherwise index
-                  className="border-b transition-colors hover:bg-muted/30"
-                >
-                  {columns.map((column) => (
-                    <td
-                      key={column.accessorKey}
-                      className="truncate px-4 py-4 text-sm"
-                    >
-                      {renderCell(row, column)}
-                    </td>
-                  ))}
+              {filteredData.length > 0 ? (
+                filteredData.map((row: T, rowIndex) => (
+                  <tr
+                    key={row.id || rowIndex} // Use 'id' if available, otherwise index
+                    className="border-b transition-colors hover:bg-muted/30"
+                  >
+                    {columns.map((column) => (
+                      <td
+                        key={column.accessorKey}
+                        className="truncate px-4 py-4 text-sm"
+                      >
+                        {renderCell(row, column)}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={columns.length}
+                    className="h-[300px] text-center"
+                  >
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <p className="text-lg font-medium text-muted-foreground">
+                        No matching results
+                      </p>
+
+                      <p className="text-sm text-muted-foreground">
+                        Try adjusting your search or filters
+                      </p>
+                    </div>
+                  </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

@@ -1,7 +1,14 @@
-'use client';
-
 import { useState } from 'react';
-import { Bell, Check, Trash2, Clock, AlertCircle, Info, CheckCircle, XCircle } from 'lucide-react';
+import {
+  Bell,
+  Check,
+  Trash2,
+  Clock,
+  AlertCircle,
+  Info,
+  CheckCircle,
+  XCircle,
+} from 'lucide-react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 
@@ -88,38 +95,42 @@ const getNotificationStyles = (type: NotificationType) => {
 };
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const [notifications, setNotifications] =
+    useState<Notification[]>(mockNotifications);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
-  const unreadCount = notifications.filter(n => !n.isRead).length;
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const markAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(n => (n.id === id ? { ...n, isRead: true } : n))
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, isRead: true } : n)),
     );
   };
 
   const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+    setNotifications((prev) =>
+      prev.map((n) => ({ ...n, isRead: true })),
+    );
   };
 
   const deleteNotification = (id: string) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
   const clearAll = () => {
     setNotifications([]);
   };
 
-  const filteredNotifications = filter === 'unread'
-    ? notifications.filter(n => !n.isRead)
-    : notifications;
+  const filteredNotifications =
+    filter === 'unread'
+      ? notifications.filter((n) => !n.isRead)
+      : notifications;
 
   return (
     <AppLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto px-4 py-5">
-          <div className="max-w-4xl mx-auto">
+        <div className="flex-1 w-full overflow-y-auto p-10">
+          <div className="mx-auto">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-4">
@@ -127,9 +138,13 @@ export default function NotificationsPage() {
                   <Bell className="h-6 w-6 text-[#16610E]" />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-[#151515]">Notifications</h1>
+                  <h1 className="text-2xl font-bold text-[#151515]">
+                    Notifications
+                  </h1>
                   <p className="text-[#777] text-sm">
-                    {unreadCount > 0 ? `${unreadCount} unread notifications` : 'All caught up!'}
+                    {unreadCount > 0
+                      ? `${unreadCount} unread notifications`
+                      : 'All caught up!'}
                   </p>
                 </div>
               </div>
@@ -167,9 +182,13 @@ export default function NotificationsPage() {
               >
                 Unread
                 {unreadCount > 0 && (
-                  <span className={`px-2 py-0.5 rounded-full text-xs ${
-                    filter === 'unread' ? 'bg-white/20' : 'bg-[#16610E] text-white'
-                  }`}>
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-xs ${
+                      filter === 'unread'
+                        ? 'bg-white/20'
+                        : 'bg-[#16610E] text-white'
+                    }`}
+                  >
                     {unreadCount}
                   </span>
                 )}
@@ -184,12 +203,14 @@ export default function NotificationsPage() {
                     <CheckCircle className="h-8 w-8 text-[#16610E]" />
                   </div>
                   <h3 className="text-lg font-semibold text-[#151515] mb-2">
-                    {filter === 'unread' ? 'No unread notifications' : 'No notifications'}
+                    {filter === 'unread'
+                      ? 'No unread notifications'
+                      : 'No notifications'}
                   </h3>
                   <p className="text-[#777] text-sm">
                     {filter === 'unread'
-                      ? 'You\'ve read all your notifications'
-                      : 'You\'re all caught up!'}
+                      ? "You've read all your notifications"
+                      : "You're all caught up!"}
                   </p>
                 </div>
               ) : (
@@ -204,7 +225,9 @@ export default function NotificationsPage() {
                   >
                     <div className="flex gap-4">
                       {/* Icon */}
-                      <div className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${getNotificationStyles(notification.type)}`}>
+                      <div
+                        className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 ${getNotificationStyles(notification.type)}`}
+                      >
                         {getNotificationIcon(notification.type)}
                       </div>
 
@@ -213,7 +236,9 @@ export default function NotificationsPage() {
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
-                              <h4 className={`text-sm font-medium ${notification.isRead ? 'text-[#777]' : 'text-[#151515]'}`}>
+                              <h4
+                                className={`text-sm font-medium ${notification.isRead ? 'text-[#777]' : 'text-[#151515]'}`}
+                              >
                                 {notification.title}
                               </h4>
                               {!notification.isRead && (
@@ -233,7 +258,9 @@ export default function NotificationsPage() {
                           <div className="flex items-center gap-2 shrink-0">
                             {!notification.isRead && (
                               <button
-                                onClick={() => markAsRead(notification.id)}
+                                onClick={() =>
+                                  markAsRead(notification.id)
+                                }
                                 className="p-2 rounded-lg hover:bg-[#f5f5f5] text-[#777] hover:text-[#16610E] transition-colors"
                                 title="Mark as read"
                               >
@@ -241,7 +268,9 @@ export default function NotificationsPage() {
                               </button>
                             )}
                             <button
-                              onClick={() => deleteNotification(notification.id)}
+                              onClick={() =>
+                                deleteNotification(notification.id)
+                              }
                               className="p-2 rounded-lg hover:bg-red-50 text-[#777] hover:text-red-600 transition-colors"
                               title="Delete"
                             >

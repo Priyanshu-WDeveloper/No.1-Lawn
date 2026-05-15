@@ -3,6 +3,7 @@ export const ROUTES = {
   // Public routes
   LOGIN: '/login',
   SUPER_ADMIN_LOGIN: '/super-admin-login',
+  FORGOT_PASSWORD: '/forgot-password',
 
   // Admin routes
   DASHBOARD: '/dashboard',

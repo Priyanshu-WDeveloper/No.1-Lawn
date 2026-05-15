@@ -20,9 +20,9 @@ import { Avatar, AvatarFallback } from './ui/avatar';
 import { useAuthStore } from '@/store/authStore';
 
 export default function AccountDropdown({
-  superAccess,
+  superAccess = false,
 }: {
-  superAccess: boolean;
+  superAccess?: boolean;
 }) {
   const navigate = useNavigate();
   const { user } = useAuthStore();

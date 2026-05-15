@@ -1,5 +1,3 @@
-'use client';
-
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -23,14 +21,22 @@ function buildZodSchema(fields: FormFieldConfig[]) {
       case 'email':
         // Email validation with required check
         if (field.required) {
-          fieldSchema = z.string().min(1, `${field.label} is required`).email('Please enter a valid email address');
+          fieldSchema = z
+            .string()
+            .min(1, `${field.label} is required`)
+            .email('Please enter a valid email address');
         } else {
-          fieldSchema = z.string().email('Please enter a valid email address').or(z.literal(''));
+          fieldSchema = z
+            .string()
+            .email('Please enter a valid email address')
+            .or(z.literal(''));
         }
         break;
       case 'number':
         if (field.required) {
-          fieldSchema = z.coerce.number().min(0, 'Value must be positive');
+          fieldSchema = z.coerce
+            .number()
+            .min(0, 'Value must be positive');
         } else {
           fieldSchema = z.coerce.number().optional();
         }
@@ -42,15 +48,19 @@ function buildZodSchema(fields: FormFieldConfig[]) {
             longitude: z.string().min(1, 'Longitude is required'),
           });
         } else {
-          fieldSchema = z.object({
-            latitude: z.string().optional(),
-            longitude: z.string().optional(),
-          }).optional();
+          fieldSchema = z
+            .object({
+              latitude: z.string().optional(),
+              longitude: z.string().optional(),
+            })
+            .optional();
         }
         break;
       case 'address':
         if (field.required) {
-          fieldSchema = z.string().min(1, `${field.label} is required`);
+          fieldSchema = z
+            .string()
+            .min(1, `${field.label} is required`);
         } else {
           fieldSchema = z.string().optional();
         }
@@ -64,21 +74,27 @@ function buildZodSchema(fields: FormFieldConfig[]) {
         break;
       case 'select':
         if (field.required) {
-          fieldSchema = z.string().min(1, `Please select a ${field.label.toLowerCase()}`);
+          fieldSchema = z
+            .string()
+            .min(1, `Please select a ${field.label.toLowerCase()}`);
         } else {
           fieldSchema = z.string().optional();
         }
         break;
       case 'date':
         if (field.required) {
-          fieldSchema = z.string().min(1, `${field.label} is required`);
+          fieldSchema = z
+            .string()
+            .min(1, `${field.label} is required`);
         } else {
           fieldSchema = z.string().optional();
         }
         break;
       default:
         if (field.required) {
-          fieldSchema = z.string().min(1, `${field.label} is required`);
+          fieldSchema = z
+            .string()
+            .min(1, `${field.label} is required`);
         } else {
           fieldSchema = z.string().optional();
         }

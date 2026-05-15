@@ -1,5 +1,3 @@
-'use client';
-
 import { Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -16,7 +14,11 @@ interface StepperProps {
   onStepClick?: (step: number) => void;
 }
 
-export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
+export function Stepper({
+  steps,
+  currentStep,
+  onStepClick,
+}: StepperProps) {
   return (
     <div className="w-full">
       {/* Desktop Stepper */}
@@ -35,7 +37,9 @@ export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
                 disabled={!isCompleted && !isCurrent}
                 className={cn(
                   'flex items-center gap-3 cursor-pointer',
-                  (isCompleted || isCurrent) ? 'pointer-events-auto' : 'pointer-events-none'
+                  isCompleted || isCurrent
+                    ? 'pointer-events-auto'
+                    : 'pointer-events-none',
                 )}
               >
                 {/* Circle */}
@@ -46,23 +50,31 @@ export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
                       ? 'bg-[#16610E] text-white'
                       : isCurrent
                         ? 'bg-[#16610E] text-white ring-4 ring-[#edf8e7]'
-                        : 'bg-[#e5e5e5] text-[#777]'
+                        : 'bg-[#e5e5e5] text-[#777]',
                   )}
                 >
                   {isCompleted ? (
                     <Check className="h-5 w-5" />
                   ) : (
-                    <span className="text-sm font-medium">{step.id}</span>
+                    <span className="text-sm font-medium">
+                      {step.id}
+                    </span>
                   )}
                 </div>
 
                 {/* Step Info */}
-                <div className={cn(
-                  'text-left transition-colors duration-300',
-                  isCurrent || isCompleted ? 'text-[#151515]' : 'text-[#999]'
-                )}>
+                <div
+                  className={cn(
+                    'text-left transition-colors duration-300',
+                    isCurrent || isCompleted
+                      ? 'text-[#151515]'
+                      : 'text-[#999]',
+                  )}
+                >
                   <p className="text-sm font-medium">{step.title}</p>
-                  <p className="text-xs text-[#777]">{step.description}</p>
+                  <p className="text-xs text-[#777]">
+                    {step.description}
+                  </p>
                 </div>
               </button>
 
@@ -71,7 +83,9 @@ export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
                 <div
                   className={cn(
                     'flex-1 h-0.5 mx-4 transition-colors duration-300',
-                    currentStep > step.id ? 'bg-[#16610E]' : 'bg-[#e5e5e5]'
+                    currentStep > step.id
+                      ? 'bg-[#16610E]'
+                      : 'bg-[#e5e5e5]',
                   )}
                 />
               )}
@@ -87,13 +101,18 @@ export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
           const isCurrent = currentStep === step.id;
 
           return (
-            <div key={step.id} className="flex items-center min-w-fit">
+            <div
+              key={step.id}
+              className="flex items-center min-w-fit"
+            >
               <button
                 type="button"
                 onClick={() => onStepClick?.(step.id)}
                 className={cn(
                   'flex items-center gap-2',
-                  (isCompleted || isCurrent) ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
+                  isCompleted || isCurrent
+                    ? 'cursor-pointer'
+                    : 'cursor-not-allowed opacity-60',
                 )}
               >
                 <div
@@ -103,25 +122,35 @@ export function Stepper({ steps, currentStep, onStepClick }: StepperProps) {
                       ? 'bg-[#16610E] text-white'
                       : isCurrent
                         ? 'bg-[#16610E] text-white'
-                        : 'bg-[#e5e5e5] text-[#777]'
+                        : 'bg-[#e5e5e5] text-[#777]',
                   )}
                 >
-                  {isCompleted ? <Check className="h-4 w-4" /> : step.id}
+                  {isCompleted ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    step.id
+                  )}
                 </div>
                 <div className="text-left">
-                  <p className={cn(
-                    'text-xs font-medium',
-                    isCurrent ? 'text-[#151515]' : 'text-[#777]'
-                  )}>
+                  <p
+                    className={cn(
+                      'text-xs font-medium',
+                      isCurrent ? 'text-[#151515]' : 'text-[#777]',
+                    )}
+                  >
                     {step.title}
                   </p>
                 </div>
               </button>
               {index < steps.length - 1 && (
-                <div className={cn(
-                  'w-8 h-0.5 mx-2',
-                  currentStep > step.id ? 'bg-[#16610E]' : 'bg-[#e5e5e5]'
-                )} />
+                <div
+                  className={cn(
+                    'w-8 h-0.5 mx-2',
+                    currentStep > step.id
+                      ? 'bg-[#16610E]'
+                      : 'bg-[#e5e5e5]',
+                  )}
+                />
               )}
             </div>
           );

@@ -1,5 +1,3 @@
-'use client';
-
 // Removed unused imports: React, Button, Card, Input, Select
 // import * as React from 'react';
 // import { Button } from '@/components/ui/button';
@@ -8,13 +6,9 @@
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import {
-  Bell,
-  ChevronDown,
-  Eye, // Imported directly here as it's used in the cell renderer
-  Pencil, // Imported directly here as it's used in the cell renderer
+  Eye,
+  Pencil,
 } from 'lucide-react';
-
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'; // Added import for Avatar components
 
 // Corrected import for DataTable and its types
 // Using type-only import for ColumnDef due to verbatimModuleSyntax
@@ -24,6 +18,7 @@ import DataTable, {
   ActionButton,
 } from '@/components/data-table/DataTable'; // ActionButton is now imported directly from DataTable
 import { AppLayout } from '@/components/layout/AppLayout';
+import { Navbar } from '@/components/layout/Navbar';
 import { useNavigate } from 'react-router-dom';
 
 // Define the structure for Employee data
@@ -128,10 +123,12 @@ export default function EmployeeManagementPage() {
       cell: (row: Employee) => (
         <div className="flex flex-wrap gap-2">
           <ActionButton
+            intent="view"
             icon={<Eye className="h-4 w-4" />}
             onClick={() => navigate(`/employees/${row.id}`)}
           />
           <ActionButton
+            intent="edit"
             icon={<Pencil className="h-4 w-4" />}
             onClick={() => console.log('Edit employee:', row.id)}
           />
@@ -145,34 +142,11 @@ export default function EmployeeManagementPage() {
       {/* <main className="flex-1 w-full overflow-y-auto px-4 pt-9 pb-9"> */}
       <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
         <div className="min-h-full w-full">
-          <div className="pb-3 flex items-center justify-between">
-            <div className="px-3">
-              <h2 className="text-[24px] font-bold text-[#151515]">
-                Employee Management
-              </h2>
-              <p className="mt-1 text-[13px] text-[#777]">
-                Manage your employees and view their details.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2.5">
-              <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#e5e5e5] bg-white">
-                <Bell className="h-4 w-4" />
-                <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[9px] text-white">
-                  3
-                </span>
-              </button>
-              <div className="flex items-center gap-2 rounded-xl border border-[#ececec] bg-white px-3 py-1.5 shadow-sm">
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback className="text-xs">
-                    A
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-sm font-semibold">Admin</span>
-                <ChevronDown className="h-4 w-4 text-gray-500" />
-              </div>
-            </div>
-          </div>
+          <Navbar
+            title="Employee Management"
+            subtitle="Manage your employees and view their details."
+            showWelcome={false}
+          />
 
           <DataTable<Employee>
             data={employees}

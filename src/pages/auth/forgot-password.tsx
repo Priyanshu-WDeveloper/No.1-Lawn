@@ -1,56 +1,46 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Leaf, Mail, Lock, Eye, Globe, EyeOff } from 'lucide-react';
-import { useAuthStore } from '../../store/authStore';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Leaf, Mail, ArrowLeft, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { InputWithIcon } from '../../components/forms/input-with-icon';
 import { Button } from '../../components/ui/button';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import z from 'zod';
 
-const loginSchema = z.object({
+const forgotPasswordSchema = z.object({
   email: z
     .string()
     .min(1, { message: 'Email is required' })
     .email({ message: 'Invalid email address' }),
-  password: z
-    .string()
-    .min(1, { message: 'Password is required' })
-    .min(8, { message: 'Password must be at least 8 characters' })
-    .refine((pwd: string) => !pwd.includes(' '), {
-      message: 'Password cannot contain spaces',
-    }),
 });
 
-type LoginFormData = z.infer<typeof loginSchema>;
+type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
-const Login: React.FC = () => {
-  const [showPassword, setShowPassword] = useState(false);
+const ForgotPassword: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuthStore();
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: '',
-      password: '',
     },
   });
 
-  const onSubmit = async (data: LoginFormData) => {
+  const onSubmit = async (data: ForgotPasswordFormData) => {
     setIsLoading(true);
     try {
-      await login(data.email, data.password);
-      toast.success('Welcome back!');
-      navigate('/dashboard');
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.success('Password reset link sent to your email!');
+      navigate('/login');
     } catch (error) {
-      toast.error('Login failed. Please check your credentials.');
+      toast.error('Failed to send reset link. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -90,11 +80,12 @@ const Login: React.FC = () => {
 
                   <div className="mt-20">
                     <h2 className="text-5xl font-bold text-green-900 leading-tight">
-                      Welcome Back!
+                      Reset Password
                     </h2>
 
                     <p className="mt-5 text-xl text-gray-700 max-w-md leading-9">
-                      Login to continue your journey with No. 1 Lawns
+                      Enter your email address and we&apos;ll send you a link to
+                      reset your password.
                     </p>
 
                     {/* Divider */}
@@ -110,12 +101,12 @@ const Login: React.FC = () => {
                     <div className="mt-10 bg-white/70 backdrop-blur-md border border-white/40 shadow-lg rounded-2xl p-5 max-w-sm">
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-full bg-green-600 overflow-hidden shrink-0 flex items-center justify-center">
-                          <Leaf className="text-white w-6 h-6" />
+                          <Lock className="text-white w-6 h-6" />
                         </div>
 
                         <p className="text-gray-700 leading-7">
-                          Let&apos;s grow a No. 1 Lawns tomorrow,
-                          together.
+                          Secure password recovery to get you back into your
+                          account.
                         </p>
                       </div>
                     </div>
@@ -126,16 +117,24 @@ const Login: React.FC = () => {
               </div>
 
               {/* Right Section */}
-              <div className="bg-[#f8f8f4] flex items-center justify-center p-8 lg:px-12 lg:py-4">
+              <div className="bg-[#f8f8f4] flex items-center justify-center p-8 lg:px-12 lg:py-6">
                 <div>
                   <div className="w-full max-w-2xl bg-white rounded-[28px] shadow-lg border border-gray-100 p-8">
+                    <button
+                      onClick={() => navigate('/login')}
+                      className="flex items-center gap-2 text-green-700 hover:text-green-800 mb-6 transition-colors"
+                    >
+                      <ArrowLeft className="h-5 w-5" />
+                      <span className="font-medium">Back to Login</span>
+                    </button>
+
                     <div className="text-center">
                       <h2 className="text-4xl font-bold text-green-900">
-                        Log in to your Account
+                        Forgot Password
                       </h2>
 
                       <p className="text-gray-500 mt-3 text-lg">
-                        Enter your credentials to access your account
+                        Enter your email to receive a reset link
                       </p>
                     </div>
 
@@ -152,7 +151,7 @@ const Login: React.FC = () => {
 
                         <div className="mt-2">
                           <InputWithIcon
-                            placeholder="superadmin@mail.com"
+                            placeholder="example@mail.com"
                             icon={<Mail />}
                             {...register('email')}
                           />
@@ -164,69 +163,13 @@ const Login: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* Password */}
-                      <div>
-                        <label className="text-gray-700 font-medium">
-                          Password
-                        </label>
-
-                        <div className="mt-2">
-                          <InputWithIcon
-                            type={showPassword ? 'text' : 'password'}
-                            placeholder="••••••••"
-                            icon={<Lock />}
-                            trailingIcon={
-                              <button
-                                type="button"
-                                onClick={() =>
-                                  setShowPassword(!showPassword)
-                                }
-                                className="focus:outline-none"
-                              >
-                                {showPassword ? (
-                                  <EyeOff className="size-5 mt-1" />
-                                ) : (
-                                  <Eye className="size-5 mt-1" />
-                                )}
-                              </button>
-                            }
-                            autoComplete="off"
-                            {...register('password')}
-                          />
-                          {errors.password && (
-                            <p className="mt-1 text-sm text-red-500">
-                              {errors.password.message}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Remember */}
-                      <div className="flex items-center justify-between text-sm">
-                        <label className="flex items-center gap-2 text-gray-600">
-                          <input
-                            type="checkbox"
-                            className="accent-green-600 w-4 h-4"
-                          />
-                          Remember me
-                        </label>
-
-                        <button
-                          type="button"
-                          className="text-green-700 font-medium hover:underline"
-                          onClick={() => navigate('/forgot-password')}
-                        >
-                          Forgot password?
-                        </button>
-                      </div>
-
                       {/* Button */}
                       <Button
                         type="submit"
                         disabled={isLoading}
                         className="w-full h-14 text-lg"
                       >
-                        {isLoading ? 'Logging in...' : 'Login'}
+                        {isLoading ? 'Sending...' : 'Send Reset Link'}
                       </Button>
                     </form>
                   </div>
@@ -266,7 +209,7 @@ const Login: React.FC = () => {
 
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                          <Globe className="w-5 h-5 text-green-700" />
+                          <Leaf className="w-5 h-5 text-green-700" />
                         </div>
 
                         <div>
@@ -308,4 +251,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;

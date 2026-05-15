@@ -1,5 +1,3 @@
-'use client';
-
 import { MapPin } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
@@ -16,14 +14,18 @@ export function LocationField({
   onChange,
   required,
 }: LocationFieldProps) {
-  const handleLatitudeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLatitudeChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     onChange?.({
       latitude: e.target.value,
       longitude: value?.longitude || '',
     });
   };
 
-  const handleLongitudeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLongitudeChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     onChange?.({
       latitude: value?.latitude || '',
       longitude: e.target.value,
@@ -39,7 +41,9 @@ export function LocationField({
       </label>
       <div className="grid grid-cols-2 gap-4 p-4 bg-muted rounded-lg">
         <div className="space-y-1.5">
-          <span className="text-xs font-medium text-muted-foreground">Latitude</span>
+          <span className="text-xs font-medium text-muted-foreground">
+            Latitude
+          </span>
           <Input
             placeholder="e.g., 40.7128"
             value={value?.latitude || ''}
@@ -47,7 +51,9 @@ export function LocationField({
           />
         </div>
         <div className="space-y-1.5">
-          <span className="text-xs font-medium text-muted-foreground">Longitude</span>
+          <span className="text-xs font-medium text-muted-foreground">
+            Longitude
+          </span>
           <Input
             placeholder="e.g., -74.0060"
             value={value?.longitude || ''}

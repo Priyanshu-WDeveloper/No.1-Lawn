@@ -5,15 +5,7 @@
 // import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 // import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import {
-  Bell,
-  ChevronDown,
-  Eye,
-  LucideTrash2,
-  Pencil,
-} from 'lucide-react';
-
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'; // Added import for Avatar components
+import { Eye, LucideTrash2, Pencil } from 'lucide-react';
 
 // Corrected import for DataTable and its types
 // Using type-only import for ColumnDef due to verbatimModuleSyntax
@@ -23,6 +15,7 @@ import DataTable, {
   ActionButton,
 } from '@/components/data-table/DataTable'; // ActionButton is now imported directly from DataTable
 import { AppLayout } from '@/components/layout/AppLayout';
+import { Navbar } from '@/components/layout/Navbar';
 import { useNavigate } from 'react-router-dom';
 
 // Define the structure for Customer data
@@ -134,18 +127,70 @@ export default function CustomerManagementPage() {
       accessorKey: 'actions',
       header: 'Actions',
       cell: (row: Customer) => (
+        //       <div className="flex flex-wrap gap-2">
+        //         <ActionButton
+        //           icon={<Eye className="h-4 w-4" />}
+        //           onClick={() => navigate(`/customers/${row.id}`)}
+        //         />
+        //         <ActionButton
+        //           icon={<Pencil className="h-4 w-4" />}
+        //           onClick={() => console.log('Edit customer:', row.id)}
+        //         />
+        //         {/* <ActionButton
+        //           className="hover:text-white hover:bg-red-600"
+        //           icon={<LucideTrash2 className="h-3 w-3" />}
+        //           onClick={() =>
+        //             console.log('Deleting access for job ID:', row.id)
+        //           }
+        //         /> */}
+        //         <ActionButton
+        //           variant="outline"
+        //           className="
+        //   group
+        //   h-9 w-9
+        //   rounded-full
+        //   border border-red-100
+        //   bg-red-50/60
+        //   text-red-500
+        //   transition-all duration-200
+        //   hover:scale-105
+        //   hover:border-red-500
+        //   hover:bg-red-600
+        //   hover:text-white
+        //   hover:shadow-lg hover:shadow-red-200
+        //   active:scale-95
+        // "
+        //           icon={
+        //             <LucideTrash2
+        //               className="
+        //       h-4 w-4
+        //       transition-transform duration-200
+        //       group-hover:rotate-6
+        //       group-hover:scale-110
+        //     "
+        //             />
+        //           }
+        //           onClick={() =>
+        //             console.log('Deleting access for job ID:', row.id)
+        //           }
+        //         />
+        //       </div>
         <div className="flex flex-wrap gap-2">
           <ActionButton
+            intent="view"
             icon={<Eye className="h-4 w-4" />}
             onClick={() => navigate(`/customers/${row.id}`)}
           />
+
           <ActionButton
+            intent="edit"
             icon={<Pencil className="h-4 w-4" />}
             onClick={() => console.log('Edit customer:', row.id)}
           />
+
           <ActionButton
-            className="hover:text-white hover:bg-red-600"
-            icon={<LucideTrash2 className="h-3 w-3" />}
+            intent="delete"
+            icon={<LucideTrash2 className="h-4 w-4" />}
             onClick={() =>
               console.log('Deleting access for job ID:', row.id)
             }
@@ -163,34 +208,11 @@ export default function CustomerManagementPage() {
       <div className="flex h-full flex-col">
         <div className="flex-1 w-full overflow-y-auto px-4 py-5">
           <div className="flex w-full flex-col">
-            <div className="mb-1 p-1 flex items-center justify-between">
-              <div className=" px-3">
-                <h2 className="text-[24px] font-bold text-[#151515]">
-                  Customer Management
-                </h2>
-                <p className="mt-1 text-[13px] text-[#777]">
-                  Manage your customers and view their details.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2.5">
-                <button className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#e5e5e5] bg-white">
-                  <Bell className="h-4 w-4" />
-                  <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-green-600 text-[9px] text-white">
-                    3
-                  </span>
-                </button>
-                <div className="flex items-center gap-2 rounded-xl border border-[#ececec] bg-white px-3 py-1.5 shadow-sm">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback className="text-xs">
-                      A
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm font-semibold">Admin</span>
-                  <ChevronDown className="h-4 w-4 text-gray-500" />
-                </div>
-              </div>
-            </div>
+            <Navbar
+              title="Customer Management"
+              subtitle="Manage your customers and view their details."
+              showWelcome={false}
+            />
 
             <DataTable<Customer>
               data={customers}
