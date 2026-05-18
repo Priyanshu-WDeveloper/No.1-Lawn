@@ -7,6 +7,7 @@ import type {
   GetAdminsParams,
   GetAdminsResponse,
 } from '../types/api.types';
+import type { IAdmins } from '../types/admins.types';
 // import type { IAdmins } from '../types/admins.types';
 
 export const api = createApi({
@@ -214,7 +215,11 @@ export const api = createApi({
     // Super Admin - Admin Users endpoints
     // IAdmins[],
     //
-    getAdminUsers: builder.query<GetAdminsResponse, GetAdminsParams>({
+    getAdminUsers: builder.query<
+      GetAdminsResponse,
+      GetAdminsParams,
+      IAdmins[]
+    >({
       query: ({ page = 1, limit = 10, search, status, sort }) => ({
         url: 'superadmins/admins',
 

@@ -238,8 +238,9 @@ const SuperAdminAdminsPage: React.FC = () => {
                 </div>
               </div>
             </div>
-            {/* <DataTable<IAdmins> */} /TODO: Fix this
-            <DataTable
+            {/* <DataTable<IAdmins> */}
+            {/* /TODO: Fix this */}
+            <DataTable<IAdmins>
               data={data?.admins || []}
               columns={adminsColumns}
               title="Admins"
