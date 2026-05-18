@@ -2,11 +2,14 @@ import {
   createApi,
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
+import { getDeviceToken, getDeviceType } from '../lib/device';
+import type { GetAdminsParams } from '../types/api.types';
+import type { IAdmins } from '../types/admins.types';
 
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: '/api',
+    baseUrl: import.meta.env.VITE_API_URL,
     prepareHeaders: (headers) => {
       const token = localStorage.getItem('token');
 
@@ -29,9 +32,13 @@ export const api = createApi({
     // Auth endpoints
     login: builder.mutation({
       query: (credentials) => ({
-        url: '/auth/login',
+        url: '/superadmins/login',
         method: 'POST',
-        body: credentials,
+        body: {
+          ...credentials,
+          deviceType: getDeviceType(),
+          deviceToken: getDeviceToken(),
+        },
       }),
     }),
     logout: builder.mutation({
@@ -202,8 +209,19 @@ export const api = createApi({
     }),
 
     // Super Admin - Admin Users endpoints
-    getAdminUsers: builder.query({
-      query: () => '/super-admin/admins',
+    getAdminUsers: builder.query<IAdmins[], GetAdminsParams>({
+      query: ({ page = 1, limit = 10, search, status, sort }) => ({
+        url: 'superadmins/admins',
+
+        params: {
+          page,
+          limit,
+          search,
+          status,
+          sort,
+        },
+      }),
+
       providesTags: ['Admins'],
     }),
     getAdminUserById: builder.query({

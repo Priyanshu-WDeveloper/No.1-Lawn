@@ -21,15 +21,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { PanelLeftIcon } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 
 const items = [
   {
@@ -133,33 +125,14 @@ export function SuperAdminSidebar() {
         </button>
       </SidebarFooter>
 
-      <Dialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
-        <DialogContent className="rounded-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-xl">Logout</DialogTitle>
-            <DialogDescription className="text-base">
-              Are you sure you want to logout? You will need to login again to
-              access your account.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="sm:justify-between gap-3">
-            <Button
-              variant="outline"
-              onClick={() => setShowLogoutDialog(false)}
-              className="flex-1"
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleLogout}
-              className="flex-1 bg-red-500 hover:bg-red-600"
-            >
-              Logout
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        open={showLogoutDialog}
+        onOpenChange={setShowLogoutDialog}
+        title="Logout"
+        description="Are you sure you want to logout? You will need to login again to access your account."
+        confirmText="Logout"
+        onConfirm={handleLogout}
+      />
     </Sidebar>
   );
 }

@@ -71,51 +71,59 @@ function DropdownMenuContent({ className, align = "start", sideOffset = 4, child
 
   // Reset position when closed
   React.useEffect(() => {
+    // Reset position styles when closed
     if (!open && contentRef.current) {
       contentRef.current.style.top = ''
       contentRef.current.style.left = ''
+      contentRef.current.style.visibility = 'hidden'
+      contentRef.current.style.opacity = '0'
+      return
     }
   }, [open])
 
   React.useEffect(() => {
-    if (open && contentRef.current) {
-      const content = contentRef.current
+    if (!open || !contentRef.current) return
 
-      // Use ResizeObserver to get accurate dimensions after layout
-      const updatePosition = () => {
-        const trigger = content.previousElementSibling as HTMLElement
-        if (trigger && trigger.dataset.slot === "dropdown-menu-trigger") {
-          const triggerRect = trigger.getBoundingClientRect()
-          const contentRect = content.getBoundingClientRect()
+    const content = contentRef.current
+    content.style.visibility = 'visible'
+    content.style.opacity = '1'
 
-          let left = triggerRect.left
-          if (align === "end") {
-            left = triggerRect.right - contentRect.width
-          } else if (align === "center") {
-            left = triggerRect.left + (triggerRect.width - contentRect.width) / 2
-          }
+    const updatePosition = () => {
+      const trigger = content.previousElementSibling as HTMLElement
+      if (trigger && trigger.dataset.slot === "dropdown-menu-trigger") {
+        const triggerRect = trigger.getBoundingClientRect()
+        const contentRect = content.getBoundingClientRect()
 
-          // Prevent overflow on right edge
-          const maxLeft = window.innerWidth - contentRect.width - 8
-          left = Math.min(Math.max(8, left), maxLeft)
+        if (contentRect.width === 0 || contentRect.height === 0) return
 
-          content.style.top = `${triggerRect.bottom + sideOffset}px`
-          content.style.left = `${left}px`
+        let left = triggerRect.left
+        if (align === "end") {
+          left = triggerRect.right - contentRect.width
+        } else if (align === "center") {
+          left = triggerRect.left + (triggerRect.width - contentRect.width) / 2
         }
+
+        // Prevent overflow on right edge
+        const maxLeft = window.innerWidth - contentRect.width - 8
+        left = Math.min(Math.max(8, left), maxLeft)
+
+        content.style.top = `${triggerRect.bottom + sideOffset}px`
+        content.style.left = `${left}px`
       }
+    }
 
-      // Initial position
-      updatePosition()
+    // Initial position with slight delay to ensure content is rendered
+    const timeoutId = setTimeout(updatePosition, 10)
 
-      // Update position when content dimensions change
-      const resizeObserver = new ResizeObserver(updatePosition)
-      resizeObserver.observe(content)
+    // Update position when content dimensions change
+    const resizeObserver = new ResizeObserver(updatePosition)
+    resizeObserver.observe(content)
 
-      return () => resizeObserver.disconnect()
+    return () => {
+      clearTimeout(timeoutId)
+      resizeObserver.disconnect()
     }
   }, [open, align, sideOffset])
-
-  if (!open) return null
 
   return (
     <div
@@ -125,6 +133,7 @@ function DropdownMenuContent({ className, align = "start", sideOffset = 4, child
         "fixed z-50 min-w-32 overflow-hidden rounded-lg bg-popover p-1 text-popover-foreground shadow-md",
         className
       )}
+      style={{ visibility: 'hidden', opacity: 0 }}
       {...props}
     >
       {children}

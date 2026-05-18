@@ -110,22 +110,37 @@ interface SelectContentProps extends React.ComponentProps<"div"> {
 
 function SelectContent({ className, children, position = "item-aligned", ...props }: SelectContentProps) {
   const { open, setOpen } = useSelectContext()
+  const contentRef = React.useRef<HTMLDivElement>(null)
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (contentRef.current && !contentRef.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+
+    if (open) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [open, setOpen])
 
   if (!open) return null
 
   return (
     <div
       data-slot="select-content"
+      ref={contentRef}
       className={cn(
         "absolute top-full left-0 z-50 mt-1 min-w-[180px] overflow-hidden rounded-xl bg-white text-[#151515] shadow-lg border border-[#e5e5e5]",
         className
       )}
       {...props}
     >
-      <div
-        className="max-h-96 overflow-y-auto"
-        onClick={() => setOpen(false)}
-      >
+      <div className="max-h-96 overflow-y-auto">
         {children}
       </div>
     </div>

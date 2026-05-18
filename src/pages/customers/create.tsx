@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import z from 'zod';
 import {
   ArrowLeft,
   Users,
@@ -15,17 +18,19 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { AddressPicker } from '@/components/forms/address-picker';
 
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  location: string;
-  address: string;
-  postalCode: string;
-  city: string;
-  state: string;
-  country: string;
-}
+const customerSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().min(1, 'Email is required').email('Invalid email address'),
+  phone: z.string().min(1, 'Phone is required').regex(/^\d+$/, 'Phone must be numeric'),
+  location: z.string().optional(),
+  address: z.string().min(1, 'Address is required'),
+  postalCode: z.string().regex(/^\d+$/, 'Postal code must be numeric').or(z.literal('')),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  country: z.string().optional(),
+});
+
+type FormData = z.infer<typeof customerSchema>;
 
 const initialFormData: FormData = {
   name: '',
@@ -63,14 +68,33 @@ const steps = [
 export default function CreateCustomerPage() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>({
+    mode: 'onChange',
+    resolver: zodResolver(customerSchema),
+    defaultValues: initialFormData,
+  });
 
-  const updateFormData = (field: keyof FormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  const formValues = watch();
 
-  const handleNext = () => {
-    if (currentStep < steps.length) {
+  const handleNext = async () => {
+    let fieldsToValidate: (keyof FormData)[] = [];
+    
+    if (currentStep === 1) {
+      fieldsToValidate = ['name', 'email', 'phone'];
+    } else if (currentStep === 2) {
+      fieldsToValidate = ['location'];
+    }
+    
+    const isValid = await trigger(fieldsToValidate);
+    if (isValid && currentStep < steps.length) {
       setCurrentStep((prev) => prev + 1);
     }
   };
@@ -81,8 +105,8 @@ export default function CreateCustomerPage() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log('Creating customer:', formData);
+  const onSubmit = (data: FormData) => {
+    console.log('Creating customer:', data);
     navigate('/customers');
   };
 
@@ -104,12 +128,14 @@ export default function CreateCustomerPage() {
                   </label>
                   <Input
                     placeholder="Enter full name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      updateFormData('name', e.target.value)
-                    }
+                    {...register('name')}
                     className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all"
                   />
+                  {errors.name && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-[#151515]">
@@ -119,12 +145,14 @@ export default function CreateCustomerPage() {
                   <Input
                     type="email"
                     placeholder="Enter email address"
-                    value={formData.email}
-                    onChange={(e) =>
-                      updateFormData('email', e.target.value)
-                    }
+                    {...register('email')}
                     className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all"
                   />
+                  {errors.email && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2 md:col-span-2">
                   <label className="text-sm font-medium text-[#151515]">
@@ -134,12 +162,18 @@ export default function CreateCustomerPage() {
                   <Input
                     type="tel"
                     placeholder="Enter phone number"
-                    value={formData.phone}
-                    onChange={(e) =>
-                      updateFormData('phone', e.target.value)
-                    }
+                    value={formValues.phone || ''}
+                    onChange={(e) => {
+                      const numeric = e.target.value.replace(/\D/g, '');
+                      setValue('phone', numeric, { shouldValidate: true });
+                    }}
                     className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all"
                   />
+                  {errors.phone && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.phone.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -157,22 +191,23 @@ export default function CreateCustomerPage() {
               <div className="space-y-5">
                 <AddressPicker
                   label="Search Location"
-                  value={formData.location}
-                  onChange={(value) =>
-                    updateFormData('location', value)
-                  }
+                  value={formValues.location || ''}
+                  onChange={(value) => setValue('location', value)}
                   required
                 />
+                {errors.location && (
+                  <p className="text-sm text-red-500 -mt-3">
+                    {errors.location.message}
+                  </p>
+                )}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-[#151515]">
-                    Street Address
+                    Street Address{' '}
+                    <span className="text-[#16610E]">*</span>
                   </label>
                   <Textarea
                     placeholder="Enter street address"
-                    value={formData.address}
-                    onChange={(e) =>
-                      updateFormData('address', e.target.value)
-                    }
+                    {...register('address')}
                     className="min-h-[80px] p-4 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all resize-none"
                   />
                 </div>
@@ -183,10 +218,7 @@ export default function CreateCustomerPage() {
                     </label>
                     <Input
                       placeholder="Enter city"
-                      value={formData.city}
-                      onChange={(e) =>
-                        updateFormData('city', e.target.value)
-                      }
+                      {...register('city')}
                       className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all"
                     />
                   </div>
@@ -196,10 +228,7 @@ export default function CreateCustomerPage() {
                     </label>
                     <Input
                       placeholder="Enter state"
-                      value={formData.state}
-                      onChange={(e) =>
-                        updateFormData('state', e.target.value)
-                      }
+                      {...register('state')}
                       className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all"
                     />
                   </div>
@@ -209,10 +238,11 @@ export default function CreateCustomerPage() {
                     </label>
                     <Input
                       placeholder="Enter postal code"
-                      value={formData.postalCode}
-                      onChange={(e) =>
-                        updateFormData('postalCode', e.target.value)
-                      }
+                      value={formValues.postalCode || ''}
+                      onChange={(e) => {
+                        const numeric = e.target.value.replace(/\D/g, '');
+                        setValue('postalCode', numeric, { shouldValidate: true });
+                      }}
                       className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all"
                     />
                   </div>
@@ -222,10 +252,7 @@ export default function CreateCustomerPage() {
                     </label>
                     <Input
                       placeholder="Enter country"
-                      value={formData.country}
-                      onChange={(e) =>
-                        updateFormData('country', e.target.value)
-                      }
+                      {...register('country')}
                       className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all"
                     />
                   </div>
@@ -260,37 +287,37 @@ export default function CreateCustomerPage() {
                     <p>
                       <span className="text-[#777]">Name:</span>{' '}
                       <span className="font-medium">
-                        {formData.name || '-'}
+                        {formValues.name || '-'}
                       </span>
                     </p>
                     <p>
                       <span className="text-[#777]">Email:</span>{' '}
                       <span className="font-medium">
-                        {formData.email || '-'}
+                        {formValues.email || '-'}
                       </span>
                     </p>
                     <p>
                       <span className="text-[#777]">Phone:</span>{' '}
                       <span className="font-medium">
-                        {formData.phone || '-'}
+                        {formValues.phone || '-'}
                       </span>
                     </p>
                     <p>
                       <span className="text-[#777]">Location:</span>{' '}
                       <span className="font-medium">
-                        {formData.location || formData.address || '-'}
+                        {formValues.location || formValues.address || '-'}
                       </span>
                     </p>
                     <p>
                       <span className="text-[#777]">City:</span>{' '}
                       <span className="font-medium">
-                        {formData.city || '-'}
+                        {formValues.city || '-'}
                       </span>
                     </p>
                     <p>
                       <span className="text-[#777]">Country:</span>{' '}
                       <span className="font-medium">
-                        {formData.country || '-'}
+                        {formValues.country || '-'}
                       </span>
                     </p>
                   </div>
@@ -362,35 +389,39 @@ export default function CreateCustomerPage() {
             </div>
 
             {/* Form Content */}
-            <div className="p-8">{renderStepContent()}</div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="p-8">{renderStepContent()}</div>
 
-            {/* Form Actions */}
-            <div className="px-8 py-6 border-t border-[#ececec] bg-[#fafaf8] flex items-center justify-between">
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={currentStep === 1}
-                className="h-12 px-6 rounded-xl border-[#e5e5e5] text-[#777] hover:text-[#16610E] hover:border-[#16610E] hover:bg-[#edf8e7] transition-all disabled:opacity-50"
-              >
-                Previous
-              </Button>
+              {/* Form Actions */}
+              <div className="px-8 py-6 border-t border-[#ececec] bg-[#fafaf8] flex items-center justify-between">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePrevious}
+                  disabled={currentStep === 1}
+                  className="h-12 px-6 rounded-xl border-[#e5e5e5] text-[#777] hover:text-[#16610E] hover:border-[#16610E] hover:bg-[#edf8e7] transition-all disabled:opacity-50"
+                >
+                  Previous
+                </Button>
 
-              {currentStep < steps.length ? (
-                <Button
-                  onClick={handleNext}
-                  className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
-                >
-                  Continue
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleSubmit}
-                  className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
-                >
-                  Create Customer
-                </Button>
-              )}
-            </div>
+                {currentStep < steps.length ? (
+                  <Button
+                    type="button"
+                    onClick={handleNext}
+                    className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
+                  >
+                    Continue
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
+                  >
+                    Create Customer
+                  </Button>
+                )}
+              </div>
+            </form>
           </div>
         </div>
       </div>

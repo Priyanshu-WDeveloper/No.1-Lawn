@@ -9,13 +9,13 @@ import {
   Globe,
   EyeOff,
 } from 'lucide-react';
-import { useAuthStore } from '../../store/authStore';
 import toast from 'react-hot-toast';
 import { InputWithIcon } from '../../components/forms/input-with-icon';
 import { Button } from '../../components/ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
+import { useLoginMutation } from '../../store/api';
 
 const loginSchema = z.object({
   email: z
@@ -35,9 +35,9 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const SuperAdminLogin: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuthStore();
+  // const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginMutation();
 
   const {
     register,
@@ -52,15 +52,22 @@ const SuperAdminLogin: React.FC = () => {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
     try {
-      await login(data.email, data.password);
-      toast.success('Welcome back!');
-      navigate('/super-admin/dashboard');
+      const res = await login(data).unwrap();
+      localStorage.setItem('token', res.token);
+      console.log(
+        '\n===================== 🟢 res =====================',
+      );
+      console.log(res);
+      console.log(
+        '=================================================\n',
+      );
+      if (res.user) {
+        toast.success('Welcome back!');
+        navigate('/super-admin/dashboard');
+      }
     } catch (error) {
       toast.error('Login failed. Please check your credentials.');
-    } finally {
-      setIsLoading(false);
     }
   };
 

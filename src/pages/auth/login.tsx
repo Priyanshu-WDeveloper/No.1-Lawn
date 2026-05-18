@@ -152,7 +152,7 @@ const Login: React.FC = () => {
 
                         <div className="mt-2">
                           <InputWithIcon
-                            placeholder="superadmin@mail.com"
+                            placeholder="admin@mail.com"
                             icon={<Mail />}
                             {...register('email')}
                           />

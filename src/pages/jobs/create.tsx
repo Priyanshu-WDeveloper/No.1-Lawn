@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import z from 'zod';
 import {
   ArrowLeft,
   Briefcase,
@@ -23,22 +26,36 @@ import {
 } from '@/components/ui/select';
 import { AddressPicker } from '@/components/forms/address-picker';
 
-interface FormData {
-  customer: string;
-  employee: string;
-  jobAddress: string;
-  jobType: string;
-  frequencyValue: number;
-  frequencyUnit: string;
-  paymentType: string;
-  jobDate: string;
-  notes: string;
-}
+const jobSchema = z.object({
+  customer: z.string().min(1, 'Customer is required'),
+  employee: z.string().min(1, 'Employee is required'),
+  jobAddress: z.string(),
+  // address: z.string(),
+  // city: z.string(),
+  // state: z.string(),
+  // postalCode: z
+  //   .string()
+  //   .regex(/^\d+$/, 'Postal code must be numeric')
+  //   .or(z.literal('')),
+  // country: z.string(),
+  jobType: z.string().min(1, 'Job type is required'),
+  jobDate: z.string().min(1, 'Job date is required'),
+  frequencyValue: z.number().optional(),
+  frequencyUnit: z.string().optional(),
+  paymentType: z.string().min(1, 'Payment type is required'),
+  notes: z.string().optional(),
+});
+
+type FormData = z.infer<typeof jobSchema>;
 
 const initialFormData: FormData = {
   customer: '',
   employee: '',
   jobAddress: '',
+  // address: '',
+  // city: '',
+  // state: '',
+  // country: '',
   jobType: '',
   frequencyValue: 1,
   frequencyUnit: 'week',
@@ -77,17 +94,34 @@ const steps = [
 export default function CreateJobPage() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<FormData>(initialFormData);
 
-  const updateFormData = (
-    field: keyof FormData,
-    value: string | number,
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(jobSchema),
+    defaultValues: initialFormData,
+  });
 
-  const handleNext = () => {
-    if (currentStep < steps.length) {
+  const formValues = watch();
+
+  const handleNext = async () => {
+    let fieldsToValidate: (keyof FormData)[] = [];
+
+    if (currentStep === 1) {
+      fieldsToValidate = ['customer', 'employee'];
+    } else if (currentStep === 2) {
+      fieldsToValidate = ['jobAddress'];
+    } else if (currentStep === 3) {
+      fieldsToValidate = ['jobType', 'jobDate'];
+    }
+
+    const isValid = await trigger(fieldsToValidate);
+    if (isValid && currentStep < steps.length) {
       setCurrentStep((prev) => prev + 1);
     }
   };
@@ -98,8 +132,8 @@ export default function CreateJobPage() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log('Creating job:', formData);
+  const onSubmit = (data: FormData) => {
+    console.log('Creating job:', data);
     navigate('/jobs');
   };
 
@@ -120,10 +154,8 @@ export default function CreateJobPage() {
                     <span className="text-[#16610E]">*</span>
                   </label>
                   <Select
-                    value={formData.customer}
-                    onValueChange={(v) =>
-                      updateFormData('customer', v)
-                    }
+                    value={formValues.customer || ''}
+                    onValueChange={(v) => setValue('customer', v)}
                   >
                     <SelectTrigger className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E]">
                       <SelectValue placeholder="Choose a customer" />
@@ -138,6 +170,11 @@ export default function CreateJobPage() {
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.customer && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.customer.message}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-[#151515]">
@@ -145,10 +182,8 @@ export default function CreateJobPage() {
                     <span className="text-[#16610E]">*</span>
                   </label>
                   <Select
-                    value={formData.employee}
-                    onValueChange={(v) =>
-                      updateFormData('employee', v)
-                    }
+                    value={formValues.employee || ''}
+                    onValueChange={(v) => setValue('employee', v)}
                   >
                     <SelectTrigger className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E]">
                       <SelectValue placeholder="Choose an employee" />
@@ -165,6 +200,11 @@ export default function CreateJobPage() {
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.employee && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.employee.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -182,12 +222,15 @@ export default function CreateJobPage() {
               <div className="space-y-5">
                 <AddressPicker
                   label="Job Location"
-                  value={formData.jobAddress}
-                  onChange={(value) =>
-                    updateFormData('jobAddress', value)
-                  }
+                  value={formValues.jobAddress || ''}
+                  onChange={(value) => setValue('jobAddress', value)}
                   required
                 />
+                {errors.jobAddress && (
+                  <p className="text-sm text-red-500 -mt-3">
+                    {errors.jobAddress.message}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -207,10 +250,8 @@ export default function CreateJobPage() {
                     Job Type <span className="text-[#16610E]">*</span>
                   </label>
                   <Select
-                    value={formData.jobType}
-                    onValueChange={(v) =>
-                      updateFormData('jobType', v)
-                    }
+                    value={formValues.jobType || ''}
+                    onValueChange={(v) => setValue('jobType', v)}
                   >
                     <SelectTrigger className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E]">
                       <SelectValue placeholder="Select job type" />
@@ -224,6 +265,11 @@ export default function CreateJobPage() {
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.jobType && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.jobType.message}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-[#151515]">
@@ -231,16 +277,18 @@ export default function CreateJobPage() {
                   </label>
                   <Input
                     type="date"
-                    value={formData.jobDate}
-                    onChange={(e) =>
-                      updateFormData('jobDate', e.target.value)
-                    }
-                    className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E]"
+                    {...register('jobDate')}
+                    className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] cursor-pointer"
                   />
+                  {errors.jobDate && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.jobDate.message}
+                    </p>
+                  )}
                 </div>
 
                 {/* Show frequency fields only when recurring */}
-                {formData.jobType === 'recurring' && (
+                {formValues.jobType === 'recurring' && (
                   <>
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-[#151515]">
@@ -249,13 +297,9 @@ export default function CreateJobPage() {
                       <Input
                         type="number"
                         min={1}
-                        value={formData.frequencyValue}
-                        onChange={(e) =>
-                          updateFormData(
-                            'frequencyValue',
-                            parseInt(e.target.value) || 1,
-                          )
-                        }
+                        {...register('frequencyValue', {
+                          valueAsNumber: true,
+                        })}
                         className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E]"
                       />
                     </div>
@@ -264,9 +308,9 @@ export default function CreateJobPage() {
                         Frequency Unit
                       </label>
                       <Select
-                        value={formData.frequencyUnit}
+                        value={formValues.frequencyUnit || ''}
                         onValueChange={(v) =>
-                          updateFormData('frequencyUnit', v)
+                          setValue('frequencyUnit', v)
                         }
                       >
                         <SelectTrigger className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E]">
@@ -302,10 +346,8 @@ export default function CreateJobPage() {
                     <span className="text-[#16610E]">*</span>
                   </label>
                   <Select
-                    value={formData.paymentType}
-                    onValueChange={(v) =>
-                      updateFormData('paymentType', v)
-                    }
+                    value={formValues.paymentType || ''}
+                    onValueChange={(v) => setValue('paymentType', v)}
                   >
                     <SelectTrigger className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E]">
                       <SelectValue placeholder="Select payment type" />
@@ -320,6 +362,11 @@ export default function CreateJobPage() {
                       </SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.paymentType && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.paymentType.message}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-[#151515]">
@@ -327,10 +374,7 @@ export default function CreateJobPage() {
                   </label>
                   <Textarea
                     placeholder="Add any additional notes..."
-                    value={formData.notes}
-                    onChange={(e) =>
-                      updateFormData('notes', e.target.value)
-                    }
+                    {...register('notes')}
                     className="min-h-[100px] p-4 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] resize-none"
                   />
                 </div>
@@ -351,19 +395,19 @@ export default function CreateJobPage() {
                 <div>
                   <p className="text-[#777]">Customer</p>
                   <p className="font-medium">
-                    {formData.customer || '-'}
+                    {formValues.customer || '-'}
                   </p>
                 </div>
                 <div>
                   <p className="text-[#777]">Employee</p>
                   <p className="font-medium">
-                    {formData.employee || '-'}
+                    {formValues.employee || '-'}
                   </p>
                 </div>
                 <div>
                   <p className="text-[#777]">Job Type</p>
                   <p className="font-medium">
-                    {formData.jobType === 'recurring'
+                    {formValues.jobType === 'recurring'
                       ? 'Recurring'
                       : 'One Time'}
                   </p>
@@ -371,13 +415,13 @@ export default function CreateJobPage() {
                 <div>
                   <p className="text-[#777]">Payment</p>
                   <p className="font-medium">
-                    {formData.paymentType || '-'}
+                    {formValues.paymentType || '-'}
                   </p>
                 </div>
                 <div className="col-span-2">
                   <p className="text-[#777]">Address</p>
                   <p className="font-medium">
-                    {formData.jobAddress || '-'}
+                    {formValues.jobAddress || '-'}
                   </p>
                 </div>
               </div>
@@ -445,36 +489,40 @@ export default function CreateJobPage() {
               </div>
             </div>
 
-            {/* Form Content */}
-            <div className="p-8">{renderStepContent()}</div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Form Content */}
+              <div className="p-8">{renderStepContent()}</div>
 
-            {/* Form Actions */}
-            <div className="px-8 py-6 border-t border-[#ececec] bg-[#fafaf8] flex items-center justify-between">
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={currentStep === 1}
-                className="h-12 px-6 rounded-xl border-[#e5e5e5] text-[#777] hover:text-[#16610E] hover:border-[#16610E] hover:bg-[#edf8e7] transition-all disabled:opacity-50"
-              >
-                Previous
-              </Button>
+              {/* Form Actions */}
+              <div className="px-8 py-6 border-t border-[#ececec] bg-[#fafaf8] flex items-center justify-between">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePrevious}
+                  disabled={currentStep === 1}
+                  className="h-12 px-6 rounded-xl border-[#e5e5e5] text-[#777] hover:text-[#16610E] hover:border-[#16610E] hover:bg-[#edf8e7] transition-all disabled:opacity-50"
+                >
+                  Previous
+                </Button>
 
-              {currentStep < steps.length ? (
-                <Button
-                  onClick={handleNext}
-                  className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
-                >
-                  Continue
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleSubmit}
-                  className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
-                >
-                  Create Job
-                </Button>
-              )}
-            </div>
+                {currentStep < steps.length ? (
+                  <Button
+                    type="button"
+                    onClick={handleNext}
+                    className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
+                  >
+                    Continue
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
+                  >
+                    Create Job
+                  </Button>
+                )}
+              </div>
+            </form>
           </div>
         </div>
       </main>

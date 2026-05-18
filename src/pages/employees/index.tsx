@@ -1,28 +1,15 @@
-// Removed unused imports: React, Button, Card, Input, Select
-// import * as React from 'react';
-// import { Button } from '@/components/ui/button';
-// import { Input } from '@/components/ui/input';
-// import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
-import {
-  Eye,
-  Pencil,
-} from 'lucide-react';
-
-// Corrected import for DataTable and its types
-// Using type-only import for ColumnDef due to verbatimModuleSyntax
+import { useMemo } from 'react';
+import { Eye, Pencil } from 'lucide-react';
 import type { ColumnDef } from '@/components/data-table/DataTable';
-// Removed DataTableData from import as it's unused
 import DataTable, {
   ActionButton,
-} from '@/components/data-table/DataTable'; // ActionButton is now imported directly from DataTable
+} from '@/components/data-table/DataTable';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Navbar } from '@/components/layout/Navbar';
 import { useNavigate } from 'react-router-dom';
+import { useEmployeeStore } from '@/store/employeeStore';
 
-// Define the structure for Employee data
-interface Employee {
+interface EmployeeRow {
   id: string;
   name: string;
   email: string;
@@ -32,8 +19,7 @@ interface Employee {
   status: 'Active' | 'Inactive';
 }
 
-// Sample Employee Data
-const employees: Employee[] = [
+const sampleEmployees: EmployeeRow[] = [
   {
     id: 'EMP-001',
     name: 'Aman Sharma',
@@ -70,23 +56,26 @@ const employees: Employee[] = [
     department: 'Engineering',
     status: 'Active',
   },
-  {
-    id: 'EMP-004',
-    name: 'Michael Brown',
-    email: 'michael.brown@example.com',
-    phone: '0219988776',
-    role: 'Senior Engineer',
-    department: 'Engineering',
-    status: 'Active',
-  },
 ];
 
-// Main Employee Management Page Component
 export default function EmployeeManagementPage() {
   const navigate = useNavigate();
+  const employees = useEmployeeStore((state) => state.employees);
 
-  // Define columns inside component to access navigate
-  const employeeColumns: ColumnDef<Employee>[] = [
+  const allEmployees = useMemo(() => {
+    const storeEmployees: EmployeeRow[] = employees.map((emp) => ({
+      id: emp.id,
+      name: emp.name,
+      email: emp.email,
+      phone: emp.phone,
+      role: emp.role || 'Employee',
+      department: emp.department || 'General',
+      status: emp.status,
+    }));
+    return [...sampleEmployees, ...storeEmployees];
+  }, [employees]);
+
+  const employeeColumns: ColumnDef<EmployeeRow>[] = [
     {
       accessorKey: 'id',
       header: 'Employee ID',
@@ -120,7 +109,7 @@ export default function EmployeeManagementPage() {
     {
       accessorKey: 'actions',
       header: 'Actions',
-      cell: (row: Employee) => (
+      cell: (row: EmployeeRow) => (
         <div className="flex flex-wrap gap-2">
           <ActionButton
             intent="view"
@@ -139,7 +128,6 @@ export default function EmployeeManagementPage() {
 
   return (
     <AppLayout>
-      {/* <main className="flex-1 w-full overflow-y-auto px-4 pt-9 pb-9"> */}
       <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
         <div className="min-h-full w-full">
           <Navbar
@@ -148,8 +136,8 @@ export default function EmployeeManagementPage() {
             showWelcome={false}
           />
 
-          <DataTable<Employee>
-            data={employees}
+          <DataTable<EmployeeRow>
+            data={allEmployees}
             columns={employeeColumns}
             title="Employees"
             description="Manage all your employees in one place."

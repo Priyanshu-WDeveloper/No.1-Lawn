@@ -14,7 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-import { Separator } from '@/components/ui/separator';
+// import { Separator } from '@/components/ui/separator';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { useAuthStore } from '@/store/authStore';
@@ -84,8 +84,8 @@ export default function AccountDropdown({
             </span>
           </div>
         </div>
-
-        <Separator />
+        {/* 
+        <Separator /> */}
 
         {/* Menu Items */}
         <div className="py-1">
@@ -100,14 +100,14 @@ export default function AccountDropdown({
           </DropdownMenuItem>
         </div>
 
-        <Separator />
+        {/* <Separator /> */}
 
         <DropdownMenuItem className="flex cursor-pointer items-center gap-3 px-4 py-3 text-sm">
           <Mail className="h-4 w-4 text-slate-700" />
           Support
         </DropdownMenuItem>
 
-        <Separator />
+        {/* <Separator /> */}
 
         <DropdownMenuItem
           onClick={() => navigate('/login')}

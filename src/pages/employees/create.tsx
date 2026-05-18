@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import z from 'zod';
 import {
   ArrowLeft,
   UserPlus,
@@ -7,28 +10,31 @@ import {
   FileText,
   Check,
   Upload,
+  X,
+  Image,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Stepper } from '@/components/ui/stepper';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useEmployeeStore } from '@/store/employeeStore';
+import type { EmployeeDocument } from '@/store/employeeStore';
 
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  address: string;
-  document: File | null;
-}
+const employeeSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Invalid email address'),
+  // phone: z.e164().min(1, 'Phone is required'),
+  phone: z
+    .string()
+    .regex(/^\+?[1-9]\d{7,14}$/, 'Invalid phone number'),
+  address: z.string().optional(),
+});
 
-const initialFormData: FormData = {
-  name: '',
-  email: '',
-  phone: '',
-  address: '',
-  document: null,
-};
+type FormData = z.infer<typeof employeeSchema>;
 
 const steps = [
   {
@@ -51,21 +57,89 @@ const steps = [
   },
 ];
 
+const getFileIcon = (type: string) => {
+  if (type.startsWith('image/')) {
+    return <Image className="h-5 w-5 text-blue-500" />;
+  }
+  if (type === 'application/pdf') {
+    return <FileText className="h-5 w-5 text-red-500" />;
+  }
+  return <FileText className="h-5 w-5 text-gray-500" />;
+};
+
+const formatFileSize = (bytes: number) => {
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+};
+
 export default function CreateEmployeePage() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [isDragging, setIsDragging] = useState(false);
+  const [documents, setDocuments] = useState<File[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const addEmployee = useEmployeeStore((state) => state.addEmployee);
 
-  const updateFormData = (
-    field: keyof FormData,
-    value: string | File | null,
-  ) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(employeeSchema),
+    mode: 'onChange',
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+    },
+  });
+
+  const formValues = watch();
+
+  const handleFileChange = (files: FileList | null) => {
+    if (files) {
+      const existingNames = documents.map((d) => d.name);
+      const newFiles = Array.from(files).filter(
+        (f) => !existingNames.includes(f.name),
+      );
+      setDocuments([...documents, ...newFiles]);
+    }
   };
 
-  const handleNext = () => {
-    if (currentStep < steps.length) {
-      setCurrentStep((prev) => prev + 1);
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    handleFileChange(e.dataTransfer.files);
+  };
+
+  const removeFile = (index: number) => {
+    const newDocs = documents.filter((_, i) => i !== index);
+    setDocuments(newDocs);
+  };
+
+  const handleNext = async () => {
+    if (currentStep === 1) {
+      const isValid = await trigger(['name']);
+      if (isValid) setCurrentStep(2);
+    } else if (currentStep === 2) {
+      const isValid = await trigger(['email', 'phone']);
+      if (isValid) setCurrentStep(3);
+      // If invalid, stays on step 2 with errors shown
     }
   };
 
@@ -75,9 +149,38 @@ export default function CreateEmployeePage() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log('Creating employee:', formData);
+  const onSubmit = (data: FormData) => {
+    const employeeDocs: EmployeeDocument[] = documents.map(
+      (file, index) => ({
+        id: `doc-${Date.now()}-${index}`,
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        url: URL.createObjectURL(file),
+      }),
+    );
+
+    const employeeId = `EMP-${Date.now().toString().slice(-6)}`;
+
+    addEmployee({
+      id: employeeId,
+      employeeId: employeeId,
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      address: data.address || '',
+      status: 'Active',
+      documents: employeeDocs,
+    });
+
     navigate('/employees');
+  };
+
+  const handlePhoneChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const value = e.target.value.replace(/[^\d\s\-\+\(\)]/g, '');
+    setValue('phone', value, { shouldValidate: true });
   };
 
   const renderStepContent = () => {
@@ -85,7 +188,6 @@ export default function CreateEmployeePage() {
       case 1:
         return (
           <div className="space-y-6">
-            {/* Personal Information */}
             <div>
               <h4 className="text-sm font-medium text-[#777] mb-4 uppercase tracking-wide">
                 Personal Details
@@ -98,12 +200,14 @@ export default function CreateEmployeePage() {
                   </label>
                   <Input
                     placeholder="Enter full name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      updateFormData('name', e.target.value)
-                    }
+                    {...register('name')}
                     className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all"
                   />
+                  {errors.name && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.name.message}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-[#151515]">
@@ -111,10 +215,7 @@ export default function CreateEmployeePage() {
                   </label>
                   <Textarea
                     placeholder="Enter full address"
-                    value={formData.address}
-                    onChange={(e) =>
-                      updateFormData('address', e.target.value)
-                    }
+                    {...register('address')}
                     className="min-h-[80px] p-4 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all resize-none"
                   />
                 </div>
@@ -126,7 +227,6 @@ export default function CreateEmployeePage() {
       case 2:
         return (
           <div className="space-y-6">
-            {/* Contact Information */}
             <div>
               <h4 className="text-sm font-medium text-[#777] mb-4 uppercase tracking-wide">
                 Contact Details
@@ -140,12 +240,14 @@ export default function CreateEmployeePage() {
                   <Input
                     type="email"
                     placeholder="Enter email address"
-                    value={formData.email}
-                    onChange={(e) =>
-                      updateFormData('email', e.target.value)
-                    }
+                    {...register('email')}
                     className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all"
                   />
+                  {errors.email && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-[#151515]">
@@ -155,12 +257,15 @@ export default function CreateEmployeePage() {
                   <Input
                     type="tel"
                     placeholder="Enter phone number"
-                    value={formData.phone}
-                    onChange={(e) =>
-                      updateFormData('phone', e.target.value)
-                    }
+                    {...register('phone')}
+                    // onChange={handlePhoneChange}`
                     className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all"
                   />
+                  {errors.phone && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {errors.phone.message}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -170,12 +275,30 @@ export default function CreateEmployeePage() {
       case 3:
         return (
           <div className="space-y-6">
-            {/* Documents */}
             <div>
               <h4 className="text-sm font-medium text-[#777] mb-4 uppercase tracking-wide">
                 Upload Documents
               </h4>
-              <div className="border-2 border-dashed border-[#e5e5e5] rounded-xl p-8 text-center hover:border-[#16610E] transition-colors cursor-pointer">
+
+              <div
+                className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer ${
+                  isDragging
+                    ? 'border-[#16610E] bg-[#edf8e7]'
+                    : 'border-[#e5e5e5] hover:border-[#16610E]'
+                }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  className="hidden"
+                  multiple
+                  onChange={(e) => handleFileChange(e.target.files)}
+                  accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                />
                 <div className="h-16 w-16 rounded-full bg-[#edf8e7] flex items-center justify-center mx-auto mb-4">
                   <Upload className="h-8 w-8 text-[#16610E]" />
                 </div>
@@ -183,11 +306,43 @@ export default function CreateEmployeePage() {
                   Click to upload or drag and drop
                 </p>
                 <p className="text-sm text-[#777]">
-                  PDF, PNG, JPG up to 10MB
+                  PDF, PNG, JPG, DOC up to 10MB
                 </p>
               </div>
 
-              {/* Review Summary */}
+              {documents.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <p className="text-sm font-medium text-[#151515]">
+                    Uploaded Files ({documents.length})
+                  </p>
+                  {documents.map((file, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 bg-[#fafaf8] rounded-lg border border-[#e5e5e5]"
+                    >
+                      <div className="flex items-center gap-3">
+                        {getFileIcon(file.type)}
+                        <div>
+                          <p className="text-sm font-medium text-[#151515]">
+                            {file.name}
+                          </p>
+                          <p className="text-xs text-[#777]">
+                            {formatFileSize(file.size)}
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeFile(index)}
+                        className="p-1 hover:bg-red-100 rounded-full transition-colors"
+                      >
+                        <X className="h-4 w-4 text-[#777] hover:text-red-500" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <div className="mt-8 p-6 bg-[#fafaf8] rounded-xl border border-dashed border-[#e5e5e5]">
                 <div className="text-center">
                   <div className="h-12 w-12 rounded-full bg-[#edf8e7] flex items-center justify-center mx-auto mb-4">
@@ -200,25 +355,31 @@ export default function CreateEmployeePage() {
                     <p>
                       <span className="text-[#777]">Name:</span>{' '}
                       <span className="font-medium">
-                        {formData.name || '-'}
+                        {formValues.name || '-'}
                       </span>
                     </p>
                     <p>
                       <span className="text-[#777]">Email:</span>{' '}
                       <span className="font-medium">
-                        {formData.email || '-'}
+                        {formValues.email || '-'}
                       </span>
                     </p>
                     <p>
                       <span className="text-[#777]">Phone:</span>{' '}
                       <span className="font-medium">
-                        {formData.phone || '-'}
+                        {formValues.phone || '-'}
                       </span>
                     </p>
                     <p>
                       <span className="text-[#777]">Address:</span>{' '}
                       <span className="font-medium">
-                        {formData.address || '-'}
+                        {formValues.address || '-'}
+                      </span>
+                    </p>
+                    <p>
+                      <span className="text-[#777]">Documents:</span>{' '}
+                      <span className="font-medium">
+                        {documents.length} file(s)
                       </span>
                     </p>
                   </div>
@@ -237,7 +398,6 @@ export default function CreateEmployeePage() {
     <AppLayout>
       <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
         <div className="max-w-4xl mx-auto">
-          {/* Back Button */}
           <Button
             variant="ghost"
             onClick={() => navigate('/employees')}
@@ -247,7 +407,6 @@ export default function CreateEmployeePage() {
             Back to Employees
           </Button>
 
-          {/* Page Header */}
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-[#151515]">
               Create New Employee
@@ -257,7 +416,6 @@ export default function CreateEmployeePage() {
             </p>
           </div>
 
-          {/* Stepper */}
           <div className="mb-8 p-6 bg-white rounded-2xl border border-[#ececec] shadow-sm">
             <Stepper
               steps={steps}
@@ -266,9 +424,7 @@ export default function CreateEmployeePage() {
             />
           </div>
 
-          {/* Form Card */}
           <div className="bg-white rounded-2xl border border-[#ececec] shadow-sm overflow-hidden">
-            {/* Card Header */}
             <div className="px-8 py-6 border-b border-[#ececec] bg-[#fafaf8]">
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 rounded-xl bg-[#edf8e7] flex items-center justify-center">
@@ -287,36 +443,38 @@ export default function CreateEmployeePage() {
               </div>
             </div>
 
-            {/* Form Content */}
-            <div className="p-8">{renderStepContent()}</div>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="p-8">{renderStepContent()}</div>
 
-            {/* Form Actions */}
-            <div className="px-8 py-6 border-t border-[#ececec] bg-[#fafaf8] flex items-center justify-between">
-              <Button
-                variant="outline"
-                onClick={handlePrevious}
-                disabled={currentStep === 1}
-                className="h-12 px-6 rounded-xl border-[#e5e5e5] text-[#777] hover:text-[#16610E] hover:border-[#16610E] hover:bg-[#edf8e7] transition-all disabled:opacity-50"
-              >
-                Previous
-              </Button>
+              <div className="px-8 py-6 border-t border-[#ececec] bg-[#fafaf8] flex items-center justify-between">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePrevious}
+                  disabled={currentStep === 1}
+                  className="h-12 px-6 rounded-xl border-[#e5e5e5] text-[#777] hover:text-[#16610E] hover:border-[#16610E] hover:bg-[#edf8e7] transition-all disabled:opacity-50"
+                >
+                  Previous
+                </Button>
 
-              {currentStep < steps.length ? (
-                <Button
-                  onClick={handleNext}
-                  className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
-                >
-                  Continue
-                </Button>
-              ) : (
-                <Button
-                  onClick={handleSubmit}
-                  className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
-                >
-                  Create Employee
-                </Button>
-              )}
-            </div>
+                {currentStep < steps.length ? (
+                  <Button
+                    type="button"
+                    onClick={handleNext}
+                    className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
+                  >
+                    Continue
+                  </Button>
+                ) : (
+                  <Button
+                    type="submit"
+                    className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
+                  >
+                    Create Employee
+                  </Button>
+                )}
+              </div>
+            </form>
           </div>
         </div>
       </main>
