@@ -4,7 +4,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  User,
   FileText,
   File,
   Image,
@@ -14,9 +13,31 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { useEmployeeStore } from '@/store/employeeStore';
-import type { EmployeeDocument, Employee } from '@/store/employeeStore';
+import { useGetEmployeeByIdQuery } from '@/API/api';
 import { ROUTES } from '@/constants';
+
+interface EmployeeDocument {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  url: string;
+}
+
+interface Employee {
+  id: string;
+  employeeId?: string;
+  name: string;
+  email: string;
+  phone: string;
+  address?: string;
+  contact?: {
+    email: string;
+    phone: string;
+  };
+  status: 'Active' | 'Inactive';
+  documents?: EmployeeDocument[];
+}
 
 const getFileIcon = (type: string) => {
   if (type.startsWith('image/')) {
@@ -74,10 +95,12 @@ const mockEmployeeData: Employee = {
 export default function EmployeeViewPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const getEmployee = useEmployeeStore((state) => state.getEmployee);
+  const { data: apiEmployee, isLoading } = useGetEmployeeByIdQuery(
+    id,
+    { skip: !id },
+  );
 
-  const employeeFromStore = id ? getEmployee(id) : undefined;
-  const employee = employeeFromStore || mockEmployeeData;
+  const employee = (apiEmployee as Employee) || mockEmployeeData;
 
   const getInitials = (name: string) => {
     return name
@@ -94,214 +117,152 @@ export default function EmployeeViewPage() {
   };
 
   const displayDocuments = employee.documents || [];
-  const displayContact = employee.contact || { email: employee.email || '-', phone: employee.phone || '-' };
-  const displayEmployeeId = employee.employeeId || employee.id || '-';
+  const displayContact = employee.contact || {
+    email: employee.email,
+    phone: employee.phone,
+  };
 
   return (
     <AppLayout>
-      <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto p-10">
-          <div className="mx-auto">
-            <Button
-              variant="ghost"
-              onClick={() => navigate(ROUTES.EMPLOYEES)}
-              className="mb-4 text-[#777] hover:text-[#16610E] hover:bg-[#edf8e7]"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Employees
-            </Button>
+      <main className="flex-1 w-full overflow-y-auto p-10">
+        <div className="max-w-3xl mx-auto">
+          {/* Back Button */}
+          <Button
+            variant="ghost"
+            onClick={() => navigate(ROUTES.EMPLOYEES)}
+            className="mb-6 text-[#6b7280] hover:text-[#151515]"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Employees
+          </Button>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] mb-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16 bg-[#16610E] text-white">
-                    <AvatarFallback className="text-xl font-bold">
+          {isLoading ? (
+            <div className="text-center py-12 text-[#6b7280]">
+              Loading employee details...
+            </div>
+          ) : (
+            <>
+              {/* Header Card */}
+              <div className="bg-white rounded-2xl shadow-sm border border-[#f3f4f6] p-8 mb-6">
+                <div className="flex items-start gap-6">
+                  <Avatar className="h-20 w-20">
+                    <AvatarFallback className="text-2xl bg-[#edf8e7] text-[#16610E]">
                       {getInitials(employee.name)}
                     </AvatarFallback>
                   </Avatar>
-                  <div>
-                    <div className="flex items-center gap-3">
+
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
                       <h1 className="text-2xl font-bold text-[#151515]">
                         {employee.name}
                       </h1>
-                      <Badge className="bg-[#16610E] text-white">
-                        {displayEmployeeId}
+                      <Badge
+                        className={
+                          employee.status === 'Active'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-red-100 text-red-700'
+                        }
+                      >
+                        {employee.status}
                       </Badge>
                     </div>
-                    <p className="text-[#777] text-sm mt-1">
-                      Employee Details
+
+                    <p className="text-[#6b7280] text-sm">
+                      Employee ID: {employee.employeeId || employee.id}
                     </p>
                   </div>
                 </div>
-                <Badge
-                  className={`${
-                    employee.status === 'Active'
-                      ? 'bg-green-100 text-green-700 border-green-200'
-                      : 'bg-gray-100 text-gray-700 border-gray-200'
-                  } border px-3 py-1`}
-                >
-                  {employee.status}
-                </Badge>
-              </div>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec]">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                    <User className="h-4 w-4 text-[#16610E]" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">
-                    Personal Details
-                  </h3>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-[#f8f8f5] flex items-center justify-center">
-                      <span className="text-xs font-semibold text-[#151515]">
-                        ID
-                      </span>
-                    </div>
-                    <div>
-                      <p className="text-sm text-[#777]">Employee ID</p>
-                      <p className="text-[#151515] font-medium">
-                        {displayEmployeeId}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <User className="h-4 w-4 text-[#777]" />
-                    <div>
-                      <p className="text-sm text-[#777]">Full Name</p>
-                      <p className="text-[#151515] font-medium">
-                        {employee.name}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <MapPin className="h-4 w-4 text-[#777]" />
-                    <div>
-                      <p className="text-sm text-[#777]">Address</p>
-                      <p className="text-[#151515] font-medium">
-                        {employee.address || '-'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </div>
 
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec]">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                    <Mail className="h-4 w-4 text-[#16610E]" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">
-                    Contact Information
-                  </h3>
-                </div>
-                <div className="space-y-4">
+              {/* Contact Info */}
+              <div className="bg-white rounded-2xl shadow-sm border border-[#f3f4f6] p-8 mb-6">
+                <h2 className="text-lg font-semibold text-[#151515] mb-6">
+                  Contact Information
+                </h2>
+
+                <div className="grid gap-4 md:grid-cols-2">
                   <div className="flex items-center gap-3">
-                    <Mail className="h-4 w-4 text-[#777]" />
+                    <div className="h-10 w-10 rounded-xl bg-[#edf8e7] flex items-center justify-center">
+                      <Mail className="h-5 w-5 text-[#16610E]" />
+                    </div>
                     <div>
-                      <p className="text-sm text-[#777]">Email Address</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-xs text-[#6b7280]">Email</p>
+                      <p className="text-sm font-medium text-[#151515]">
                         {displayContact.email}
                       </p>
                     </div>
                   </div>
+
                   <div className="flex items-center gap-3">
-                    <Phone className="h-4 w-4 text-[#777]" />
+                    <div className="h-10 w-10 rounded-xl bg-[#edf8e7] flex items-center justify-center">
+                      <Phone className="h-5 w-5 text-[#16610E]" />
+                    </div>
                     <div>
-                      <p className="text-sm text-[#777]">Phone Number</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-xs text-[#6b7280]">Phone</p>
+                      <p className="text-sm font-medium text-[#151515]">
                         {displayContact.phone}
                       </p>
                     </div>
                   </div>
+
+                  {employee.address && (
+                    <div className="flex items-center gap-3 md:col-span-2">
+                      <div className="h-10 w-10 rounded-xl bg-[#edf8e7] flex items-center justify-center">
+                        <MapPin className="h-5 w-5 text-[#16610E]" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-[#6b7280]">Address</p>
+                        <p className="text-sm font-medium text-[#151515]">
+                          {employee.address}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] md:col-span-2">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                    <FileText className="h-4 w-4 text-[#16610E]" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">
-                    Documents ({displayDocuments.length})
-                  </h3>
-                </div>
-                {displayDocuments.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Documents */}
+              {displayDocuments.length > 0 && (
+                <div className="bg-white rounded-2xl shadow-sm border border-[#f3f4f6] p-8">
+                  <h2 className="text-lg font-semibold text-[#151515] mb-6">
+                    Documents
+                  </h2>
+
+                  <div className="space-y-3">
                     {displayDocuments.map((doc) => (
                       <div
                         key={doc.id}
-                        className="flex items-center gap-3 p-4 bg-[#fafaf8] rounded-lg border border-[#e5e5e5] hover:border-[#16610E] hover:shadow-sm transition-all cursor-pointer group"
-                        onClick={() => openDocument(doc)}
+                        className="flex items-center justify-between p-4 rounded-xl border border-[#f3f4f6] hover:border-[#e5e7eb] transition-colors"
                       >
-                        <div className="h-10 w-10 rounded-lg bg-white flex items-center justify-center border border-[#e5e5e5]">
+                        <div className="flex items-center gap-3">
                           {getFileIcon(doc.type)}
+                          <div>
+                            <p className="text-sm font-medium text-[#151515]">
+                              {doc.name}
+                            </p>
+                            <p className="text-xs text-[#6b7280]">
+                              {formatFileSize(doc.size)}
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-[#151515] truncate">
-                            {doc.name}
-                          </p>
-                          <p className="text-xs text-[#777]">
-                            {formatFileSize(doc.size)}
-                          </p>
-                        </div>
-                        <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Eye className="h-4 w-4 text-[#16610E]" />
-                        </div>
+
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openDocument(doc)}
+                          className="h-8 w-8 text-[#6b7280] hover:text-[#16610E]"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <p className="text-[#777] text-sm">No documents uploaded</p>
-                )}
-              </div>
-
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] md:col-span-2">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                    <FileText className="h-4 w-4 text-[#16610E]" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">
-                    Employment Status
-                  </h3>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                  <div>
-                    <p className="text-sm text-[#777]">Current Status</p>
-                    <Badge
-                      className={`mt-2 ${
-                        employee.status === 'Active'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-700'
-                      }`}
-                    >
-                      {employee.status}
-                    </Badge>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#777]">Documents</p>
-                    <div className="mt-2 flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-[#16610E]" />
-                      <span className="text-[#151515] font-medium">
-                        {displayDocuments.length}{' '}
-                        {displayDocuments.length === 1 ? 'file' : 'files'}
-                      </span>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#777]">Employee Type</p>
-                    <p className="text-[#151515] font-medium mt-2">Full-time</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+              )}
+            </>
+          )}
         </div>
-      </div>
+      </main>
     </AppLayout>
   );
 }

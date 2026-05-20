@@ -2,7 +2,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { PhoneInput } from '@/components/forms/phone-input';
 import { LocationModeToggle } from '@/components/forms/location-mode-toggle';
-import { MockMapPicker } from '@/components/forms/mock-map-picker';
+import { GoogleMapPicker } from '@/components/google-maps/GoogleMapPicker';
 import { ManualCoordinates } from '@/components/forms/manual-coordinates';
 
 interface AdminFormStepProps {
@@ -136,7 +136,7 @@ export function AdminFormStep({
             />
 
             {locationMode === 'map' ? (
-              <MockMapPicker
+              <GoogleMapPicker
                 latitude={latitude}
                 longitude={longitude}
                 onPick={handleCoordinatePick}

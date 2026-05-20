@@ -5,6 +5,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsUpDown,
+  X,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -26,6 +27,7 @@ export interface ColumnDef<T extends DataTableData> {
   accessorKey: string;
   header: string;
   cell?: (row: T) => React.ReactNode;
+  skeleton?: () => React.ReactNode;
   filterField?: string;
   filterOptions?: string[];
   sortable?: boolean;
@@ -55,50 +57,129 @@ interface DataTableProps<T extends DataTableData> {
   };
   onPageChange?: (page: number) => void;
   onLimitChange?: (limit: number) => void;
+  // Controlled mode for server-side filtering
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  filterValue?: string;
+  onFilterChange?: (value: string) => void;
+  serverSideFiltering?: boolean;
+  // Server-side sorting
+  sortValue?: string;
+  onSortChange?: (sort: string) => void;
+  serverSideSorting?: boolean;
 }
+
+// interface ActionButtonProps extends React.ComponentProps<
+//   typeof Button
+// > {
+//   icon: React.ReactNode;
+//   onClick?: () => void;
+//   variant?: 'outline' | 'default';
+//   intent?: 'default' | 'view' | 'edit' | 'delete';
+//   className?: string;
+// }
+
+// export function ActionButton({
+//   icon,
+//   onClick,
+//   variant = 'outline',
+//   intent = 'default',
+//   className = '',
+// }: ActionButtonProps) {
+//   const intentStyles: Record<string, string> = {
+//     default: 'hover:bg-muted',
+//     view: 'border-blue-100 bg-blue-50/60 text-blue-500 hover:border-blue-500 hover:bg-blue-600 hover:text-white hover:shadow-blue-200',
+//     edit: 'border-amber-100 bg-amber-50/60 text-amber-500 hover:border-amber-500 hover:bg-amber-500 hover:text-white hover:shadow-amber-200',
+//     delete:
+//       'border-red-100 bg-red-50/60 text-red-500 hover:border-red-500 hover:bg-red-600 hover:text-white hover:shadow-red-200',
+//   };
+
+//   return (
+//     <Button
+//       variant={variant}
+//       size="icon-sm"
+//       onClick={onClick}
+//       className={cn(
+//         'group h-9 w-9 rounded-full border transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95',
+//         intentStyles[intent],
+//         className,
+//       )}
+//     >
+//       <span className="transition-transform duration-200 group-hover:rotate-6 group-hover:scale-110">
+//         {icon}
+//       </span>
+//     </Button>
+//   );
+// }
 
 interface ActionButtonProps extends React.ComponentProps<
   typeof Button
 > {
   icon: React.ReactNode;
-  onClick?: () => void;
-  variant?: 'outline' | 'default';
+
   intent?: 'default' | 'view' | 'edit' | 'delete';
-  className?: string;
 }
 
-export function ActionButton({
-  icon,
-  onClick,
-  variant = 'outline',
-  intent = 'default',
-  className = '',
-}: ActionButtonProps) {
-  const intentStyles: Record<string, string> = {
-    default: 'hover:bg-muted',
+export const ActionButton = React.forwardRef<
+  HTMLButtonElement,
+  ActionButtonProps
+>(({ icon, intent = 'default', className, ...props }, ref) => {
+  const intentStyles = {
+    default:
+      'border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground',
+
     view: 'border-blue-100 bg-blue-50/60 text-blue-500 hover:border-blue-500 hover:bg-blue-600 hover:text-white hover:shadow-blue-200',
+
     edit: 'border-amber-100 bg-amber-50/60 text-amber-500 hover:border-amber-500 hover:bg-amber-500 hover:text-white hover:shadow-amber-200',
+
     delete:
       'border-red-100 bg-red-50/60 text-red-500 hover:border-red-500 hover:bg-red-600 hover:text-white hover:shadow-red-200',
   };
 
   return (
     <Button
-      variant={variant}
+      ref={ref}
+      variant="outline"
       size="icon-sm"
-      onClick={onClick}
       className={cn(
-        'group h-9 w-9 rounded-full border transition-all duration-200 hover:scale-105 hover:shadow-lg active:scale-95',
+        `
+            group
+            h-9
+            w-9
+            rounded-full
+            border
+            transition-all
+            duration-200
+
+            hover:scale-105
+            hover:shadow-lg
+
+            active:scale-95
+
+            focus-visible:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-ring
+            `,
         intentStyles[intent],
         className,
       )}
+      {...props}
     >
-      <span className="transition-transform duration-200 group-hover:rotate-6 group-hover:scale-110">
+      <span
+        className="
+            transition-transform
+            duration-200
+            group-hover:rotate-6
+            group-hover:scale-110
+          "
+      >
         {icon}
       </span>
     </Button>
   );
-}
+});
+
+ActionButton.displayName = 'ActionButton';
 
 interface PaginationButtonProps {
   label?: string;
@@ -152,15 +233,53 @@ export default function DataTable<T extends DataTableData>({
   pagination,
   onPageChange,
   onLimitChange: _onLimitChange,
+  // Controlled mode props
+  searchValue,
+  onSearchChange,
+  filterValue: filterValueProp,
+  onFilterChange,
+  serverSideFiltering = false,
+  // Sorting props (unused - kept for future use)
+  // sortValue,
+  // onSortChange,
+  // serverSideSorting = false,
 }: DataTableProps<T>) {
-  const [search, setSearch] = React.useState('');
-  const [filterValue, setFilterValue] = React.useState<string>('All');
+  // Internal state (used when not in controlled mode)
+  const [internalSearch, setInternalSearch] = React.useState('');
+  const [internalFilter, setInternalFilter] =
+    React.useState<string>('All');
+  // const [internalSort, setInternalSort] = React.useState<string>('');
+
+  // Use controlled props if provided, otherwise internal state
+  const search = searchValue ?? internalSearch;
+  const filterValue = filterValueProp ?? internalFilter;
+  // const sort = sortValue ?? internalSort;
+
+  const setSearch = onSearchChange ?? setInternalSearch;
+  const setFilterValue = onFilterChange ?? setInternalFilter;
+  // const setSort = onSortChange ?? setInternalSort;
 
   const handleFilterChange = (value: string) => {
     setFilterValue(value);
   };
 
+  // Unused sort handler - kept for future use
+  // const _handleSort = (column: ColumnDef<T>) => {
+  //   if (!serverSideSorting || column.sortable === false) return;
+  //   const accessor = column.accessorKey;
+  //   const currentSort = sort;
+  //   if (currentSort === accessor) {
+  //     setSort(`${accessor}_desc`);
+  //   } else if (currentSort === `${accessor}_desc`) {
+  //     setSort('');
+  //   } else {
+  //     setSort(accessor);
+  //   }
+  // };
+
   const filteredData = React.useMemo(() => {
+    if (serverSideFiltering) return data; // Server handles filtering
+
     return data.filter((row) => {
       const matchesSearch =
         !search ||
@@ -196,6 +315,7 @@ export default function DataTable<T extends DataTableData>({
     filterField,
     columns,
     customFilterFn,
+    serverSideFiltering,
   ]);
 
   const renderCell = (row: T, column: ColumnDef<T>) => {
@@ -218,21 +338,25 @@ export default function DataTable<T extends DataTableData>({
     <tr className="border-b border-[#f3f4f6]">
       {columns.map((column, i) => (
         <td key={column.accessorKey} className="px-4 py-2.5">
-          <Skeleton
-            className={cn(
-              'h-4',
-              i === 0 && 'w-16',
-              i === columns.length - 1 && 'w-24',
-              i !== 0 && i !== columns.length - 1 && 'w-28',
-            )}
-          />
+          {column.skeleton ? (
+            column.skeleton()
+          ) : (
+            <Skeleton
+              className={cn(
+                'h-4',
+                i === 0 && 'w-16',
+                i === columns.length - 1 && 'w-24',
+                i !== 0 && i !== columns.length - 1 && 'w-28',
+              )}
+            />
+          )}
         </td>
       ))}
     </tr>
   );
 
   return (
-    <Card className="rounded-2xl w-full bg-white shadow-sm flex flex-col h-full">
+    <Card className="rounded-2xl w-full bg-white shadow-sm flex flex-col flex-1">
       <CardContent className="px-6 flex-1 flex flex-col ">
         {/* Filter Row */}
         <div className="flex items-center justify-between gap-3 mb-3">
@@ -244,9 +368,15 @@ export default function DataTable<T extends DataTableData>({
               onChange={(e) => setSearch(e.target.value)}
               className="pl-10 pr-12 rounded-xl border-[#e5e7eb] bg-white h-10"
             />
-            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-[#9ca3af] bg-[#f3f4f6] rounded px-1.5 py-0.5 pointer-events-none border border-[#e5e7eb]">
-              ⌘K
-            </kbd>
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 flex items-center justify-center rounded-full text-[#9ca3af] hover:text-[#6b7280] hover:bg-[#f3f4f6] transition-colors"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -285,7 +415,9 @@ export default function DataTable<T extends DataTableData>({
         </div>
 
         {/* Table */}
-        <div className="rounded-xl border border-[#f3f4f6] overflow-auto flex-1 min-h-0">
+        {/* <div className="rounded-xl border border-[#f3f4f6] overflow-auto flex-1 min-h-0"> */}
+        {/* <div className="rounded-xl border border-[#f3f4f6] flex-1 min-h-0"> */}
+        <div className="rounded-xl border border-[#f3f4f6] flex-1 min-h-0 overflow-visible">
           <table className="w-full min-w-[900px]">
             <thead className="bg-[#f9fafb]">
               <tr className="border-b border-[#f3f4f6]">
@@ -307,7 +439,7 @@ export default function DataTable<T extends DataTableData>({
 
             <tbody>
               {loading ? (
-                Array.from({ length: 5 }).map((_, i) => (
+                Array.from({ length: 9 }).map((_, i) => (
                   <React.Fragment key={i}>
                     {renderSkeletonRow()}
                   </React.Fragment>

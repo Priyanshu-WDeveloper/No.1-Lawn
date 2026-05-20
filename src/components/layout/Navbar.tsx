@@ -2,6 +2,8 @@ import { Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import AccountDropdown from '@/components/account-dropdown';
 import { ROUTES } from '@/constants';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/store';
 
 interface NavbarProps {
   title: string;
@@ -10,21 +12,36 @@ interface NavbarProps {
   superAccess?: boolean;
 }
 
+const roleLabels: Record<number, string> = {
+  1: 'Admin',
+  2: 'Super Admin',
+};
+
 export function Navbar({
   title,
   subtitle = "Here's what's happening with your system today.",
-  showWelcome: _showWelcome = true,
+  showWelcome = true,
   superAccess = false,
 }: NavbarProps) {
   const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const welcomeText = user
+    ? `Welcome back, ${roleLabels[user.role] || 'Admin'}`
+    : `Welcome back, ${superAccess ? 'Super Admin' : 'Admin'}`;
 
   return (
-    <div className="mb-1 flex items-start justify-between">
+    <div className=" px-5 py-1.5 flex items-start justify-between">
       <div>
         <h2 className="text-[22px] font-semibold text-[#151515]">
           {title}
         </h2>
-        {subtitle && (
+        {showWelcome && (
+          <p className="mt-1 text-[13px] text-[#6b7280]">
+            {welcomeText}
+          </p>
+        )}
+        {!showWelcome && subtitle && (
           <p className="mt-1 text-[13px] text-[#6b7280]">
             {subtitle}
           </p>

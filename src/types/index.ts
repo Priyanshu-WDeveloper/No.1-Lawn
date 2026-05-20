@@ -1,16 +1,3 @@
-// Auth types
-export interface User {
-  email: string;
-  name: string;
-}
-
-export interface AuthState {
-  isAuthenticated: boolean;
-  user: User | null;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-}
-
 // Customer types
 export interface Customer {
   id: string;

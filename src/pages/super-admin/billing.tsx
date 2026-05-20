@@ -80,7 +80,7 @@ const recentInvoices = [
 const SuperAdminBillingPage: React.FC = () => {
   return (
     <SuperAdminLayout>
-      <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
+      <main className="flex-1 w-full overflow-y-auto p-10">
         <div className="min-h-full w-full">
           <Navbar
             title="Billing & Payments"

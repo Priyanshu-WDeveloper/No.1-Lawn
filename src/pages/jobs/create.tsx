@@ -144,9 +144,13 @@ export default function CreateJobPage() {
   const onSubmit = (data: FormData) => {
     const payload = {
       ...data,
-      location: data.latitude && data.longitude
-        ? { type: 'Point' as const, coordinates: [data.longitude, data.latitude] }
-        : undefined,
+      location:
+        data.latitude && data.longitude
+          ? {
+              type: 'Point' as const,
+              coordinates: [data.longitude, data.latitude],
+            }
+          : undefined,
     };
     console.log('Creating job:', payload);
     navigate(ROUTES.JOBS);
@@ -463,7 +467,7 @@ export default function CreateJobPage() {
 
   return (
     <AppLayout>
-      <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
+      <main className="flex-1 w-full overflow-y-auto p-10">
         <div className="max-w-4xl mx-auto">
           {/* Back Button */}
           <Button

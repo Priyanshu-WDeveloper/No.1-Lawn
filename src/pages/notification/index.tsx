@@ -129,7 +129,10 @@ export default function NotificationsPage() {
   return (
     <AppLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto p-10">
+        <div
+          className="flex-1 w-full overflow-y-auto pl-10 p-5
+"
+        >
           <div className="mx-auto">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">

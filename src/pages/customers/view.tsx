@@ -1,3 +1,4 @@
+import { StaticMap } from '@/components/google-maps/StaticMap';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -40,6 +41,8 @@ interface CustomerData {
   createdAt: string;
   updatedAt: string;
   balance: number;
+  latitude?: number;
+  longitude?: number;
 }
 
 const mockCustomer: CustomerData = {
@@ -80,31 +83,13 @@ export default function CustomerViewPage() {
     });
   };
 
-  const openInGoogleMaps = () => {
-    if (!customer.address) return;
-
-    // Encode the address for Google Maps
-    const fullAddress = [
-      customer.address,
-      customer.city,
-      customer.state,
-      customer.postalCode,
-      customer.country,
-    ]
-      .filter(Boolean)
-      .join(', ');
-
-    const encodedAddress = encodeURIComponent(fullAddress);
-    window.open(
-      `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`,
-      '_blank',
-    );
-  };
-
   return (
     <AppLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto p-10">
+        <div
+          className="flex-1 w-full overflow-y-auto pl-10 p-5
+"
+        >
           <div className="mx-auto">
             {/* Back Button */}
             <Button
@@ -299,7 +284,7 @@ export default function CustomerViewPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-4 gap-4">
                     <div>
                       <p className="text-sm text-[#777]">City</p>
                       <p className="text-[#151515] font-medium">
@@ -312,8 +297,6 @@ export default function CustomerViewPage() {
                         {customer.state || '-'}
                       </p>
                     </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-[#777]">
                         Postal Code
@@ -330,16 +313,13 @@ export default function CustomerViewPage() {
                     </div>
                   </div>
 
-                  {/* View on Google Maps Button */}
-                  {customer.address && (
-                    <button
-                      type="button"
-                      onClick={openInGoogleMaps}
-                      className="w-full mt-4 flex items-center justify-center gap-2 py-2.5 px-4 bg-[#edf8e7] hover:bg-[#dff0d4] border border-[#c7e8b9] rounded-xl text-[#16610E] font-medium transition-colors"
-                    >
-                      <MapPin className="h-4 w-4" />
-                      View on Google Maps
-                    </button>
+                  {/* Embedded Google Map */}
+                  {customer.address && customer.latitude && customer.longitude && (
+                    <StaticMap
+                      lat={customer.latitude}
+                      lng={customer.longitude}
+                      height={250}
+                    />
                   )}
                 </div>
               </div>

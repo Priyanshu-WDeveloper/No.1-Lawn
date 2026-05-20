@@ -3,17 +3,19 @@ import {
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
 import { getDeviceToken, getDeviceType } from '../lib/device';
+import { getToken } from '../lib/auth';
 import type {
   GetAdminsParams,
   GetAdminsResponse,
 } from '../types/api.types';
+import { setAuth, clearAuth } from '../store/authSlice';
 
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_API_URL,
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem('token');
+      const token = getToken();
 
       if (token) {
         headers.set('authorization', `Bearer ${token}`);
@@ -42,6 +44,22 @@ export const api = createApi({
           deviceToken: getDeviceToken(),
         },
       }),
+      async onQueryStarted(_, { queryFulfilled, dispatch }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data?.user) {
+            dispatch(
+              setAuth({
+                user: data.user,
+                token: data.token,
+                rememberMe: true,
+              }),
+            );
+          }
+        } catch {
+          /* handled by caller */
+        }
+      },
     }),
     superLogin: builder.mutation({
       query: (credentials) => ({
@@ -53,6 +71,22 @@ export const api = createApi({
           deviceToken: getDeviceToken(),
         },
       }),
+      async onQueryStarted(_, { queryFulfilled, dispatch }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data?.user) {
+            dispatch(
+              setAuth({
+                user: data.user,
+                token: data.token,
+                rememberMe: true,
+              }),
+            );
+          }
+        } catch {
+          /* handled by caller */
+        }
+      },
     }),
     logout: builder.mutation<void, void>({
       query: () => ({
@@ -69,7 +103,7 @@ export const api = createApi({
           localStorage.removeItem('token');
           localStorage.removeItem('role');
           localStorage.removeItem('user');
-
+          dispatch(clearAuth());
           dispatch(api.util.resetApiState());
         }
       },
@@ -255,7 +289,10 @@ export const api = createApi({
         method: 'PUT',
         body: admin,
       }),
-      invalidatesTags: ['Admins'],
+      invalidatesTags: (_result, _error, { id }) => [
+        'Admins',
+        { type: 'Admins', id },
+      ],
     }),
     deleteAdminUser: builder.mutation({
       query: (id) => ({

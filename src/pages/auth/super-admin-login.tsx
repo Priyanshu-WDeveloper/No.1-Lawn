@@ -36,6 +36,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const SuperAdminLogin: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   // const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [superLogin, { isLoading }] = useSuperLoginMutation();
@@ -65,8 +66,13 @@ const SuperAdminLogin: React.FC = () => {
       );
       if (res.user) {
         toast.success('Welcome back Super Admin!');
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('role', res.user.role.toString());
+        if (!rememberMe) {
+          const authData = localStorage.getItem('auth_state');
+          if (authData) {
+            sessionStorage.setItem('auth_state', authData);
+            localStorage.removeItem('auth_state');
+          }
+        }
         navigate(ROUTES.SUPER_ADMIN_DASHBOARD);
       }
     } catch (error) {
@@ -225,17 +231,21 @@ const SuperAdminLogin: React.FC = () => {
                         <label className="flex items-center gap-2 text-gray-600">
                           <input
                             type="checkbox"
+                            checked={rememberMe}
+                            onChange={(e) =>
+                              setRememberMe(e.target.checked)
+                            }
                             className="accent-green-600 w-4 h-4"
                           />
                           Remember me
                         </label>
 
-                        <button
+                        {/* <button
                           type="button"
                           className="text-green-700 font-medium hover:underline"
                         >
                           Forgot password?
-                        </button>
+                        </button> */}
                       </div>
 
                       {/* Button */}

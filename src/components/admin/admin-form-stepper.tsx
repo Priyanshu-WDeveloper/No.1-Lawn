@@ -2,7 +2,12 @@ import { Shield } from 'lucide-react';
 import { Stepper } from '@/components/ui/stepper';
 
 interface AdminFormStepperProps {
-  steps: { id: number; title: string; description: string; icon: React.ReactNode }[];
+  steps: {
+    id: number;
+    title: string;
+    description: string;
+    icon: React.ReactNode;
+  }[];
   currentStep: number;
   onStepClick: (step: number) => void;
   children: React.ReactNode;
@@ -36,7 +41,7 @@ export function AdminFormStepper({
         />
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-[#ececec] bg-white shadow-sm">
+      <div className="rounded-2xl border border-[#ececec] bg-white shadow-sm">
         <div className="border-b border-[#ececec] bg-[#fafaf8] px-8 py-6">
           <div className="flex items-center gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#edf8e7]">
@@ -80,7 +85,7 @@ export function AdminFormStepper({
               disabled={isSubmitting}
               className="h-12 rounded-xl bg-[#16610E] px-8 text-white transition-all hover:bg-[#1a7a12] disabled:pointer-events-none disabled:opacity-50"
             >
-              {isSubmitting ? 'Saving...' : 'Save Changes'}
+              {isSubmitting ? 'Creating...' : 'Create Admin'}
             </button>
           )}
         </div>

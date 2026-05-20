@@ -16,7 +16,8 @@ import {
 
 import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback } from './ui/avatar';
-import { useAuthStore } from '@/store/authStore';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/store';
 import toast from 'react-hot-toast';
 import { ConfirmDialog } from './ui/confirm-dialog';
 import { useState } from 'react';
@@ -29,7 +30,7 @@ export default function AccountDropdown({
   superAccess?: boolean;
 }) {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const user = useSelector((state: RootState) => state.auth.user);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   const handleLogout = async () => {
@@ -60,15 +61,17 @@ export default function AccountDropdown({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-3 rounded-xl border bg-white px-3 py-2 transition hover:bg-muted">
+      <DropdownMenuTrigger className="flex items-center gap-3 rounded-xl border bg-white px-5 py-3 transition hover:bg-muted">
+        {/* <DropdownMenuTrigger className="flex items-center gap-3 rounded-xl border bg-white px-3 py-2 transition hover:bg-muted"> */}
         <Avatar className="h-8 w-8">
           <AvatarFallback className="text-xs">
-            {user?.name ? getInitials(user.name) : 'A'}
+            {user?.fullName ? getInitials(user.fullName) : 'A'}
           </AvatarFallback>
         </Avatar>
 
         <span className="text-sm font-semibold">
-          {user?.name || `${superAccess ? 'Super Admin' : 'Admin'}`}
+          {user?.fullName ||
+            `${superAccess ? 'Super Admin' : 'Admin'}`}
         </span>
 
         <ChevronDown className="ml-3 h-5 w-5 text-muted-foreground" />
@@ -83,7 +86,7 @@ export default function AccountDropdown({
         <div className="space-y-3 p-4">
           <div>
             <h2 className="text-lg font-medium text-slate-800">
-              {user?.name || 'Admin'}
+              {user?.fullName || 'Admin'}
             </h2>
 
             <p className="mt-1 text-sm text-muted-foreground">

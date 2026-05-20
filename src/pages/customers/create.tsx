@@ -23,14 +23,23 @@ import { ROUTES } from '@/constants';
 
 const customerSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  email: z.string().min(1, 'Email is required').email('Invalid email address'),
-  phone: z.string().min(1, 'Phone is required').regex(/^\d+$/, 'Phone must be numeric'),
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Invalid email address'),
+  phone: z
+    .string()
+    .min(1, 'Phone is required')
+    .regex(/^\d+$/, 'Phone must be numeric'),
   location: z.string().optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
   locationMode: z.enum(['map', 'manual']),
   address: z.string().min(1, 'Address is required'),
-  postalCode: z.string().regex(/^\d+$/, 'Postal code must be numeric').or(z.literal('')),
+  postalCode: z
+    .string()
+    .regex(/^\d+$/, 'Postal code must be numeric')
+    .or(z.literal('')),
   city: z.string().optional(),
   state: z.string().optional(),
   country: z.string().optional(),
@@ -77,7 +86,7 @@ const steps = [
 export default function CreateCustomerPage() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
-  
+
   const {
     register,
     handleSubmit,
@@ -95,13 +104,13 @@ export default function CreateCustomerPage() {
 
   const handleNext = async () => {
     let fieldsToValidate: (keyof FormData)[] = [];
-    
+
     if (currentStep === 1) {
       fieldsToValidate = ['name', 'email', 'phone'];
     } else if (currentStep === 2) {
       fieldsToValidate = ['location'];
     }
-    
+
     const isValid = await trigger(fieldsToValidate);
     if (isValid && currentStep < steps.length) {
       setCurrentStep((prev) => prev + 1);
@@ -117,9 +126,13 @@ export default function CreateCustomerPage() {
   const onSubmit = (data: FormData) => {
     const payload = {
       ...data,
-      location: data.latitude && data.longitude
-        ? { type: 'Point' as const, coordinates: [data.longitude, data.latitude] }
-        : data.location,
+      location:
+        data.latitude && data.longitude
+          ? {
+              type: 'Point' as const,
+              coordinates: [data.longitude, data.latitude],
+            }
+          : data.location,
     };
     console.log('Creating customer:', payload);
     navigate(ROUTES.CUSTOMERS);
@@ -179,8 +192,13 @@ export default function CreateCustomerPage() {
                     placeholder="Enter phone number"
                     value={formValues.phone || ''}
                     onChange={(e) => {
-                      const numeric = e.target.value.replace(/\D/g, '');
-                      setValue('phone', numeric, { shouldValidate: true });
+                      const numeric = e.target.value.replace(
+                        /\D/g,
+                        '',
+                      );
+                      setValue('phone', numeric, {
+                        shouldValidate: true,
+                      });
                     }}
                     className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all"
                   />
@@ -268,8 +286,13 @@ export default function CreateCustomerPage() {
                       placeholder="Enter postal code"
                       value={formValues.postalCode || ''}
                       onChange={(e) => {
-                        const numeric = e.target.value.replace(/\D/g, '');
-                        setValue('postalCode', numeric, { shouldValidate: true });
+                        const numeric = e.target.value.replace(
+                          /\D/g,
+                          '',
+                        );
+                        setValue('postalCode', numeric, {
+                          shouldValidate: true,
+                        });
                       }}
                       className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all"
                     />
@@ -333,7 +356,9 @@ export default function CreateCustomerPage() {
                     <p>
                       <span className="text-[#777]">Location:</span>{' '}
                       <span className="font-medium">
-                        {formValues.location || formValues.address || '-'}
+                        {formValues.location ||
+                          formValues.address ||
+                          '-'}
                       </span>
                     </p>
                     <p>
@@ -362,7 +387,10 @@ export default function CreateCustomerPage() {
 
   return (
     <AppLayout>
-      <div className="flex-1 w-full overflow-y-auto p-10">
+      <div
+        className="flex-1 w-full overflow-y-auto pl-10 p-5
+"
+      >
         <div className="mx-auto">
           {/* Back Button */}
           <Button

@@ -1,18 +1,12 @@
 import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
 import { Navbar } from '@/components/layout/Navbar';
-import {
-  Users,
-  Shield,
-  BarChart3,
-  Settings,
-} from 'lucide-react';
+import { Users, Shield, BarChart3, Settings } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const SuperAdminDashboardPage = () => {
-
   return (
     <SuperAdminLayout>
-      <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
+      <main className="flex-1 w-full overflow-y-auto p-10">
         <div className="min-h-full w-full">
           <Navbar
             title="Super Admin Dashboard"

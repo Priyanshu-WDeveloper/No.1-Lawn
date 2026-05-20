@@ -28,6 +28,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
 
@@ -49,8 +50,13 @@ const Login: React.FC = () => {
 
       if (res.user) {
         toast.success('Welcome back Admin!');
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('role', res.user.role.toString());
+        if (!rememberMe) {
+          const authData = localStorage.getItem('auth_state');
+          if (authData) {
+            sessionStorage.setItem('auth_state', authData);
+            localStorage.removeItem('auth_state');
+          }
+        }
         navigate(ROUTES.DASHBOARD);
       }
     } catch (error) {
@@ -209,6 +215,10 @@ const Login: React.FC = () => {
                         <label className="flex items-center gap-2 text-gray-600">
                           <input
                             type="checkbox"
+                            checked={rememberMe}
+                            onChange={(e) =>
+                              setRememberMe(e.target.checked)
+                            }
                             className="accent-green-600 w-4 h-4"
                           />
                           Remember me

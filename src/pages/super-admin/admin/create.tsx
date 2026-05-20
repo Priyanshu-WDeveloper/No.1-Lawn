@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
-import { Mail, MapPin, Check } from 'lucide-react';
+import { Mail, MapPin, Check, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
@@ -13,6 +13,7 @@ import { useCreateAdminUserMutation } from '../../../API/api';
 import { AdminFormStepper } from '../../../components/admin/admin-form-stepper';
 import { AdminFormStep } from '../../../components/admin/admin-form-step';
 import { AdminReviewCard } from '../../../components/admin/admin-review-card';
+import { Button } from '../../../components/ui/button';
 
 const createAdminSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -174,6 +175,12 @@ export default function CreateAdminPage() {
             countryCode={formValues.countryCode}
             phoneNumber={formValues.phoneNumber}
             address={formValues.address}
+            city={formValues.city}
+            state={formValues.state}
+            postalCode={formValues.postalCode}
+            country={formValues.country}
+            latitude={formValues.latitude}
+            longitude={formValues.longitude}
           />
         </form>
       );
@@ -193,7 +200,15 @@ export default function CreateAdminPage() {
   return (
     <SuperAdminLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto p-10">
+        <div className="flex-1 w-full overflow-y-auto pl-10 p-5">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(ROUTES.SUPER_ADMIN_ADMINS)}
+            className="mb-4 text-[#777] hover:text-[#16610E] hover:bg-[#edf8e7]"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Admins
+          </Button>
           <Navbar
             title="Create Admin"
             subtitle="Add a new administrator account"

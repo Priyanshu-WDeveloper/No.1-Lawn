@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Search } from 'lucide-react';
 import { COUNTRY_CODES } from '@/lib/country-codes';
 import { Input } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
 import 'flag-icons/css/flag-icons.min.css';
 
 interface PhoneInputProps {
@@ -11,6 +12,7 @@ interface PhoneInputProps {
   onCountryCodeChange: (code: string) => void;
   error?: string;
   placeholder?: string;
+  disabledCountryCode?: boolean;
 }
 
 export function PhoneInput({
@@ -20,6 +22,7 @@ export function PhoneInput({
   onCountryCodeChange,
   error,
   placeholder = 'Enter phone number',
+  disabledCountryCode = false,
 }: PhoneInputProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -64,8 +67,12 @@ export function PhoneInput({
       <div className="flex h-12 items-center rounded-xl border border-[#e5e5e5] bg-[#fafaf8] px-3 transition-colors focus-within:border-[#16610E] focus-within:ring-1 focus-within:ring-[#16610E]/20">
         <button
           type="button"
-          onClick={() => setOpen(!open)}
-          className="flex items-center gap-1.5 shrink-0 pr-3"
+          onClick={() => !disabledCountryCode && setOpen(!open)}
+          disabled={disabledCountryCode}
+          className={cn(
+            'flex items-center gap-1.5 shrink-0 pr-3',
+            disabledCountryCode && 'opacity-50 cursor-not-allowed',
+          )}
         >
           <span className="relative inline-flex items-center justify-center w-6 h-4 rounded-sm overflow-hidden shrink-0 bg-[#f0f0f0]">
             <span className={`fi fi-${selected.isoCode.toLowerCase()} absolute inset-0`} />
@@ -81,13 +88,23 @@ export function PhoneInput({
         <input
           type="tel"
           value={value}
-          onChange={(e) => onChange(e.target.value.replace(/\D/g, ''))}
+          onChange={(e) => {
+            const digits = e.target.value.replace(/\D/g, '');
+            if (digits.length <= selected.maxLength) {
+              onChange(digits);
+            }
+          }}
           placeholder={placeholder}
           className="flex-1 bg-transparent text-sm text-[#151515] outline-none placeholder:text-muted-foreground ml-3"
         />
       </div>
 
       {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
+      {value.length > 0 && value.length < selected.minLength && (
+        <p className="mt-1 text-sm text-red-500">
+          Phone number must be at least {selected.minLength} digits (currently {value.length})
+        </p>
+      )}
 
       {open && (
         <div className={`absolute left-0 z-50 w-72 rounded-xl border border-[#e5e5e5] bg-white shadow-xl max-h-80 overflow-hidden ${

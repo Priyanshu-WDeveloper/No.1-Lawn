@@ -11,6 +11,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ROUTES } from '@/constants';
+import { StaticMap } from '@/components/google-maps/StaticMap';
 
 interface JobData {
   jobId: string;
@@ -161,7 +162,10 @@ export default function JobViewPage() {
   return (
     <AppLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto p-10">
+        <div
+          className="flex-1 w-full overflow-y-auto pl-10 p-5
+"
+        >
           <div className="mx-auto">
             {/* Back Button */}
             <Button
@@ -317,38 +321,40 @@ export default function JobViewPage() {
                     Job Location
                   </h3>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div className="col-span-2 md:col-span-3">
+                <div className="space-y-4">
+                  <div>
                     <p className="text-sm text-[#777]">Address</p>
                     <p className="text-[#151515] font-medium mt-1">
                       {job.jobAddress.addressLine}
                     </p>
                   </div>
-                  <div>
-                    <p className="text-sm text-[#777]">City</p>
-                    <p className="text-[#151515] font-medium">
-                      {job.jobAddress.city}
-                    </p>
+                  <div className="grid grid-cols-4 gap-4">
+                    <div>
+                      <p className="text-sm text-[#777]">City</p>
+                      <p className="text-[#151515] font-medium">
+                        {job.jobAddress.city}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-[#777]">State</p>
+                      <p className="text-[#151515] font-medium">
+                        {job.jobAddress.state}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-[#777]">Postal Code</p>
+                      <p className="text-[#151515] font-medium">
+                        {job.jobAddress.postalCode}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-[#777]">Country</p>
+                      <p className="text-[#151515] font-medium">
+                        {job.jobAddress.country}
+                      </p>
+                    </div>
                   </div>
                   <div>
-                    <p className="text-sm text-[#777]">State</p>
-                    <p className="text-[#151515] font-medium">
-                      {job.jobAddress.state}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#777]">Postal Code</p>
-                    <p className="text-[#151515] font-medium">
-                      {job.jobAddress.postalCode}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#777]">Country</p>
-                    <p className="text-[#151515] font-medium">
-                      {job.jobAddress.country}
-                    </p>
-                  </div>
-                  <div className="col-span-2 md:col-span-3">
                     <p className="text-sm text-[#777]">Coordinates</p>
                     <p className="text-[#151515] font-medium mt-1">
                       {job.jobAddress.location.lat},{' '}
@@ -357,18 +363,12 @@ export default function JobViewPage() {
                   </div>
                 </div>
 
-                {/* View on Google Maps Button */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    const url = `https://www.google.com/maps?q=${job.jobAddress.location.lat},${job.jobAddress.location.lng}`;
-                    window.open(url, '_blank');
-                  }}
-                  className="w-full mt-4 flex items-center justify-center gap-2 py-2.5 px-4 bg-[#edf8e7] hover:bg-[#dff0d4] border border-[#c7e8b9] rounded-xl text-[#16610E] font-medium transition-colors"
-                >
-                  <MapPin className="h-4 w-4" />
-                  View on Google Maps
-                </button>
+                {/* Embedded Google Map */}
+                <StaticMap
+                  lat={job.jobAddress.location.lat}
+                  lng={job.jobAddress.location.lng}
+                  height={300}
+                />
               </div>
 
               {/* Schedule Card */}

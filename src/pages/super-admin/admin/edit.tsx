@@ -1,11 +1,17 @@
 import { useState } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import {
+  useParams,
+  useNavigate,
+  useLocation,
+} from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import toast from 'react-hot-toast';
+import { ArrowLeft } from 'lucide-react';
 import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
 import { Navbar } from '@/components/layout/Navbar';
+import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/constants';
 import {
   useGetAdminUserByIdQuery,
@@ -106,7 +112,11 @@ export default function AdminEditPage() {
             : '',
           latitude: admin.location?.coordinates?.[1] || 0,
           longitude: admin.location?.coordinates?.[0] || 0,
-          locationMode: admin.location?.coordinates?.[0] && admin.location?.coordinates?.[1] ? 'map' : 'manual',
+          locationMode:
+            admin.location?.coordinates?.[0] &&
+            admin.location?.coordinates?.[1]
+              ? 'map'
+              : 'manual',
         }
       : undefined,
   });
@@ -154,14 +164,11 @@ export default function AdminEditPage() {
         id,
         firstName: data.firstName,
         lastName: data.lastName,
-        email: data.email,
         phoneNumber: data.phoneNumber,
-        countryCode: data.countryCode,
         city: data.city,
         address: data.address,
         state: data.state,
         postalCode: data.postalCode,
-        country: data.country,
         location: {
           type: 'Point',
           coordinates: [data.longitude, data.latitude],
@@ -204,6 +211,12 @@ export default function AdminEditPage() {
             countryCode={formValues.countryCode}
             phoneNumber={formValues.phoneNumber}
             address={formValues.address}
+            city={formValues.city}
+            state={formValues.state}
+            postalCode={formValues.postalCode}
+            country={formValues.country}
+            latitude={formValues.latitude}
+            longitude={formValues.longitude}
           />
         </form>
       );
@@ -223,29 +236,41 @@ export default function AdminEditPage() {
   return (
     <SuperAdminLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto p-10">
-        <Navbar
-          title="Edit Admin"
-          subtitle="Update administrator account details"
-          showWelcome={false}
-          superAccess
-        />
-
-        <AdminFormStepper
-          steps={steps}
-          currentStep={currentStep}
-          onStepClick={setCurrentStep}
-          onPrevious={handlePrevious}
-          onNext={handleNext}
-          onSubmit={handleSubmit(onSubmit)}
-          isSubmitting={isUpdating}
-          isLastStep={currentStep === steps.length}
-          isFirstStep={currentStep === 1}
+        <div
+          className="flex-1 w-full overflow-y-auto pl-10 p-5
+"
         >
-          {renderStepContent()}
-        </AdminFormStepper>
+          <Button
+            variant="ghost"
+            onClick={() => navigate(ROUTES.SUPER_ADMIN_ADMINS)}
+            className="mb-4 text-[#777] hover:text-[#16610E] hover:bg-[#edf8e7]"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Admins
+          </Button>
+
+          <Navbar
+            title="Edit Admin"
+            subtitle="Update administrator account details"
+            showWelcome={false}
+            superAccess
+          />
+
+          <AdminFormStepper
+            steps={steps}
+            currentStep={currentStep}
+            onStepClick={setCurrentStep}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+            onSubmit={handleSubmit(onSubmit)}
+            isSubmitting={isUpdating}
+            isLastStep={currentStep === steps.length}
+            isFirstStep={currentStep === 1}
+          >
+            {renderStepContent()}
+          </AdminFormStepper>
+        </div>
       </div>
-    </div>
     </SuperAdminLayout>
   );
 }

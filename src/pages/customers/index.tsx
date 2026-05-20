@@ -147,7 +147,7 @@ export default function CustomerManagementPage() {
             }
           /> */}
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
               <ActionButton
                 icon={<Ellipsis className="h-3.5 w-3.5" />}
                 className="h-8 w-8 rounded-full border border-[#e5e7eb] bg-white text-[#6b7280] hover:bg-[#f3f4f6] hover:text-[#374151] shadow-none"

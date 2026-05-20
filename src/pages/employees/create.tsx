@@ -18,9 +18,9 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { Stepper } from '@/components/ui/stepper';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useEmployeeStore } from '@/store/employeeStore';
-import type { EmployeeDocument } from '@/store/employeeStore';
+import { useCreateEmployeeMutation } from '@/API/api';
 import { ROUTES } from '@/constants';
+import toast from 'react-hot-toast';
 
 const employeeSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -79,7 +79,8 @@ export default function CreateEmployeePage() {
   const [isDragging, setIsDragging] = useState(false);
   const [documents, setDocuments] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const addEmployee = useEmployeeStore((state) => state.addEmployee);
+  const [createEmployee, { isLoading: isCreating }] =
+    useCreateEmployeeMutation();
 
   const {
     register,
@@ -148,31 +149,20 @@ export default function CreateEmployeePage() {
     }
   };
 
-  const onSubmit = (data: FormData) => {
-    const employeeDocs: EmployeeDocument[] = documents.map(
-      (file, index) => ({
-        id: `doc-${Date.now()}-${index}`,
-        name: file.name,
-        type: file.type,
-        size: file.size,
-        url: URL.createObjectURL(file),
-      }),
-    );
-
-    const employeeId = `EMP-${Date.now().toString().slice(-6)}`;
-
-    addEmployee({
-      id: employeeId,
-      employeeId: employeeId,
-      name: data.name,
-      email: data.email,
-      phone: data.phone,
-      address: data.address || '',
-      status: 'Active',
-      documents: employeeDocs,
-    });
-
-    navigate(ROUTES.EMPLOYEES);
+  const onSubmit = async (data: FormData) => {
+    try {
+      await createEmployee({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        address: data.address || '',
+        status: 'Active',
+      }).unwrap();
+      toast.success('Employee created successfully');
+      navigate(ROUTES.EMPLOYEES);
+    } catch {
+      toast.error('Failed to create employee');
+    }
   };
 
   const renderStepContent = () => {
@@ -387,7 +377,7 @@ export default function CreateEmployeePage() {
 
   return (
     <AppLayout>
-      <main className="flex-1 w-full overflow-y-auto px-4 pt-5 pb-5">
+      <main className="flex-1 w-full overflow-y-auto p-10">
         <div className="max-w-4xl mx-auto">
           <Button
             variant="ghost"
@@ -459,9 +449,10 @@ export default function CreateEmployeePage() {
                 ) : (
                   <Button
                     type="submit"
+                    disabled={isCreating}
                     className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
                   >
-                    Create Employee
+                    {isCreating ? 'Creating...' : 'Create Employee'}
                   </Button>
                 )}
               </div>
