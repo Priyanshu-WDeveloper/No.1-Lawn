@@ -97,9 +97,10 @@ export default function CustomerEditPage() {
     useUpdateCustomerMutation();
 
   const { data, isLoading: isLoadingCustomer } =
-    useGetCustomerByIdQuery(id, {
-      skip: !!passedCustomer,
+    useGetCustomerByIdQuery(id!, {
+      skip: !id || !!passedCustomer,
     });
+  // skip: !!passedCustomer,
   const customer = passedCustomer ?? (data as any)?.customer ?? data;
 
   const {
