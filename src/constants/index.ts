@@ -14,10 +14,15 @@ export const ROUTES = {
   EMPLOYEES: '/employees',
   EMPLOYEES_CREATE: '/employees/create',
   EMPLOYEES_VIEW: '/employees/:id',
+  EMPLOYEES_EDIT: '/employees/edit/:id',
   JOBS: '/jobs',
   JOBS_CREATE: '/jobs/create',
   JOBS_VIEW: '/jobs/:id',
+  JOBS_EDIT: '/jobs/edit/:id',
   INVOICES: '/invoices',
+  INVOICES_CREATE: '/invoices/create',
+  INVOICES_VIEW: '/invoices/:id',
+  INVOICES_EDIT: '/invoices/edit/:id',
   NOTIFICATIONS: '/notifications',
 
   // Super Admin routes
@@ -40,17 +45,68 @@ export const ROLES = {
 } as const;
 
 export const API_ROUTES = {
+  AUTH: {
+    LOGIN: '/admins/login',
+    SUPER_LOGIN: '/superadmins/login',
+    LOGOUT: '/auth/logout',
+  },
+  CUSTOMERS: {
+    LIST: '/admins/customers',
+    CREATE: '/admins/customers',
+    DETAILS: (id: string) => `/admins/customers/${id}`,
+    UPDATE: (id: string) => `/admins/customers/${id}`,
+    DELETE: (id: string) => `/admins/customers/${id}`,
+    STATUS: (id: string) => `/admins/customers/${id}/status`,
+  },
+  EMPLOYEES: {
+    LIST: '/admins/employees',
+    DETAILS: (id: string) => `/admins/employees/${id}`,
+    CREATE: '/admins/employees',
+    UPDATE: (id: string) => `/admins/employees/${id}`,
+    DELETE: (id: string) => `/admins/employees/${id}`,
+    STATUS: (id: string) => `/admins/employees/${id}/status`,
+    SET_VALIDITY: (id: string) => `/admins/employees/${id}/validity`,
+    REMOVE_VALIDITY: (id: string) =>
+      `/admins/employees/${id}/validity`,
+  },
+  JOBS: {
+    LIST: '/jobs',
+    DETAILS: (id: string) => `/jobs/${id}`,
+    CREATE: '/jobs',
+    UPDATE: (id: string) => `/jobs/${id}`,
+    DELETE: (id: string) => `/jobs/${id}`,
+  },
+  INVOICES: {
+    LIST: '/invoices',
+    DETAILS: (id: string) => `/invoices/${id}`,
+    CREATE: '/invoices',
+    UPDATE: (id: string) => `/invoices/${id}`,
+    DELETE: (id: string) => `/invoices/${id}`,
+  },
+  NOTIFICATIONS: {
+    LIST: '/notifications',
+    MARK_READ: (id: string) => `/notifications/${id}/read`,
+    MARK_ALL_READ: '/notifications/read-all',
+    DELETE: (id: string) => `/notifications/${id}`,
+    DELETE_ALL: '/notifications',
+  },
   ADMINS: {
     LIST: '/admins',
     DETAILS: (id: string) => `/admins/${id}`,
-
-    CUSTOMERS: {
-      LIST: '/admins/customers',
-      CREATE: '/admins/customers',
-      DETAILS: (id: string) => `/admins/customers/${id}`,
-      UPDATE: (id: string) => `/admins/customers/${id}`,
-      DELETE: (id: string) => `/admins/customers/${id}`,
-      STATUS: (id: string) => `/admins/customers/${id}/status`,
+  },
+  SUPER_ADMINS: {
+    ADMINS: {
+      LIST: '/superadmins/admins',
+      DETAILS: (id: string) => `/superadmins/edit-admin/${id}`,
+      CREATE: '/superadmins/add-admin',
+      UPDATE: (id: string) => `/superadmins/edit-admin/${id}`,
+      DELETE: (id: string) => `/super-admin/admins/${id}`,
+      SET_VALIDITY: (id: string) => `/superadmins/validity/${id}`,
+      REMOVE_VALIDITY: (id: string) => `/superadmins/validity/${id}`,
+    },
+    BILLING: {
+      STATS: '/super-admin/billing/stats',
+      INVOICES: '/super-admin/billing/invoices',
     },
   },
 } as const;

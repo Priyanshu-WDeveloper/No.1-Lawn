@@ -12,11 +12,11 @@ import {
   Pencil,
   Ellipsis,
 } from 'lucide-react';
-import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
+import { SuperAdminLayout } from '@/components/layout/super-layout';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { ActionButton } from '../../../components/data-table/DataTable';
+import { ActionButton } from '../../../components/data-table/data-table';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +32,8 @@ import Loader from '../../../components/loader';
 import type { IAdmins } from '../../../types/admins.types';
 import toast from 'react-hot-toast';
 
+import { getErrorMessage } from '@/lib/get-error-message';
+
 export default function AdminViewPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -39,11 +41,11 @@ export default function AdminViewPage() {
   const passedAdmin = location.state?.admin as IAdmins | undefined;
   const [updateAdminUser] = useUpdateAdminUserMutation();
 
-  const { data, isLoading, refetch } = useGetAdminUserByIdQuery(id, {
+  const { data, isLoading, refetch } = useGetAdminUserByIdQuery(id!, {
     skip: !!passedAdmin,
   });
 
-  const admin = passedAdmin ?? data?.admin;
+  const admin = passedAdmin ?? data;
 
   const handleStatusChange = async (
     id: string,
@@ -60,8 +62,8 @@ export default function AdminViewPage() {
       );
       refetch();
       toast.success(`Admin set to ${status}`);
-    } catch {
-      toast.error('Failed to update status');
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Failed to update status'));
     }
   };
 

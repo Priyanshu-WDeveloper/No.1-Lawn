@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -6,14 +6,17 @@ import z from 'zod';
 import { Mail, MapPin, Check, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
-import { Navbar } from '@/components/layout/Navbar';
+import { getErrorMessage } from '@/lib/get-error-message';
+
+import { SuperAdminLayout } from '@/components/layout/super-layout';
+import { Navbar } from '@/components/layout/navbar';
 import { ROUTES } from '@/constants';
 import { useCreateAdminUserMutation } from '../../../API/api';
 import { AdminFormStepper } from '../../../components/admin/admin-form-stepper';
 import { AdminFormStep } from '../../../components/admin/admin-form-step';
 import { AdminReviewCard } from '../../../components/admin/admin-review-card';
 import { Button } from '../../../components/ui/button';
+import { validatePhone } from '@/lib/phone-validation';
 
 const createAdminSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -41,6 +44,15 @@ const createAdminSchema = z.object({
   latitude: z.number(),
   longitude: z.number(),
   locationMode: z.enum(['map', 'manual']),
+}).superRefine((data, ctx) => {
+  const result = validatePhone(data.phoneNumber, data.countryCode);
+  if (!result.valid && result.error) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: result.error,
+      path: ['phoneNumber'],
+    });
+  }
 });
 
 type CreateAdminFormData = z.infer<typeof createAdminSchema>;
@@ -87,6 +99,7 @@ export default function CreateAdminPage() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [createAdmin, { isLoading }] = useCreateAdminUserMutation();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const {
     register,
@@ -160,14 +173,14 @@ export default function CreateAdminPage() {
       toast.success('Admin created successfully');
       navigate(ROUTES.SUPER_ADMIN_ADMINS);
     } catch (error: any) {
-      toast.error(error?.data?.message || 'Failed to create admin');
+      toast.error(getErrorMessage(error, 'Failed to create admin'));
     }
   };
 
   const renderStepContent = () => {
     if (currentStep === 3) {
       return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
           <AdminReviewCard
             firstName={formValues.firstName}
             lastName={formValues.lastName}
@@ -193,6 +206,7 @@ export default function CreateAdminPage() {
         watch={watch}
         setValue={setValue}
         errors={errors}
+        trigger={trigger}
       />
     );
   };
@@ -226,6 +240,8 @@ export default function CreateAdminPage() {
             isSubmitting={isLoading}
             isLastStep={currentStep === steps.length}
             isFirstStep={currentStep === 1}
+            submitLabel="Create Admin"
+            formRef={formRef}
           >
             {renderStepContent()}
           </AdminFormStepper>

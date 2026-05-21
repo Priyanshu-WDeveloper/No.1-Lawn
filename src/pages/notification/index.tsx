@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Bell,
   Check,
@@ -9,10 +9,10 @@ import {
   CheckCircle,
   XCircle,
 } from 'lucide-react';
-import { AppLayout } from '@/components/layout/AppLayout';
+import { AppLayout } from '@/components/layout/app-layout';
 import { Button } from '@/components/ui/button';
+import { useGetNotificationsQuery } from '../../API/api';
 
-// Sample notification types
 type NotificationType = 'info' | 'success' | 'warning' | 'error';
 
 interface Notification {
@@ -24,7 +24,6 @@ interface Notification {
   isRead: boolean;
 }
 
-// Mock notifications
 const mockNotifications: Notification[] = [
   {
     id: '1',
@@ -95,8 +94,24 @@ const getNotificationStyles = (type: NotificationType) => {
 };
 
 export default function NotificationsPage() {
+  const { data: apiNotifications } = useGetNotificationsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+
+  const apiRows: Notification[] = useMemo(() => {
+    return (apiNotifications?.notifications ?? []).map((n: any) => ({
+      id: n._id || n.id,
+      title: n.title,
+      message: n.message,
+      type: n.type || 'info',
+      time: n.time || n.createdAt || 'Unknown',
+      isRead: n.isRead ?? false,
+    }));
+  }, [apiNotifications]);
+
   const [notifications, setNotifications] =
-    useState<Notification[]>(mockNotifications);
+    useState<Notification[]>([...mockNotifications, ...apiRows]);
+
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;

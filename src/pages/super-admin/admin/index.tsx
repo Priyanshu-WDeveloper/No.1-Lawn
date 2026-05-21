@@ -1,14 +1,15 @@
-import React from 'react';
-import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
-import { Navbar } from '@/components/layout/Navbar';
-import { Eye, Pencil, Ellipsis } from 'lucide-react';
+import { SuperAdminLayout } from '@/components/layout/super-layout';
+import { Navbar } from '@/components/layout/navbar';
+import { Calendar, Eye, Pencil, Ellipsis, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DataTable, {
   ActionButton,
   type ColumnDef,
-} from '../../../components/data-table/DataTable';
+} from '../../../components/data-table/data-table';
 import type { IAdmins } from '../../../types/admins.types';
 import toast from 'react-hot-toast';
+
+import { getErrorMessage } from '@/lib/get-error-message';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,13 +20,15 @@ import { ROUTES } from '@/constants';
 import {
   useGetAdminUsersQuery,
   useUpdateAdminUserMutation,
+  useDeleteAdminValidityMutation,
 } from '../../../API/api';
 import type { GetAdminsParams } from '../../../types/api.types';
-import { Skeleton } from '../../../components/ui/skeleton';
-import { useDataTableState } from '../../../hooks/useDataTableState';
-import { StatusBadge } from '../../../components/data-table/StatusBadge';
-import { AvatarCell } from '../../../components/data-table/AvatarCell';
-import { formatDate } from '../../../lib/format-date';
+import { useDataTableState } from '../../../hooks/use-data-table-state';
+import { StatusBadge } from '../../../components/data-table/status-badge';
+import { AvatarCell } from '../../../components/data-table/avatar-cell';
+import { format } from 'date-fns';
+import { useState } from 'react';
+import { AdminValidityDialog } from '../../../components/admin/admin-validity-dialog';
 
 const statusConfig: Record<string, { color: string; label: string }> =
   {
@@ -33,6 +36,14 @@ const statusConfig: Record<string, { color: string; label: string }> =
     inactive: { color: '#ef4444', label: 'Inactive' },
     suspended: { color: '#f59e0b', label: 'Suspended' },
   };
+
+const validityConfig: Record<
+  string,
+  { color: string; label: string }
+> = {
+  valid: { color: '#22c55e', label: 'Valid' },
+  notSet: { color: '#6b7280', label: 'Not set' },
+};
 
 const mapSortToApi = (sortValue: string): GetAdminsParams['sort'] => {
   if (
@@ -57,9 +68,13 @@ const mapSortToApi = (sortValue: string): GetAdminsParams['sort'] => {
   return 'newest';
 };
 
-const SuperAdminAdminsPage: React.FC = () => {
+const SuperAdminAdminsPage = () => {
   const navigate = useNavigate();
   const [updateAdminUser] = useUpdateAdminUserMutation();
+  const [deleteAdminValidity] = useDeleteAdminValidityMutation();
+  const [validityAdmin, setValidityAdmin] = useState<IAdmins | null>(
+    null,
+  );
 
   const {
     page,
@@ -90,8 +105,8 @@ const SuperAdminAdminsPage: React.FC = () => {
     try {
       await updateAdminUser({ id, status }).unwrap();
       toast.success(`Admin set to ${status}`);
-    } catch {
-      toast.error('Failed to update status');
+    } catch (error) {
+      toast.error(getErrorMessage(error, 'Failed to update status'));
     }
   };
 
@@ -100,7 +115,6 @@ const SuperAdminAdminsPage: React.FC = () => {
       accessorKey: 'adminId',
       header: 'Admin ID',
       sortable: true,
-      skeleton: () => <Skeleton className="h-4 w-16" />,
       cell: (row: IAdmins) => (
         <span className="text-[#6b7280]">{row.adminId}</span>
       ),
@@ -109,15 +123,6 @@ const SuperAdminAdminsPage: React.FC = () => {
       accessorKey: 'fullName',
       header: 'Name',
       sortable: true,
-      skeleton: () => (
-        <div className="flex items-center gap-3">
-          <Skeleton className="h-7 w-7 rounded-full" />
-          <div className="flex flex-col gap-1.5">
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-3 w-48" />
-          </div>
-        </div>
-      ),
       cell: (row: IAdmins) => (
         <AvatarCell name={row.fullName} email={row.email} />
       ),
@@ -125,12 +130,6 @@ const SuperAdminAdminsPage: React.FC = () => {
     {
       accessorKey: 'status',
       header: 'Status',
-      skeleton: () => (
-        <div className="inline-flex items-center gap-1.5">
-          <Skeleton className="h-2 w-2 rounded-full" />
-          <Skeleton className="h-4 w-16" />
-        </div>
-      ),
       cell: (row: IAdmins) => (
         <StatusBadge status={row.status} config={statusConfig} />
       ),
@@ -139,7 +138,6 @@ const SuperAdminAdminsPage: React.FC = () => {
       accessorKey: 'phoneNumber',
       header: 'Phone',
       sortable: true,
-      skeleton: () => <Skeleton className="h-4 w-24" />,
       cell: (row: IAdmins) => (
         <span className="text-[#6b7280]">
           {row.countryCode} {row.phoneNumber}
@@ -150,34 +148,33 @@ const SuperAdminAdminsPage: React.FC = () => {
       accessorKey: 'createdAt',
       header: 'Joined',
       sortable: true,
-      skeleton: () => <Skeleton className="h-4 w-24" />,
       cell: (row: IAdmins) => (
         <span className="text-[#6b7280]">
-          {formatDate(row.createdAt)}
+          {format(new Date(row.createdAt), 'MMM d, yyyy')}
         </span>
       ),
     },
     {
-      accessorKey: 'updatedAt',
-      header: 'Updated At',
-      sortable: true,
-      skeleton: () => <Skeleton className="h-4 w-24" />,
-      cell: (row: IAdmins) => (
-        <span className="text-[#6b7280]">
-          {formatDate(row.updatedAt)}
-        </span>
-      ),
+      accessorKey: 'validity',
+      header: 'Validity',
+      cell: (row: IAdmins) => {
+        if (row.validity) {
+          return (
+            <StatusBadge
+              status="valid"
+              config={validityConfig}
+              label={format(new Date(row.validity), 'MMM d, yyyy')}
+            />
+          );
+        }
+        return (
+          <StatusBadge status="notSet" config={validityConfig} />
+        );
+      },
     },
     {
       accessorKey: 'actions',
       header: 'Actions',
-      skeleton: () => (
-        <div className="flex items-center gap-1">
-          <Skeleton className="h-8 w-8 rounded-full" />
-          <Skeleton className="h-8 w-8 rounded-full" />
-          <Skeleton className="h-8 w-8 rounded-full" />
-        </div>
-      ),
       cell: (row: IAdmins) => (
         <div className="flex items-center gap-1">
           <ActionButton
@@ -237,6 +234,25 @@ const SuperAdminAdminsPage: React.FC = () => {
                   }
                 >
                   Set Active
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem
+                onClick={() => setValidityAdmin(row)}
+                className="truncate"
+              >
+                <Calendar className="mr-2 h-4 w-4" />
+                {row.validity ? 'Change Validity' : 'Set Validity'}
+              </DropdownMenuItem>
+              {row.validity && (
+                <DropdownMenuItem
+                  onClick={async () => {
+                    await deleteAdminValidity({ id: row._id }).unwrap();
+                    toast.success('Validity removed');
+                  }}
+                  className="text-red-500 focus:text-red-500 truncate"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Remove Validity
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem
@@ -304,6 +320,15 @@ const SuperAdminAdminsPage: React.FC = () => {
           </div>
         </div>
       </div>
+      {validityAdmin && (
+        <AdminValidityDialog
+          admin={validityAdmin}
+          open={!!validityAdmin}
+          onOpenChange={(open) => {
+            if (!open) setValidityAdmin(null);
+          }}
+        />
+      )}
     </SuperAdminLayout>
   );
 };

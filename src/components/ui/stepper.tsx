@@ -12,12 +12,14 @@ interface StepperProps {
   steps: Step[];
   currentStep: number;
   onStepClick?: (step: number) => void;
+  allowAllSteps?: boolean;
 }
 
 export function Stepper({
   steps,
   currentStep,
   onStepClick,
+  allowAllSteps = false,
 }: StepperProps) {
   return (
     <div className="w-full">
@@ -34,12 +36,11 @@ export function Stepper({
               <button
                 type="button"
                 onClick={() => onStepClick?.(step.id)}
-                disabled={!isCompleted && !isCurrent}
                 className={cn(
-                  'flex items-center gap-3 cursor-pointer',
-                  isCompleted || isCurrent
-                    ? 'pointer-events-auto'
-                    : 'pointer-events-none',
+                  'flex items-center gap-3 transition-opacity',
+                  allowAllSteps || isCompleted || isCurrent
+                    ? 'cursor-pointer opacity-100'
+                    : 'pointer-events-none opacity-50',
                 )}
               >
                 {/* Circle */}
@@ -109,10 +110,10 @@ export function Stepper({
                 type="button"
                 onClick={() => onStepClick?.(step.id)}
                 className={cn(
-                  'flex items-center gap-2',
-                  isCompleted || isCurrent
-                    ? 'cursor-pointer'
-                    : 'cursor-not-allowed opacity-60',
+                  'flex items-center gap-2 transition-opacity',
+                  allowAllSteps || isCompleted || isCurrent
+                    ? 'cursor-pointer opacity-100'
+                    : 'cursor-not-allowed opacity-50',
                 )}
               >
                 <div

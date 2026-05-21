@@ -23,6 +23,9 @@ import { ConfirmDialog } from './ui/confirm-dialog';
 import { useState } from 'react';
 import { ROUTES } from '../constants';
 import { localLogout } from '../lib/auth';
+import { useDispatch } from 'react-redux';
+import { clearAuth } from '../store/auth-slice';
+import { api } from '../API/api';
 
 export default function AccountDropdown({
   superAccess = false,
@@ -32,10 +35,13 @@ export default function AccountDropdown({
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.user);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const dispatch = useDispatch();
 
   const handleLogout = async () => {
     try {
       localLogout();
+      dispatch(clearAuth());
+      dispatch(api.util.resetApiState());
       toast.success('Logged out');
       setShowLogoutDialog(false);
 

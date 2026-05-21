@@ -17,6 +17,9 @@ interface AdminFormStepperProps {
   isSubmitting: boolean;
   isLastStep: boolean;
   isFirstStep: boolean;
+  allowStepNavigation?: boolean;
+  submitLabel?: string;
+  formRef?: React.RefObject<HTMLFormElement | null>;
 }
 
 export function AdminFormStepper({
@@ -30,7 +33,22 @@ export function AdminFormStepper({
   isSubmitting,
   isLastStep,
   isFirstStep,
+  allowStepNavigation = false,
+  submitLabel,
+  formRef,
 }: AdminFormStepperProps) {
+  const submittingLabel = submitLabel
+    ? submitLabel.replace(/^Create/, 'Creating').replace(/^Edit/, 'Editing') + '...'
+    : 'Submitting';
+
+  const handleSubmit = () => {
+    if (formRef?.current) {
+      formRef.current.requestSubmit();
+    } else {
+      onSubmit();
+    }
+  };
+
   return (
     <>
       <div className="mb-8 rounded-2xl border border-[#ececec] bg-white p-6 shadow-sm">
@@ -38,6 +56,7 @@ export function AdminFormStepper({
           steps={steps}
           currentStep={currentStep}
           onStepClick={onStepClick}
+          allowAllSteps={allowStepNavigation}
         />
       </div>
 
@@ -81,11 +100,11 @@ export function AdminFormStepper({
           ) : (
             <button
               type="button"
-              onClick={onSubmit}
+              onClick={handleSubmit}
               disabled={isSubmitting}
               className="h-12 rounded-xl bg-[#16610E] px-8 text-white transition-all hover:bg-[#1a7a12] disabled:pointer-events-none disabled:opacity-50"
             >
-              {isSubmitting ? 'Creating...' : 'Create Admin'}
+              {isSubmitting ? submittingLabel : (submitLabel || 'Submit')}
             </button>
           )}
         </div>

@@ -2,8 +2,9 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { PhoneInput } from '@/components/forms/phone-input';
 import { LocationModeToggle } from '@/components/forms/location-mode-toggle';
-import { GoogleMapPicker } from '@/components/google-maps/GoogleMapPicker';
+import { GoogleMapPicker } from '@/components/google-maps/picker';
 import { ManualCoordinates } from '@/components/forms/manual-coordinates';
+import { validatePhone } from '@/lib/phone-validation';
 
 interface AdminFormStepProps {
   step: number;
@@ -11,6 +12,7 @@ interface AdminFormStepProps {
   watch: any;
   setValue: any;
   errors: Record<string, { message?: string }>;
+  trigger?: (field: string) => void;
 }
 
 export function AdminFormStep({
@@ -19,6 +21,7 @@ export function AdminFormStep({
   watch,
   setValue,
   errors,
+  trigger,
 }: AdminFormStepProps) {
   const formValues = watch();
 
@@ -101,6 +104,19 @@ export function AdminFormStep({
                   })
                 }
                 error={errors.phoneNumber?.message}
+                onValidate={(err) => {
+                  if (err) {
+                    setValue('phoneNumber', formValues.phoneNumber, {
+                      shouldValidate: true,
+                    });
+                    const limits = { minLength: 0, maxLength: 99 };
+                    const result = validatePhone(formValues.phoneNumber, formValues.countryCode);
+                    if (!result.valid && result.error) {
+                      setValue('phoneNumber', undefined, { shouldValidate: true });
+                    }
+                  }
+                  trigger?.('phoneNumber');
+                }}
               />
             </div>
           </div>

@@ -26,6 +26,9 @@ import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import toast from 'react-hot-toast';
 import { ROUTES } from '../../constants';
 import { localLogout } from '../../lib/auth';
+import { useDispatch } from 'react-redux';
+import { clearAuth } from '../../store/auth-slice';
+import { api } from '../../API/api';
 
 const items = [
   {
@@ -50,10 +53,13 @@ export function SuperAdminSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { toggleSidebar } = useSidebar();
+  const dispatch = useDispatch();
 
   const handleLogout = async () => {
     try {
       localLogout();
+      dispatch(clearAuth());
+      dispatch(api.util.resetApiState());
       toast.success('Logged out');
       setShowLogoutDialog(false);
 

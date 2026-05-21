@@ -30,4 +30,5 @@ export interface IAdmins {
 
   createdAt: string;
   updatedAt: string;
+  validity?: string;
 }

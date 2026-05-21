@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Leaf, Mail, Lock, Eye, Globe, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
+
+import { getErrorMessage } from '@/lib/get-error-message';
 import { InputWithIcon } from '../../components/forms/input-with-icon';
 import { Button } from '../../components/ui/button';
 import { useForm } from 'react-hook-form';
@@ -26,7 +28,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-const Login: React.FC = () => {
+const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const navigate = useNavigate();
@@ -61,7 +63,7 @@ const Login: React.FC = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error('Login failed. Please check your credentials.');
+      toast.error(getErrorMessage(error, 'Login failed. Please check your credentials.'));
     }
   };
 

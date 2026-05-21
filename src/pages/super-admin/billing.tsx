@@ -1,6 +1,5 @@
-import React from 'react';
-import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
-import { Navbar } from '@/components/layout/Navbar';
+import { SuperAdminLayout } from '@/components/layout/super-layout';
+import { Navbar } from '@/components/layout/navbar';
 import {
   CreditCard,
   DollarSign,
@@ -10,74 +9,78 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useGetBillingStatsQuery, useGetBillingInvoicesQuery } from '../../API/api';
 
-const billingStats = [
-  {
-    label: 'Total Revenue',
-    value: '$45,231',
-    change: '+12.5%',
-    icon: DollarSign,
-    color: 'text-[#16610E]',
-    bgColor: 'bg-[#edf8e7]',
-  },
-  {
-    label: 'Pending Payments',
-    value: '$3,450',
-    change: '-2.3%',
-    icon: CreditCard,
-    color: 'text-[#16610E]',
-    bgColor: 'bg-[#edf8e7]',
-  },
-  {
-    label: 'Monthly Growth',
-    value: '+18.2%',
-    change: '',
-    icon: TrendingUp,
-    color: 'text-[#16610E]',
-    bgColor: 'bg-[#edf8e7]',
-  },
-  {
-    label: 'Active Subscriptions',
-    value: '142',
-    change: '+8.1%',
-    icon: Calendar,
-    color: 'text-[#16610E]',
-    bgColor: 'bg-[#edf8e7]',
-  },
-];
+const SuperAdminBillingPage = () => {
+  const { data: stats } = useGetBillingStatsQuery();
+  const { data: invoices } = useGetBillingInvoicesQuery();
 
-const recentInvoices = [
-  {
-    id: 'INV-001',
-    customer: 'Acme Corp',
-    amount: '$2,500',
-    status: 'Paid',
-    date: '2024-05-10',
-  },
-  {
-    id: 'INV-002',
-    customer: 'John Doe',
-    amount: '$450',
-    status: 'Pending',
-    date: '2024-05-12',
-  },
-  {
-    id: 'INV-003',
-    customer: 'Smith & Co',
-    amount: '$1,800',
-    status: 'Overdue',
-    date: '2024-05-08',
-  },
-  {
-    id: 'INV-004',
-    customer: 'Jane Wilson',
-    amount: '$320',
-    status: 'Paid',
-    date: '2024-05-14',
-  },
-];
+  const billingStats = [
+    {
+      label: 'Total Revenue',
+      value: (stats as any)?.totalRevenue ?? '$45,231',
+      change: (stats as any)?.revenueChange ?? '+12.5%',
+      icon: DollarSign,
+      color: 'text-[#16610E]',
+      bgColor: 'bg-[#edf8e7]',
+    },
+    {
+      label: 'Pending Payments',
+      value: (stats as any)?.pendingPayments ?? '$3,450',
+      change: (stats as any)?.pendingChange ?? '-2.3%',
+      icon: CreditCard,
+      color: 'text-[#16610E]',
+      bgColor: 'bg-[#edf8e7]',
+    },
+    {
+      label: 'Monthly Growth',
+      value: (stats as any)?.monthlyGrowth ?? '+18.2%',
+      change: '',
+      icon: TrendingUp,
+      color: 'text-[#16610E]',
+      bgColor: 'bg-[#edf8e7]',
+    },
+    {
+      label: 'Active Subscriptions',
+      value: (stats as any)?.activeSubscriptions ?? '142',
+      change: (stats as any)?.subscriptionChange ?? '+8.1%',
+      icon: Calendar,
+      color: 'text-[#16610E]',
+      bgColor: 'bg-[#edf8e7]',
+    },
+  ];
 
-const SuperAdminBillingPage: React.FC = () => {
+  const recentInvoices = (invoices as any[]) ?? [
+    {
+      id: 'INV-001',
+      customer: 'Acme Corp',
+      amount: '$2,500',
+      status: 'Paid',
+      date: '2024-05-10',
+    },
+    {
+      id: 'INV-002',
+      customer: 'John Doe',
+      amount: '$450',
+      status: 'Pending',
+      date: '2024-05-12',
+    },
+    {
+      id: 'INV-003',
+      customer: 'Smith & Co',
+      amount: '$1,800',
+      status: 'Overdue',
+      date: '2024-05-08',
+    },
+    {
+      id: 'INV-004',
+      customer: 'Jane Wilson',
+      amount: '$320',
+      status: 'Paid',
+      date: '2024-05-14',
+    },
+  ];
+
   return (
     <SuperAdminLayout>
       <main className="flex-1 w-full overflow-y-auto p-10">

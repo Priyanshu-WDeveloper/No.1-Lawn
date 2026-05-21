@@ -1,5 +1,5 @@
+import { useState } from 'react';
 import {
-  Check,
   User,
   Mail,
   Phone,
@@ -8,8 +8,13 @@ import {
   Map,
   Hash,
   Globe,
-  Navigation,
+  Camera,
 } from 'lucide-react';
+
+import { DetailRow } from './detail-row';
+import { DocumentRow } from './document-row';
+import { DocumentPreviewModal } from './document-preview-modal';
+import type { NamedDoc } from './named-document-upload';
 
 interface AdminReviewCardProps {
   firstName: string;
@@ -22,39 +27,8 @@ interface AdminReviewCardProps {
   state: string;
   postalCode: string;
   country: string;
-  latitude: number;
-  longitude: number;
-}
-
-function ReviewField({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string | number;
-}) {
-  const displayValue = value || 'Not provided';
-  const isEmpty = !value;
-
-  return (
-    <div className="flex items-center gap-3 border-b border-[#e5e5e5] py-2 last:border-b-0">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center">
-        <span className="text-[#777]">{icon}</span>
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm text-[#777]">{label}</p>
-      </div>
-      <div className="text-right">
-        <p
-          className={`text-sm font-medium ${isEmpty ? 'text-[#777] italic' : 'text-[#151515]'}`}
-        >
-          {displayValue}
-        </p>
-      </div>
-    </div>
-  );
+  profileImage?: string;
+  documents?: NamedDoc[];
 }
 
 export function AdminReviewCard({
@@ -68,67 +42,113 @@ export function AdminReviewCard({
   state,
   postalCode,
   country,
-  latitude,
-  longitude,
+  profileImage,
+  documents = [],
 }: AdminReviewCardProps) {
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
+
+  const handlePreview = (doc: NamedDoc) => {
+    if (doc.file) setPreviewFile(doc.file);
+  };
+
+  const hasDocuments = documents.some((d) => d.file);
+
   return (
-    <div className="rounded-xl border border-dashed border-[#e5e5e5] bg-[#fafaf8] p-6">
-      <div className="text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#edf8e7]">
-          <Check className="h-6 w-6 text-[#16610E]" />
+    <div className="bg-[#efefed80] rounded-2xl p-20 px-40">
+      {/* Employee Information Card */}
+      <div className="bg-white rounded-2xl p-6 mb-4">
+        <h4 className="text-sm font-medium uppercase tracking-wide text-[#777] mb-4">
+          Employee Information
+        </h4>
+
+        {profileImage && (
+          <div className="flex items-center gap-3 mb-4 pb-4 border-b border-[#e5e5e5]">
+            <img
+              src={profileImage}
+              alt={`${firstName} ${lastName}`}
+              className="h-12 w-12 rounded-full object-cover"
+            />
+            <span className="text-sm font-medium text-[#151515]">
+              {firstName} {lastName}
+            </span>
+          </div>
+        )}
+
+        <div className="space-y-3">
+          <DetailRow
+            icon={<User className="h-4 w-4" />}
+            label="First Name"
+            value={firstName}
+          />
+          <DetailRow
+            icon={<User className="h-4 w-4" />}
+            label="Last Name"
+            value={lastName}
+          />
+          <DetailRow
+            icon={<Mail className="h-4 w-4" />}
+            label="Email"
+            value={email}
+          />
+          <DetailRow
+            icon={<Phone className="h-4 w-4" />}
+            label="Phone Number"
+            value={`${countryCode} ${phoneNumber}`}
+          />
+          <DetailRow
+            icon={<MapPin className="h-4 w-4" />}
+            label="Address"
+            value={address}
+          />
+          <DetailRow
+            icon={<Building2 className="h-4 w-4" />}
+            label="City"
+            value={city}
+          />
+          <DetailRow
+            icon={<Map className="h-4 w-4" />}
+            label="State"
+            value={state}
+          />
+          <DetailRow
+            icon={<Hash className="h-4 w-4" />}
+            label="Postal Code"
+            value={postalCode}
+          />
+          <DetailRow
+            icon={<Globe className="h-4 w-4" />}
+            label="Country"
+            value={country}
+          />
         </div>
-        <h5 className="mb-2 text-lg font-semibold text-[#151515]">
-          Review Customer Information
-        </h5>
       </div>
 
-      <div className="mt-6">
-        <ReviewField
-          icon={<User className="h-4 w-4" />}
-          label="Name"
-          value={`${firstName} ${lastName}`}
-        />
-        <ReviewField
-          icon={<Mail className="h-4 w-4" />}
-          label="Email"
-          value={email}
-        />
-        <ReviewField
-          icon={<Phone className="h-4 w-4" />}
-          label="Phone"
-          value={`${countryCode} ${phoneNumber}`}
-        />
-        <ReviewField
-          icon={<MapPin className="h-4 w-4" />}
-          label="Address"
-          value={address}
-        />
-        <ReviewField
-          icon={<Building2 className="h-4 w-4" />}
-          label="City"
-          value={city}
-        />
-        <ReviewField
-          icon={<Map className="h-4 w-4" />}
-          label="State"
-          value={state}
-        />
-        <ReviewField
-          icon={<Hash className="h-4 w-4" />}
-          label="Postal Code"
-          value={postalCode}
-        />
-        <ReviewField
-          icon={<Globe className="h-4 w-4" />}
-          label="Country"
-          value={country}
-        />
-        <ReviewField
-          icon={<Navigation className="h-4 w-4" />}
-          label="Coordinates"
-          value={`${latitude}, ${longitude}`}
-        />
-      </div>
+      {/* Documents Card */}
+      {hasDocuments && (
+        <div className="bg-white rounded-2xl p-6">
+          <h4 className="text-sm font-medium uppercase tracking-wide text-[#777] mb-4">
+            Documents
+          </h4>
+
+          <div className="space-y-3">
+            {documents
+              .filter((d) => d.file)
+              .map((doc, index) => (
+                <DocumentRow
+                  key={index}
+                  doc={doc}
+                  onPreview={handlePreview}
+                />
+              ))}
+          </div>
+        </div>
+      )}
+
+      <DocumentPreviewModal
+        file={previewFile}
+        isOpen={!!previewFile}
+        onClose={() => setPreviewFile(null)}
+      />
     </div>
   );
 }

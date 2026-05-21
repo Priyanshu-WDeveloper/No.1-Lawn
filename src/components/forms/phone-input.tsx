@@ -3,6 +3,7 @@ import { ChevronDown, Search } from 'lucide-react';
 import { COUNTRY_CODES } from '@/lib/country-codes';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import { getPhoneLimits } from '@/lib/phone-validation';
 import 'flag-icons/css/flag-icons.min.css';
 
 interface PhoneInputProps {
@@ -13,6 +14,7 @@ interface PhoneInputProps {
   error?: string;
   placeholder?: string;
   disabledCountryCode?: boolean;
+  onValidate?: (error: string | undefined) => void;
 }
 
 export function PhoneInput({
@@ -23,6 +25,7 @@ export function PhoneInput({
   error,
   placeholder = 'Enter phone number',
   disabledCountryCode = false,
+  onValidate,
 }: PhoneInputProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -92,6 +95,16 @@ export function PhoneInput({
             const digits = e.target.value.replace(/\D/g, '');
             if (digits.length <= selected.maxLength) {
               onChange(digits);
+              const limits = getPhoneLimits(countryCode);
+              if (limits) {
+                if (digits.length === 0) {
+                  onValidate?.('Phone number is required');
+                } else if (digits.length < limits.minLength) {
+                  onValidate?.(`Phone number must be at least ${limits.minLength} digits`);
+                } else {
+                  onValidate?.(undefined);
+                }
+              }
             }
           }}
           placeholder={placeholder}
@@ -100,11 +113,6 @@ export function PhoneInput({
       </div>
 
       {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
-      {value && value.length > 0 && value.length < selected.minLength && (
-        <p className="mt-1 text-sm text-red-500">
-          Phone number must be at least {selected.minLength} digits (currently {value.length})
-        </p>
-      )}
 
       {open && (
         <div className={`absolute left-0 z-50 w-72 rounded-xl border border-[#e5e5e5] bg-white shadow-xl max-h-80 overflow-hidden ${
@@ -130,6 +138,10 @@ export function PhoneInput({
                 type="button"
                 className="flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-muted transition"
                 onClick={() => {
+                  const newLimits = getPhoneLimits(country.code);
+                  if (newLimits && value.length > newLimits.maxLength) {
+                    onChange(value.slice(0, newLimits.maxLength));
+                  }
                   onCountryCodeChange(country.code);
                   setOpen(false);
                   setSearch('');

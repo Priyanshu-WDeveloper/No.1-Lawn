@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Leaf, Mail, ArrowLeft, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
+
+import { getErrorMessage } from '@/lib/get-error-message';
 import { InputWithIcon } from '../../components/forms/input-with-icon';
 import { Button } from '../../components/ui/button';
 import { ROUTES } from '../../constants';
@@ -18,7 +20,7 @@ const forgotPasswordSchema = z.object({
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
-const ForgotPassword: React.FC = () => {
+const ForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -43,7 +45,7 @@ const ForgotPassword: React.FC = () => {
       toast.success('Password reset link sent to your email!');
       navigate(ROUTES.LOGIN);
     } catch (error) {
-      toast.error('Failed to send reset link. Please try again.');
+      toast.error(getErrorMessage(error, 'Failed to send reset link. Please try again.'));
     } finally {
       setIsLoading(false);
     }

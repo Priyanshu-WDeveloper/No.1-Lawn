@@ -1,4 +1,4 @@
-import type { ICustomer } from '.';
+import type { ICustomer, IJob, IInvoice } from '.';
 import type { IAdmins } from './admins.types';
 
 export type GetAdminsParams = {
@@ -36,4 +36,35 @@ export interface CustomersResponse {
 export interface CustomerMutationResponse {
   message: string;
   customer: ICustomer;
+}
+export interface JobsResponse {
+  jobs: IJob[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface InvoicesResponse {
+  invoices: IInvoice[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface Notification {
+  _id: string;
+  title: string;
+  message: string;
+  type: 'info' | 'success' | 'warning' | 'error';
+  time: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export interface NotificationsResponse {
+  notifications: Notification[];
+  total: number;
+  unreadCount: number;
 }

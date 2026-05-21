@@ -1,5 +1,5 @@
-import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
-import { Navbar } from '@/components/layout/Navbar';
+import { SuperAdminLayout } from '@/components/layout/super-layout';
+import { Navbar } from '@/components/layout/navbar';
 import { Users, Shield, BarChart3, Settings } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 

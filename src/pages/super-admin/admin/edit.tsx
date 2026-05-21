@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   useParams,
   useNavigate,
@@ -8,9 +8,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import toast from 'react-hot-toast';
+
+import { getErrorMessage } from '@/lib/get-error-message';
 import { ArrowLeft } from 'lucide-react';
-import { SuperAdminLayout } from '@/components/layout/SuperAdminLayout';
-import { Navbar } from '@/components/layout/Navbar';
+import { SuperAdminLayout } from '@/components/layout/super-layout';
+import { Navbar } from '@/components/layout/navbar';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/constants';
 import {
@@ -22,6 +24,7 @@ import { AdminFormStep } from '../../../components/admin/admin-form-step';
 import { AdminReviewCard } from '../../../components/admin/admin-review-card';
 import Loader from '../../../components/loader';
 import type { IAdmins } from '../../../types/admins.types';
+import { validatePhone } from '@/lib/phone-validation';
 
 const editAdminSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -44,6 +47,15 @@ const editAdminSchema = z.object({
   latitude: z.number(),
   longitude: z.number(),
   locationMode: z.enum(['map', 'manual']),
+}).superRefine((data, ctx) => {
+  const result = validatePhone(data.phoneNumber, data.countryCode);
+  if (!result.valid && result.error) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: result.error,
+      path: ['phoneNumber'],
+    });
+  }
 });
 
 type EditAdminFormData = z.infer<typeof editAdminSchema>;
@@ -79,12 +91,13 @@ export default function AdminEditPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [updateAdmin, { isLoading: isUpdating }] =
     useUpdateAdminUserMutation();
+  const formRef = useRef<HTMLFormElement>(null);
 
   const { data, isLoading: isLoadingAdmin } =
-    useGetAdminUserByIdQuery(id, {
+    useGetAdminUserByIdQuery(id!, {
       skip: !!passedAdmin,
     });
-  const admin = passedAdmin ?? data?.admin;
+  const admin = passedAdmin ?? data;
 
   const {
     register,
@@ -162,7 +175,7 @@ export default function AdminEditPage() {
   const onSubmit = async (data: EditAdminFormData) => {
     try {
       await updateAdmin({
-        id,
+        id: id!,
         firstName: data.firstName,
         lastName: data.lastName,
         phoneNumber: data.phoneNumber,
@@ -179,7 +192,7 @@ export default function AdminEditPage() {
       toast.success('Admin updated successfully');
       navigate(ROUTES.SUPER_ADMIN_ADMINS);
     } catch (error: any) {
-      toast.error(error?.data?.message || 'Failed to update admin');
+      toast.error(getErrorMessage(error, 'Failed to update admin'));
     }
   };
 
@@ -204,7 +217,7 @@ export default function AdminEditPage() {
   const renderStepContent = () => {
     if (currentStep === 3) {
       return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
           <AdminReviewCard
             firstName={formValues.firstName}
             lastName={formValues.lastName}
@@ -230,6 +243,7 @@ export default function AdminEditPage() {
         watch={watch}
         setValue={setValue}
         errors={errors}
+        trigger={trigger}
       />
     );
   };
@@ -267,6 +281,9 @@ export default function AdminEditPage() {
             isSubmitting={isUpdating}
             isLastStep={currentStep === steps.length}
             isFirstStep={currentStep === 1}
+            submitLabel="Edit Admin"
+            allowStepNavigation
+            formRef={formRef}
           >
             {renderStepContent()}
           </AdminFormStepper>
