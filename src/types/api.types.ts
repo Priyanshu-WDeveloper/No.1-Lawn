@@ -46,6 +46,11 @@ export interface JobsResponse {
   totalPages: number;
 }
 
+export interface JobMutationResponse {
+  message: string;
+  job: IJob;
+}
+
 export interface InvoicesResponse {
   invoices: IInvoice[];
   total: number;

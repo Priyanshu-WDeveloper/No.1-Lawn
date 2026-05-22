@@ -58,6 +58,7 @@ export interface CreateEmployeePayload {
   country: string;
   latitude: number;
   longitude: number;
+  attachments?: Array<{ key: string; value: string }>;
   //   balance: number;
   //   parentAdmin: string;
   //   active: boolean;

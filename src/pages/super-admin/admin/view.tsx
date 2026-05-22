@@ -16,20 +16,20 @@ import { SuperAdminLayout } from '@/components/layout/super-layout';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { ActionButton } from '../../../components/data-table/data-table';
+import { ActionButton } from '@/components/data-table/data-table';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../../components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import {
   useGetAdminUserByIdQuery,
   useUpdateAdminUserMutation,
-} from '../../../API/api';
+} from '@/API/api';
 import { ROUTES } from '@/constants';
-import Loader from '../../../components/loader';
-import type { IAdmins } from '../../../types/admins.types';
+import Loader from '@/components/loader';
+import type { IAdmins } from '@/types/admins.types';
 import toast from 'react-hot-toast';
 
 import { getErrorMessage } from '@/lib/get-error-message';

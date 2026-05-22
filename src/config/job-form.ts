@@ -86,6 +86,12 @@ export const jobFields: FormFieldConfig[] = [
     required: true,
   },
   {
+    name: 'description',
+    label: 'Description',
+    type: 'textarea',
+    placeholder: 'Enter job description',
+  },
+  {
     name: 'notes',
     label: 'Notes',
     type: 'textarea',

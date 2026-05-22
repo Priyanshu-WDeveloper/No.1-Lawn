@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Plus, X, Upload, FileText, File } from 'lucide-react';
 
-import { formatFileSize } from '../../lib/file-utils';
+import { formatFileSize } from '@/lib/file-utils';
 import { DocumentPreviewModal } from './document-preview-modal';
 
 export interface NamedDoc {

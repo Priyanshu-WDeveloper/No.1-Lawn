@@ -19,15 +19,18 @@ import { getErrorMessage } from '@/lib/get-error-message';
 import { AppLayout } from '@/components/layout/app-layout';
 import { Navbar } from '@/components/layout/navbar';
 import { ROUTES } from '@/constants';
-import { useCreateEmployeeMutation } from '../../../API/api';
-import { AdminFormStepper } from '../../../components/admin/admin-form-stepper';
-import { AdminReviewCard } from '../../../components/admin/admin-review-card';
+import {
+  useCreateEmployeeMutation,
+  useUploadDocumentMutation,
+} from '@/API/api';
+import { AdminFormStepper } from '@/components/admin/admin-form-stepper';
+import { AdminReviewCard } from '@/components/admin/admin-review-card';
 import {
   NamedDocumentUpload,
   type NamedDoc,
-} from '../../../components/admin/named-document-upload';
-import { Button } from '../../../components/ui/button';
-import { Textarea } from '../../../components/ui/textarea';
+} from '@/components/admin/named-document-upload';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { LocationModeToggle } from '@/components/forms/location-mode-toggle';
 import { GoogleMapPicker } from '@/components/google-maps/picker';
 import { ManualCoordinates } from '@/components/forms/manual-coordinates';
@@ -107,6 +110,7 @@ export default function CreateEmployeePage() {
   const [documents, setDocuments] = useState<NamedDoc[]>([]);
   const [createEmployee, { isLoading: isCreating }] =
     useCreateEmployeeMutation();
+  const [uploadDocument] = useUploadDocumentMutation();
   const profileInputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -195,6 +199,21 @@ export default function CreateEmployeePage() {
 
   const onSubmit = async (data: CreateEmployeeFormData) => {
     try {
+      let attachments: Array<{ key: string; value: string }> | undefined;
+
+      const docsToUpload = documents.filter((d) => d.file && d.name);
+      if (docsToUpload.length > 0) {
+        const formData = new FormData();
+        for (const doc of docsToUpload) {
+          formData.append('files', doc.file!);
+        }
+        const res = await uploadDocument(formData).unwrap();
+        attachments = res.urls.map((url, i) => ({
+          key: docsToUpload[i].name,
+          value: url,
+        }));
+      }
+
       await createEmployee({
         firstName: data.firstName,
         lastName: data.lastName,
@@ -209,6 +228,7 @@ export default function CreateEmployeePage() {
         profileImage: data.profileImage,
         latitude: data.latitude,
         longitude: data.longitude,
+        attachments,
       }).unwrap();
       toast.success('Employee created successfully');
       navigate(ROUTES.EMPLOYEES);

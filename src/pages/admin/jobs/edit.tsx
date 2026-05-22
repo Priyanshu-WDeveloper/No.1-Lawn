@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,33 +8,43 @@ import {
   MapPin,
   Calendar,
   CreditCard,
+  DollarSign,
   ArrowLeft,
+  FileText,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { AppLayout } from '@/components/layout/app-layout';
 import { Navbar } from '@/components/layout/navbar';
 import { ROUTES } from '@/constants';
-import { AdminFormStepper } from '../../../components/admin/admin-form-stepper';
-import { Button } from '../../../components/ui/button';
-import { Input } from '../../../components/ui/input';
-import { Textarea } from '../../../components/ui/textarea';
+import { AdminFormStepper } from '@/components/admin/admin-form-stepper';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../components/ui/select';
+} from '@/components/ui/select';
 import { LocationModeToggle } from '@/components/forms/location-mode-toggle';
 import { MockMapPicker } from '@/components/forms/mock-map-picker';
 import { ManualCoordinates } from '@/components/forms/manual-coordinates';
 import { Check } from 'lucide-react';
+import { SearchableSelect } from '@/components/ui/searchable-select';
+import { useGetJobByIdQuery, useGetCustomersQuery, useGetEmployeesQuery, useUpdateJobMutation } from '@/API/api';
+import Loader from '@/components/loader';
+import { getErrorMessage } from '@/lib/get-error-message';
 
 const editJobSchema = z.object({
   customer: z.string().min(1, 'Customer is required'),
-  employee: z.string().min(1, 'Employee is required'),
+  employee: z.string().optional(),
   jobAddress: z.string().min(1, 'Job address is required'),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  country: z.string().optional(),
+  postalCode: z.string().optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
   locationMode: z.enum(['map', 'manual']),
@@ -42,7 +52,9 @@ const editJobSchema = z.object({
   jobDate: z.string().min(1, 'Job date is required'),
   frequencyValue: z.number().optional(),
   frequencyUnit: z.string().optional(),
+  price: z.number().min(0, 'Price must be at least 0').optional(),
   paymentType: z.string().min(1, 'Payment type is required'),
+  description: z.string().optional(),
   notes: z.string().optional(),
 });
 
@@ -51,8 +63,8 @@ type EditJobFormData = z.infer<typeof editJobSchema>;
 const steps = [
   {
     id: 1,
-    title: 'Assignment',
-    description: 'Customer & Employee',
+    title: 'Assignment & Schedule',
+    description: 'Customer, type & date',
     icon: <Users className="h-4 w-4" />,
   },
   {
@@ -63,19 +75,27 @@ const steps = [
   },
   {
     id: 3,
-    title: 'Schedule',
-    description: 'Type & frequency',
-    icon: <Calendar className="h-4 w-4" />,
+    title: 'Payment & Details',
+    description: 'Payment & notes',
+    icon: <CreditCard className="h-4 w-4" />,
   },
   {
     id: 4,
-    title: 'Payment',
-    description: 'Payment details',
-    icon: <CreditCard className="h-4 w-4" />,
+    title: 'Review',
+    description: 'Final review',
+    icon: <Calendar className="h-4 w-4" />,
   },
 ];
 
-function ReviewCard({ formData }: { formData: EditJobFormData }) {
+function ReviewCard({
+  formData,
+  customerName,
+  employeeName,
+}: {
+  formData: EditJobFormData;
+  customerName: string;
+  employeeName: string;
+}) {
   return (
     <div className="rounded-xl border border-dashed border-[#e5e5e5] bg-[#fafaf8] p-6">
       <div className="text-center">
@@ -97,7 +117,7 @@ function ReviewCard({ formData }: { formData: EditJobFormData }) {
           </div>
           <div className="text-right">
             <p className="text-sm font-medium text-[#151515]">
-              {formData.customer || 'Not provided'}
+              {customerName}
             </p>
           </div>
         </div>
@@ -110,10 +130,53 @@ function ReviewCard({ formData }: { formData: EditJobFormData }) {
           </div>
           <div className="text-right">
             <p className="text-sm font-medium text-[#151515]">
-              {formData.employee || 'Not provided'}
+              {employeeName}
             </p>
           </div>
         </div>
+        <div className="flex items-center gap-3 border-b border-[#e5e5e5] py-2">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[#777]">
+            <Calendar className="h-4 w-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-[#777]">Job Type</p>
+          </div>
+          <div className="text-right">
+            <p className="text-sm font-medium text-[#151515]">
+              {formData.jobType
+                ? formData.jobType.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+                : 'Not provided'}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 border-b border-[#e5e5e5] py-2">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[#777]">
+            <Calendar className="h-4 w-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-[#777]">Job Date</p>
+          </div>
+          <div className="text-right">
+            <p className="text-sm font-medium text-[#151515]">
+              {formData.jobDate || 'Not provided'}
+            </p>
+          </div>
+        </div>
+        {formData.frequencyValue && formData.frequencyUnit && (
+          <div className="flex items-center gap-3 border-b border-[#e5e5e5] py-2">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[#777]">
+              <Calendar className="h-4 w-4" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm text-[#777]">Frequency</p>
+            </div>
+            <div className="text-right">
+              <p className="text-sm font-medium text-[#151515]">
+                Every {formData.frequencyValue} {formData.frequencyUnit}{formData.frequencyValue && formData.frequencyValue > 1 ? 's' : ''}
+              </p>
+            </div>
+          </div>
+        )}
         <div className="flex items-center gap-3 border-b border-[#e5e5e5] py-2">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[#777]">
             <MapPin className="h-4 w-4" />
@@ -129,40 +192,55 @@ function ReviewCard({ formData }: { formData: EditJobFormData }) {
         </div>
         <div className="flex items-center gap-3 border-b border-[#e5e5e5] py-2">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[#777]">
-            <Calendar className="h-4 w-4" />
+            <DollarSign className="h-4 w-4" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-[#777]">Job Type</p>
+            <p className="text-sm text-[#777]">Payment Type</p>
           </div>
           <div className="text-right">
             <p className="text-sm font-medium text-[#151515]">
-              {formData.jobType || 'Not provided'}
+              {formData.paymentType
+                ? formData.paymentType.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+                : 'Not provided'}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3 border-b border-[#e5e5e5] py-2">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[#777]">
-            <CreditCard className="h-4 w-4" />
+            <DollarSign className="h-4 w-4" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-[#777]">Payment</p>
+            <p className="text-sm text-[#777]">Price</p>
           </div>
           <div className="text-right">
             <p className="text-sm font-medium text-[#151515]">
-              {formData.paymentType || 'Not provided'}
+              {formData.price ? `$${formData.price.toFixed(2)}` : 'Not provided'}
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 border-b border-[#e5e5e5] py-2">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[#777]">
+            <FileText className="h-4 w-4" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-[#777]">Description</p>
+          </div>
+          <div className="text-right max-w-[200px]">
+            <p className="text-sm font-medium text-[#151515] truncate">
+              {formData.description || 'Not provided'}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3 py-2">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[#777]">
-            <Calendar className="h-4 w-4" />
+            <FileText className="h-4 w-4" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-[#777]">Date</p>
+            <p className="text-sm text-[#777]">Notes</p>
           </div>
-          <div className="text-right">
-            <p className="text-sm font-medium text-[#151515]">
-              {formData.jobDate || 'Not provided'}
+          <div className="text-right max-w-[200px]">
+            <p className="text-sm font-medium text-[#151515] truncate">
+              {formData.notes || 'Not provided'}
             </p>
           </div>
         </div>
@@ -176,6 +254,34 @@ export default function EditJobPage() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
 
+  const { data: jobData, isLoading: isFetching } = useGetJobByIdQuery(
+    id ?? '',
+    { skip: !id },
+  );
+  const { data: customersData } = useGetCustomersQuery({ limit: 500, page: 1 });
+  const { data: employeesData } = useGetEmployeesQuery({ limit: 500, page: 1 });
+  const [updateJob, { isLoading: isUpdating }] = useUpdateJobMutation();
+
+  const customerOptions = useMemo(
+    () =>
+      (customersData?.customers ?? []).map((c) => ({
+        _id: c._id,
+        label: c.fullName,
+        subtitle: c.email,
+      })),
+    [customersData],
+  );
+
+  const employeeOptions = useMemo(
+    () =>
+      (employeesData?.employees ?? []).map((e) => ({
+        _id: e._id,
+        label: e.fullName,
+        subtitle: e.email,
+      })),
+    [employeesData],
+  );
+
   const {
     register,
     handleSubmit,
@@ -185,20 +291,41 @@ export default function EditJobPage() {
     formState: { errors },
   } = useForm<EditJobFormData>({
     resolver: zodResolver(editJobSchema),
-    defaultValues: {
-      customer: 'cust-1',
-      employee: 'emp-1',
-      jobAddress: '383A Richardson Road Mount Roskill',
-      latitude: -36.909,
-      longitude: 174.731,
-      locationMode: 'map',
-      jobType: 'recurring',
-      jobDate: '2026-05-14',
-      frequencyValue: 2,
-      frequencyUnit: 'week',
-      paymentType: 'bank-transfer',
-      notes: 'Customer requested weekend servicing only.',
-    },
+    values: jobData
+      ? {
+          customer:
+            (typeof jobData.customerId === 'object'
+              ? jobData.customerId?._id
+              : undefined) ?? '',
+          employee:
+            (typeof jobData.employeeId === 'object'
+              ? jobData.employeeId?._id
+              : typeof jobData.employeeId === 'string'
+                ? jobData.employeeId
+                : undefined) ?? '',
+          jobAddress: jobData.address ?? '',
+          city: jobData.city ?? '',
+          state: jobData.state ?? '',
+          country: jobData.country ?? '',
+          postalCode: jobData.postalCode ?? '',
+          latitude: jobData.location?.coordinates?.[1] ?? undefined,
+          longitude: jobData.location?.coordinates?.[0] ?? undefined,
+          locationMode:
+            jobData.location?.coordinates?.[0] ? 'map' : 'manual',
+          jobType: jobData.jobType ?? '',
+          jobDate: jobData.jobDate
+            ? jobData.jobDate.split('T')[0]
+            : jobData.date
+              ? jobData.date.split('T')[0]
+              : '',
+          frequencyValue: jobData.frequency?.value ?? 1,
+          frequencyUnit: jobData.frequency?.unit ?? 'week',
+          price: jobData.price ?? undefined,
+          paymentType: jobData.paymentType ?? '',
+          description: jobData.description ?? '',
+          notes: jobData.notes ?? '',
+        }
+      : undefined,
   });
 
   const formValues = watch();
@@ -207,11 +334,11 @@ export default function EditJobPage() {
     let fieldsToValidate: (keyof EditJobFormData)[] = [];
 
     if (currentStep === 1) {
-      fieldsToValidate = ['customer', 'employee'];
+      fieldsToValidate = ['customer', 'jobType', 'jobDate'];
     } else if (currentStep === 2) {
       fieldsToValidate = ['jobAddress'];
     } else if (currentStep === 3) {
-      fieldsToValidate = ['jobType', 'jobDate'];
+      fieldsToValidate = ['paymentType'];
     }
 
     const isValid = await trigger(fieldsToValidate);
@@ -226,11 +353,59 @@ export default function EditJobPage() {
     }
   };
 
-  const onSubmit = (data: EditJobFormData) => {
-    console.log('Updating job:', data);
-    toast.success('Job updated successfully');
-    navigate(ROUTES.JOBS_VIEW.replace(':id', id!));
+  const onSubmit = async (data: EditJobFormData) => {
+    if (!id) return;
+    try {
+      const payload: Record<string, unknown> = {
+        customerId: data.customer,
+        address: data.jobAddress,
+        city: data.city || undefined,
+        state: data.state || undefined,
+        country: data.country || undefined,
+        postalCode: data.postalCode || undefined,
+        jobType: data.jobType.replace('-', '_'),
+        jobDate: new Date(data.jobDate).toISOString(),
+        paymentType: data.paymentType.replace('-', '_'),
+        price: data.price || undefined,
+        description: data.description || undefined,
+        notes: data.notes || undefined,
+        location:
+          data.latitude && data.longitude
+            ? ({
+                type: 'Point' as const,
+                coordinates: [data.longitude, data.latitude] as [number, number],
+              } as const)
+            : undefined,
+        frequency:
+          data.jobType === 'recurring' &&
+          data.frequencyValue &&
+          data.frequencyUnit
+            ? {
+                value: data.frequencyValue,
+                unit: data.frequencyUnit,
+              }
+            : undefined,
+      };
+      if (data.employee) {
+        payload.employeeId = data.employee;
+      }
+      await updateJob({ id, ...payload }).unwrap();
+      toast.success('Job updated successfully');
+      navigate(ROUTES.JOBS_VIEW.replace(':id', id));
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Failed to update job'));
+    }
   };
+
+  if (isFetching) {
+    return (
+      <AppLayout>
+        <div className="flex h-full items-center justify-center">
+          <Loader />
+        </div>
+      </AppLayout>
+    );
+  }
 
   const renderStepContent = () => {
     if (currentStep === 1) {
@@ -238,7 +413,7 @@ export default function EditJobPage() {
         <div className="space-y-6">
           <div>
             <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
-              Job Assignment
+              Job Assignment & Schedule
             </h4>
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               <div className="space-y-2">
@@ -246,122 +421,30 @@ export default function EditJobPage() {
                   Select Customer
                   <span className="text-[#16610E]"> *</span>
                 </label>
-                <Select
+                <SearchableSelect
+                  data={customerOptions}
                   value={formValues.customer || ''}
-                  onValueChange={(v) => setValue('customer', v)}
-                >
-                  <SelectTrigger className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]">
-                    <SelectValue placeholder="Choose a customer" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    <SelectItem value="cust-1">
-                      Babu Kondepudi
-                    </SelectItem>
-                    <SelectItem value="cust-2">John Doe</SelectItem>
-                    <SelectItem value="cust-3">Jane Smith</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.customer && (
-                  <p className="text-sm text-red-500">
-                    {errors.customer.message}
-                  </p>
-                )}
+                  onChange={(v) => setValue('customer', v)}
+                  placeholder="Choose a customer"
+                  searchPlaceholder="Search customers..."
+                  loading={!customersData}
+                  error={errors.customer?.message}
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-[#151515]">
                   Select Employee
-                  <span className="text-[#16610E]"> *</span>
+                  <span className="text-[#9ca3af] text-xs ml-1">(Optional)</span>
                 </label>
-                <Select
+                <SearchableSelect
+                  data={employeeOptions}
                   value={formValues.employee || ''}
-                  onValueChange={(v) => setValue('employee', v)}
-                >
-                  <SelectTrigger className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]">
-                    <SelectValue placeholder="Choose an employee" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    <SelectItem value="emp-1">
-                      Sarah Miller
-                    </SelectItem>
-                    <SelectItem value="emp-2">Aman Sharma</SelectItem>
-                    <SelectItem value="emp-3">John Smith</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.employee && (
-                  <p className="text-sm text-red-500">
-                    {errors.employee.message}
-                  </p>
-                )}
+                  onChange={(v) => setValue('employee', v)}
+                  placeholder="Choose an employee"
+                  searchPlaceholder="Search employees..."
+                  loading={!employeesData}
+                />
               </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (currentStep === 2) {
-      return (
-        <div className="space-y-6">
-          <div>
-            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
-              Job Location
-            </h4>
-            <div className="space-y-5">
-              <LocationModeToggle
-                value={formValues.locationMode || 'map'}
-                onChange={(mode) => setValue('locationMode', mode)}
-              />
-
-              {formValues.locationMode === 'map' ? (
-                <MockMapPicker
-                  latitude={formValues.latitude || 0}
-                  longitude={formValues.longitude || 0}
-                  onPick={(lat, lng) => {
-                    setValue('latitude', lat);
-                    setValue('longitude', lng);
-                  }}
-                />
-              ) : (
-                <ManualCoordinates
-                  latitude={formValues.latitude || 0}
-                  longitude={formValues.longitude || 0}
-                  onChange={(lat, lng) => {
-                    setValue('latitude', lat);
-                    setValue('longitude', lng);
-                  }}
-                />
-              )}
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-[#151515]">
-                  Job Address
-                  <span className="text-[#16610E]"> *</span>
-                </label>
-                <Textarea
-                  placeholder="Enter job address"
-                  {...register('jobAddress')}
-                  className="min-h-[80px] rounded-xl border-[#e5e5e5] bg-[#fafaf8] p-4"
-                />
-                {errors.jobAddress && (
-                  <p className="text-sm text-red-500">
-                    {errors.jobAddress.message}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (currentStep === 3) {
-      return (
-        <div className="space-y-6">
-          <div>
-            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
-              Job Schedule
-            </h4>
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-[#151515]">
                   Job Type
@@ -448,55 +531,293 @@ export default function EditJobPage() {
       );
     }
 
+    if (currentStep === 2) {
+      return (
+        <div className="space-y-6">
+          <div>
+            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
+              Job Location
+            </h4>
+            <div className="space-y-5">
+              <LocationModeToggle
+                value={formValues.locationMode || 'map'}
+                onChange={(mode) => setValue('locationMode', mode)}
+              />
+
+              {formValues.locationMode === 'map' ? (
+                <MockMapPicker
+                  latitude={formValues.latitude || 0}
+                  longitude={formValues.longitude || 0}
+                  onPick={(lat, lng) => {
+                    setValue('latitude', lat);
+                    setValue('longitude', lng);
+                  }}
+                />
+              ) : (
+                <ManualCoordinates
+                  latitude={formValues.latitude || 0}
+                  longitude={formValues.longitude || 0}
+                  onChange={(lat, lng) => {
+                    setValue('latitude', lat);
+                    setValue('longitude', lng);
+                  }}
+                />
+              )}
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#151515]">
+                  Job Address
+                  <span className="text-[#16610E]"> *</span>
+                </label>
+                <Textarea
+                  placeholder="Enter job address"
+                  {...register('jobAddress')}
+                  className="min-h-[80px] rounded-xl border-[#e5e5e5] bg-[#fafaf8] p-4"
+                />
+                {errors.jobAddress && (
+                  <p className="text-sm text-red-500">
+                    {errors.jobAddress.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#151515]">City</label>
+                  <Input
+                    placeholder="Enter city"
+                    {...register('city')}
+                    className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#151515]">State</label>
+                  <Input
+                    placeholder="Enter state"
+                    {...register('state')}
+                    className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#151515]">Country</label>
+                  <Input
+                    placeholder="Enter country"
+                    {...register('country')}
+                    className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#151515]">Postal Code</label>
+                  <Input
+                    placeholder="Enter postal code"
+                    {...register('postalCode')}
+                    className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (currentStep === 3) {
+      return (
+        <div className="space-y-6">
+          <div>
+            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
+              Payment & Details
+            </h4>
+            <div className="space-y-5">
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#151515]">
+                    Payment Type
+                    <span className="text-[#16610E]"> *</span>
+                  </label>
+                  <Select
+                    value={formValues.paymentType || ''}
+                    onValueChange={(v) => setValue('paymentType', v)}
+                  >
+                    <SelectTrigger className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]">
+                      <SelectValue placeholder="Select payment type" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl">
+                      <SelectItem value="bank-transfer">
+                        Bank Transfer
+                      </SelectItem>
+                      <SelectItem value="cash">Cash</SelectItem>
+                      <SelectItem value="drop-invoice">
+                        Drop Invoice
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.paymentType && (
+                    <p className="text-sm text-red-500">
+                      {errors.paymentType.message}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#151515]">
+                    Price
+                    <span className="text-[#16610E]"> *</span>
+                  </label>
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9ca3af]" />
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min={0}
+                      placeholder="0.00"
+                      {...register('price', { valueAsNumber: true })}
+                      className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8] pl-10"
+                    />
+                  </div>
+                  {errors.price && (
+                    <p className="text-sm text-red-500">
+                      {errors.price.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#151515]">
+                  Description
+                </label>
+                <Textarea
+                  placeholder="Enter job description..."
+                  {...register('description')}
+                  className="min-h-[80px] rounded-xl border-[#e5e5e5] bg-[#fafaf8] p-4"
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#151515]">
+                  Notes
+                </label>
+                <Textarea
+                  placeholder="Add any additional notes..."
+                  {...register('notes')}
+                  className="min-h-[100px] rounded-xl border-[#e5e5e5] bg-[#fafaf8] p-4"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="space-y-6">
         <div>
           <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
-            Payment & Notes
+            Review All Details
           </h4>
           <div className="space-y-5">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-[#151515]">
-                Payment Type
-                <span className="text-[#16610E]"> *</span>
-              </label>
-              <Select
-                value={formValues.paymentType || ''}
-                onValueChange={(v) => setValue('paymentType', v)}
-              >
-                <SelectTrigger className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]">
-                  <SelectValue placeholder="Select payment type" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  <SelectItem value="bank-transfer">
-                    Bank Transfer
-                  </SelectItem>
-                  <SelectItem value="cash">Cash</SelectItem>
-                  <SelectItem value="drop-invoice">
-                    Drop Invoice
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.paymentType && (
-                <p className="text-sm text-red-500">
-                  {errors.paymentType.message}
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#777]">Customer</label>
+                <p className="text-sm font-medium text-[#151515]">
+                  {(typeof jobData?.customerId === 'object'
+                    ? jobData.customerId.fullName
+                    : customerOptions.find((c) => c._id === formValues.customer)
+                        ?.label) || formValues.customer || 'Not provided'}
                 </p>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#777]">Employee</label>
+                <p className="text-sm font-medium text-[#151515]">
+                  {(typeof jobData?.employeeId === 'object'
+                    ? jobData.employeeId.fullName
+                    : employeeOptions.find((e) => e._id === formValues.employee)
+                        ?.label) || 'Not assigned'}
+                </p>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#777]">Job Type</label>
+                <p className="text-sm font-medium text-[#151515]">
+                  {formValues.jobType
+                    ? formValues.jobType.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+                    : '-'}
+                </p>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#777]">Job Date</label>
+                <p className="text-sm font-medium text-[#151515]">
+                  {formValues.jobDate || '-'}
+                </p>
+              </div>
+              {formValues.frequencyValue && formValues.frequencyUnit && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#777]">Frequency</label>
+                  <p className="text-sm font-medium text-[#151515]">
+                    Every {formValues.frequencyValue} {formValues.frequencyUnit}{formValues.frequencyValue > 1 ? 's' : ''}
+                  </p>
+                </div>
               )}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#777]">Address</label>
+                <p className="text-sm font-medium text-[#151515]">
+                  {formValues.jobAddress || '-'}
+                </p>
+              </div>
+              {formValues.city && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#777]">City</label>
+                  <p className="text-sm font-medium text-[#151515]">{formValues.city}</p>
+                </div>
+              )}
+              {formValues.state && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#777]">State</label>
+                  <p className="text-sm font-medium text-[#151515]">{formValues.state}</p>
+                </div>
+              )}
+              {formValues.country && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#777]">Country</label>
+                  <p className="text-sm font-medium text-[#151515]">{formValues.country}</p>
+                </div>
+              )}
+              {formValues.postalCode && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#777]">Postal Code</label>
+                  <p className="text-sm font-medium text-[#151515]">{formValues.postalCode}</p>
+                </div>
+              )}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#777]">Payment Type</label>
+                <p className="text-sm font-medium text-[#151515]">
+                  {formValues.paymentType
+                    ? formValues.paymentType.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+                    : '-'}
+                </p>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#777]">Price</label>
+                <p className="text-sm font-medium text-[#151515]">
+                  {formValues.price ? `$${formValues.price.toFixed(2)}` : '-'}
+                </p>
+              </div>
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-[#151515]">
-                Notes
-              </label>
-              <Textarea
-                placeholder="Add any additional notes..."
-                {...register('notes')}
-                className="min-h-[100px] rounded-xl border-[#e5e5e5] bg-[#fafaf8] p-4"
-              />
-            </div>
+            {(formValues.description || formValues.notes) && (
+              <div className="rounded-xl border border-[#e5e5e5] bg-[#fafaf8] p-4">
+                {formValues.description && (
+                  <div className="mb-3">
+                    <p className="mb-1 text-sm font-medium text-[#777]">Description</p>
+                    <p className="text-sm text-[#151515]">{formValues.description}</p>
+                  </div>
+                )}
+                {formValues.notes && (
+                  <div>
+                    <p className="mb-1 text-sm font-medium text-[#777]">Notes</p>
+                    <p className="text-sm text-[#151515]">{formValues.notes}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
-
-        <ReviewCard formData={formValues} />
       </div>
     );
   };
@@ -533,7 +854,7 @@ export default function EditJobPage() {
                 onPrevious={handlePrevious}
                 onNext={handleNext}
                 onSubmit={handleSubmit(onSubmit)}
-                isSubmitting={false}
+                isSubmitting={isUpdating}
                 isLastStep={currentStep === steps.length}
                 isFirstStep={currentStep === 1}
                 submitLabel="Edit Job"

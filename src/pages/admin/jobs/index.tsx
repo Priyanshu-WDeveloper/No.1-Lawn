@@ -1,4 +1,5 @@
-import { Ellipsis, Eye, Pencil } from 'lucide-react';
+import { Ellipsis, Eye, Pencil, X, Check, Ban } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 import type { ColumnDef } from '@/components/data-table/data-table';
 import DataTable, {
@@ -13,93 +14,175 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../../components/ui/dropdown-menu';
-import { useGetJobsQuery } from '../../../API/api';
-import { useMemo } from 'react';
-import { StatusBadge } from '../../../components/data-table/status-badge';
+} from '@/components/ui/dropdown-menu';
+import {
+  useGetJobsQuery,
+  useCancelJobMutation,
+  useCompleteJobMutation,
+  useDeleteJobMutation,
+} from '@/API/api';
+import { StatusBadge } from '@/components/data-table/status-badge';
 import { STATUS_CONFIG } from '@/constants/status-config';
-import { formatDate } from '../../../lib/format-date';
-import type { IJob } from '../../../types';
+import { formatDate } from '@/lib/format-date';
+import { getErrorMessage } from '@/lib/get-error-message';
+import { useDataTableQueryParams } from '@/hooks/use-data-table-query-params';
+import type { IJob } from '@/types';
+import type { ListQueryParams } from '@/types/api.types';
 
-const mockJobs: IJob[] = [
-  {
-    _id: 'JOB-001',
-    customer: 'Babu Kondepudi',
-    employee: 'Sarah Miller',
-    address: '383A Richardson Road, Mount Roskill',
-    jobType: 'Recurring',
-    date: '2026-05-10',
-    status: 'completed',
-    paymentType: 'Bank Transfer',
-  },
-  {
-    _id: 'JOB-002',
-    customer: 'John Doe',
-    employee: 'Aman Sharma',
-    address: '45 Park Avenue, Auckland',
-    jobType: 'One Time',
-    date: '2026-05-11',
-    status: 'pending',
-    paymentType: 'Cash',
-  },
-  {
-    _id: 'JOB-003',
-    customer: 'Jane Smith',
-    employee: 'Karan Mehta',
-    address: '78 Lake View, Hamilton',
-    jobType: 'Recurring',
-    date: '2026-05-12',
-    status: 'cancelled',
-    paymentType: 'Online',
-  },
-  {
-    _id: 'JOB-004',
-    customer: 'Michael Brown',
-    employee: 'Sandeep Kumar',
-    address: '12 Green Colony, Wellington',
-    jobType: 'One Time',
-    date: '2026-05-13',
-    status: 'in-progress',
-    paymentType: 'Bank Transfer',
-  },
-];
+function getCustomerName(customer: IJob['customerId']): string {
+  if (typeof customer === 'object' && customer) {
+    return customer.fullName || `${customer.firstName} ${customer.lastName}`;
+  }
+  return (customer as string) || '-';
+}
+
+function getCustomerProfileImage(customer: IJob['customerId']): string {
+  if (typeof customer === 'object' && customer) {
+    return customer.profileImage || '';
+  }
+  return '';
+}
+
+function getEmployeeName(employee: IJob['employeeId']): string {
+  if (typeof employee === 'object' && employee) {
+    return employee.fullName || `${employee.firstName} ${employee.lastName}`;
+  }
+  return (employee as string) || '-';
+}
+
+function getEmployeeCode(employee: IJob['employeeId']): string {
+  if (typeof employee === 'object' && employee && employee.employeeId) {
+    return employee.employeeId;
+  }
+  return (typeof employee === 'string' ? employee : '') || '-';
+}
+
+function getEmployeeProfileImage(employee: IJob['employeeId']): string {
+  if (typeof employee === 'object' && employee) {
+    return employee.profileImage || '';
+  }
+  return '';
+}
 
 export default function JobManagementPage() {
   const navigate = useNavigate();
-  const { data: apiJobs, isLoading } = useGetJobsQuery(undefined, {
+
+  const { setPage, setLimit, search, setSearch, statusFilter, setStatusFilter, sort, setSort, queryParams } =
+    useDataTableQueryParams<ListQueryParams>({
+      defaultLimit: 10,
+      mapStatusToApi: (status) => status.toLowerCase().replace(' ', '-') as 'pending' | 'in-progress' | 'completed' | 'cancelled',
+    });
+
+  const { data: apiData, isLoading } = useGetJobsQuery(queryParams, {
     refetchOnMountOrArgChange: true,
   });
 
-  const allJobs = useMemo(() => {
-    const apiRows: IJob[] = (apiJobs?.jobs ?? []).map((job: any) => ({
-      _id: job._id || job.id,
-      customer: job.customer,
-      employee: job.employee,
-      address: job.address,
-      jobType: job.jobType || 'One Time',
-      date: job.date,
-      status: job.status || 'pending',
-      paymentType: job.paymentType || 'Bank Transfer',
-    }));
-    return [...mockJobs, ...apiRows];
-  }, [apiJobs]);
+  const [cancelJob] = useCancelJobMutation();
+  const [completeJob] = useCompleteJobMutation();
+  const [deleteJob] = useDeleteJobMutation();
+
+  const jobs = apiData?.jobs ?? [];
+  const pagination = apiData
+    ? { page: apiData.page, limit: apiData.limit, total: apiData.total, totalPages: apiData.totalPages }
+    : undefined;
+
+  const handleCancel = async (id: string) => {
+    try {
+      await cancelJob({ jobId: id }).unwrap();
+      toast.success('Job cancelled successfully');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Failed to cancel job'));
+    }
+  };
+
+  const handleComplete = async (id: string) => {
+    try {
+      await completeJob({ jobId: id }).unwrap();
+      toast.success('Job completed successfully');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Failed to complete job'));
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteJob(id).unwrap();
+      toast.success('Job deleted successfully');
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Failed to delete job'));
+    }
+  };
 
   const jobColumns: ColumnDef<IJob>[] = [
     {
-      accessorKey: 'customer',
+      accessorKey: 'customerId',
       header: 'Customer',
-      cell: (row: IJob) => (
-        <span className="font-medium text-[#151515]">
-          {row.customer}
-        </span>
-      ),
+      cell: (row: IJob) => {
+        const image = getCustomerProfileImage(row.customerId);
+        const name = getCustomerName(row.customerId);
+        const initial = name ? name.charAt(0).toUpperCase() : '?';
+        const hue = name ? (name.charCodeAt(0) * 137.5) % 360 : 0;
+
+        return (
+          <div className="flex items-center gap-3">
+            {image ? (
+              <img
+                src={image}
+                alt={name}
+                className="h-7 w-7 rounded-full object-cover"
+              />
+            ) : (
+              <div
+                className="h-7 w-7 flex items-center justify-center rounded-full text-xs font-semibold"
+                style={{
+                  backgroundColor: `hsl(${hue}, 60%, 90%)`,
+                  color: `hsl(${hue}, 60%, 35%)`,
+                }}
+              >
+                {initial}
+              </div>
+            )}
+            <span className="font-medium text-[#151515]">{name}</span>
+          </div>
+        );
+      },
     },
     {
-      accessorKey: 'employee',
+      accessorKey: 'employeeId',
       header: 'Employee',
-      cell: (row: IJob) => (
-        <span className="text-[#6b7280]">{row.employee}</span>
-      ),
+      cell: (row: IJob) => {
+        const image = getEmployeeProfileImage(row.employeeId);
+        const name = getEmployeeName(row.employeeId);
+        const code = getEmployeeCode(row.employeeId);
+        const initial = name ? name.charAt(0).toUpperCase() : '?';
+        const hue = name ? (name.charCodeAt(0) * 137.5) % 360 : 0;
+
+        return (
+          <div className="flex items-center gap-3">
+            {image ? (
+              <img
+                src={image}
+                alt={name}
+                className="h-7 w-7 rounded-full object-cover"
+              />
+            ) : (
+              <div
+                className="h-7 w-7 flex items-center justify-center rounded-full text-xs font-semibold"
+                style={{
+                  backgroundColor: `hsl(${hue}, 60%, 90%)`,
+                  color: `hsl(${hue}, 60%, 35%)`,
+                }}
+              >
+                {initial}
+              </div>
+            )}
+            <div>
+              <span className="font-medium text-[#151515]">{name}</span>
+              <p className="text-xs text-[#6b7280]">{code}</p>
+            </div>
+          </div>
+        );
+      },
     },
     {
       accessorKey: 'address',
@@ -112,14 +195,16 @@ export default function JobManagementPage() {
       accessorKey: 'jobType',
       header: 'Job Type',
       cell: (row: IJob) => (
-        <span className="text-[#6b7280]">{row.jobType}</span>
+        <span className="text-[#6b7280]">
+          {row.jobType.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+        </span>
       ),
     },
     {
       accessorKey: 'date',
       header: 'Date',
       cell: (row: IJob) => (
-        <span className="text-[#6b7280]">{formatDate(row.date)}</span>
+        <span className="text-[#6b7280]">{formatDate(row.date || row.jobDate || '')}</span>
       ),
     },
     {
@@ -156,10 +241,23 @@ export default function JobManagementPage() {
               />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              {row.status === 'pending' && (
+                <>
+                  <DropdownMenuItem onClick={() => handleComplete(row._id)}>
+                    <Check className="mr-2 h-4 w-4 text-green-600" />
+                    <span>Complete</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleCancel(row._id)}>
+                    <Ban className="mr-2 h-4 w-4 text-red-500" />
+                    <span>Cancel</span>
+                  </DropdownMenuItem>
+                </>
+              )}
               <DropdownMenuItem
                 className="text-red-500 focus:text-red-500"
-                onClick={() => console.log('Delete job:', row._id)}
+                onClick={() => handleDelete(row._id)}
               >
+                <X className="mr-2 h-4 w-4" />
                 Delete Job
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -181,12 +279,14 @@ export default function JobManagementPage() {
             />
             <div className="flex-1 min-h-0 mt-4 flex flex-col">
               <DataTable<IJob>
-                data={allJobs}
+                data={jobs}
                 loading={isLoading}
                 columns={jobColumns}
                 title=""
                 description=""
                 searchPlaceholder="Search jobs by customer, employee or address..."
+                searchValue={search}
+                onSearchChange={setSearch}
                 filterField="status"
                 filterOptions={[
                   'Pending',
@@ -194,6 +294,18 @@ export default function JobManagementPage() {
                   'Completed',
                   'Cancelled',
                 ]}
+                filterValue={statusFilter}
+                onFilterChange={setStatusFilter}
+                serverSideFiltering
+                sortValue={sort}
+                onSortChange={setSort}
+                serverSideSorting
+                pagination={pagination}
+                onPageChange={setPage}
+                onLimitChange={(newLimit) => {
+                  setLimit(newLimit);
+                  setPage(1);
+                }}
                 addButtonLabel="Add Job"
                 onAddClick={() => navigate(ROUTES.JOBS_CREATE)}
               />

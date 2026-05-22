@@ -18,12 +18,12 @@ import { ROUTES } from '@/constants';
 import {
   useGetAdminUserByIdQuery,
   useUpdateAdminUserMutation,
-} from '../../../API/api';
-import { AdminFormStepper } from '../../../components/admin/admin-form-stepper';
-import { AdminFormStep } from '../../../components/admin/admin-form-step';
-import { AdminReviewCard } from '../../../components/admin/admin-review-card';
-import Loader from '../../../components/loader';
-import type { IAdmins } from '../../../types/admins.types';
+} from '@/API/api';
+import { AdminFormStepper } from '@/components/admin/admin-form-stepper';
+import { AdminFormStep } from '@/components/admin/admin-form-step';
+import { AdminReviewCard } from '@/components/admin/admin-review-card';
+import Loader from '@/components/loader';
+import type { IAdmins } from '@/types/admins.types';
 import { validatePhone } from '@/lib/phone-validation';
 
 const editAdminSchema = z.object({

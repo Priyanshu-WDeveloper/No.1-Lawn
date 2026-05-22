@@ -1,54 +1,81 @@
-export * from './employees.types';
-export * from './customers.types';
-export * from './common.types';
-
-// Job types
 export interface IJob {
-  _id: string;
-  customer: string;
-  employee: string;
+  _id?: string;
+  __v?: number;
+  jobId: number;
+  customerId?:
+    | string
+    | {
+        _id: string;
+        firstName: string;
+        lastName: string;
+        fullName: string;
+        email: string;
+        phoneNumber: string;
+        profileImage?: string;
+        employeeId?: string;
+      };
+  employeeId?:
+    | string
+    | {
+        _id: string;
+        firstName: string;
+        lastName: string;
+        fullName: string;
+        email: string;
+        phoneNumber: string;
+        profileImage?: string;
+        employeeId?: string;
+      };
+  adminId?:
+    | string
+    | {
+        _id: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        profileImage?: string;
+      };
   address: string;
-  jobType: string;
-  date: string;
-  status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
-  paymentType: string;
-}
-
-// Invoice types
-export interface IInvoice {
-  _id: string;
-  invoiceNumber: string;
-  customer: string;
-  jobId: string;
-  totalAmount: number;
-  receivedAmount: number;
-  date: string;
-  status: 'paid' | 'pending' | 'overdue';
-}
-
-// Admin User types (for Super Admin)
-export interface IAdminUser {
-  _id: string;
-  adminId: number;
-  firstName: string;
-  lastName: string;
-  fullName: string;
-  email: string;
-  status: 'active' | 'inactive' | 'expired';
-  profileImage: string;
-  countryCode: string;
-  phoneNumber: string;
-  role: number;
-  city: string;
-  address: string;
-  state: string;
-  postalCode: string;
-  country: string;
-  location: {
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+  location?: {
     type: 'Point';
     coordinates: [number, number];
   };
-  createdAt: string;
-  updatedAt: string;
-  validity?: string;
+  jobType: string;
+  jobDate?: string;
+  date: string;
+  active?: boolean;
+  preferredTiming?: string;
+  jobDescription?: string;
+  jobStatus: string;
+  paymentType?: string;
+  paymentStatus?: string;
+  paymentAmount?: string;
+  initialDepositAmount?: number;
+  totalRemainingAmount?: number;
+  cancellationReason?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  startTime?: string;
+  endTime?: string;
+}
+
+export interface IInvoice {
+  _id?: string;
+  invoiceNumber?: string;
+  customer?: string;
+  jobId?: string;
+  totalAmount?: number;
+  receivedAmount?: number;
+  balance?: number;
+  date?: string;
+  paymentType?: string;
+  status?: string;
+  notes?: string;
+  createdBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

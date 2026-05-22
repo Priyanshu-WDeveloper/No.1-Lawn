@@ -9,17 +9,17 @@ import toast from 'react-hot-toast';
 import { AppLayout } from '@/components/layout/app-layout';
 import { Navbar } from '@/components/layout/navbar';
 import { ROUTES } from '@/constants';
-import { AdminFormStepper } from '../../../components/admin/admin-form-stepper';
-import { Button } from '../../../components/ui/button';
-import { Input } from '../../../components/ui/input';
-import { Textarea } from '../../../components/ui/textarea';
+import { AdminFormStepper } from '@/components/admin/admin-form-stepper';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../components/ui/select';
+} from '@/components/ui/select';
 import { Check } from 'lucide-react';
 
 const createInvoiceSchema = z.object({

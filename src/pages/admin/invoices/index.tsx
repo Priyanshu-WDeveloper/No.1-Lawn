@@ -13,12 +13,12 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../../components/ui/dropdown-menu';
-import { useGetInvoicesQuery } from '../../../API/api';
+} from '@/components/ui/dropdown-menu';
+import { useGetInvoicesQuery } from '@/API/api';
 import { useMemo } from 'react';
-import { StatusBadge } from '../../../components/data-table/status-badge';
+import { StatusBadge } from '@/components/data-table/status-badge';
 import { STATUS_CONFIG } from '@/constants/status-config';
-import type { IInvoice } from '../../../types';
+import type { IInvoice } from '@/types';
 
 const mockInvoices: IInvoice[] = [
   {

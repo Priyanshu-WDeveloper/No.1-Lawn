@@ -29,14 +29,14 @@ import { ROUTES } from '@/constants';
 import {
   useGetCustomerByIdQuery,
   useToggleCustomerStatusMutation,
-} from '../../../API/api';
-import type { ICustomer } from '../../../types';
-import Loader from '../../../components/loader';
+} from '@/API/api';
+import type { ICustomer } from '@/types';
+import Loader from '@/components/loader';
 import toast from 'react-hot-toast';
 
 import { getErrorMessage } from '@/lib/get-error-message';
-import { formatDate } from '../../../lib/format-date';
-import { StatusBadge } from '../../../components/data-table/status-badge';
+import { formatDate } from '@/lib/format-date';
+import { StatusBadge } from '@/components/data-table/status-badge';
 import { STATUS_CONFIG } from '@/constants/status-config';
 
 export default function CustomerViewPage() {

@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useGetBillingStatsQuery, useGetBillingInvoicesQuery } from '../../API/api';
+import { useGetBillingStatsQuery, useGetBillingInvoicesQuery } from '@/API/api';
 
 const SuperAdminBillingPage = () => {
   const { data: stats } = useGetBillingStatsQuery();

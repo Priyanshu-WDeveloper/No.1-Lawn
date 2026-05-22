@@ -13,17 +13,17 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../../components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import {
   useGetCustomersQuery,
   useToggleCustomerStatusMutation,
-} from '../../../API/api';
-import { useDataTableQueryParams } from '../../../hooks/use-data-table-query-params';
-import type { GetCustomersParams } from '../../../types/api.types';
-import type { ICustomer } from '../../../types';
-import { StatusBadge } from '../../../components/data-table/status-badge';
-import { AvatarCell } from '../../../components/data-table/avatar-cell';
-import { formatDate } from '../../../lib/format-date';
+} from '@/API/api';
+import { useDataTableQueryParams } from '@/hooks/use-data-table-query-params';
+import type { GetCustomersParams } from '@/types/api.types';
+import type { ICustomer } from '@/types';
+import { StatusBadge } from '@/components/data-table/status-badge';
+import { AvatarCell } from '@/components/data-table/avatar-cell';
+import { formatDate } from '@/lib/format-date';
 import { STATUS_CONFIG } from '@/constants/status-config';
 import toast from 'react-hot-toast';
 

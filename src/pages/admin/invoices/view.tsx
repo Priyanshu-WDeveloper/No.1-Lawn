@@ -3,11 +3,11 @@ import { FileText, DollarSign, User, Calendar } from 'lucide-react';
 
 import { AppLayout } from '@/components/layout/app-layout';
 import { ROUTES } from '@/constants';
-import { StatusBadge } from '../../../components/data-table/status-badge';
-import { DetailRow } from '../../../components/admin/detail-row';
-import { SectionCard } from '../../../components/admin/section-card';
-import { ViewPageHeader } from '../../../components/admin/view-page-header';
-import { STATUS_CONFIG } from '../../../constants/status-config';
+import { StatusBadge } from '@/components/data-table/status-badge';
+import { DetailRow } from '@/components/admin/detail-row';
+import { SectionCard } from '@/components/admin/section-card';
+import { ViewPageHeader } from '@/components/admin/view-page-header';
+import { STATUS_CONFIG } from '@/constants/status-config';
 
 interface InvoiceData {
   _id: string;

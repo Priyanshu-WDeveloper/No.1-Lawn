@@ -23,11 +23,11 @@ import {
 import { PanelLeftIcon } from 'lucide-react';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import toast from 'react-hot-toast';
-import { ROUTES } from '../../constants';
-import { localLogout } from '../../lib/auth';
+import { ROUTES } from '@/constants';
+import { localLogout } from '@/lib/auth';
 import { useDispatch } from 'react-redux';
-import { clearAuth } from '../../store/auth-slice';
-import { api } from '../../API/api';
+import { clearAuth } from '@/store/auth-slice';
+import { api } from '@/API/api';
 
 const items = [
   {

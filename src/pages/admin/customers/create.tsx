@@ -11,11 +11,11 @@ import { getErrorMessage } from '@/lib/get-error-message';
 import { AppLayout } from '@/components/layout/app-layout';
 import { Navbar } from '@/components/layout/navbar';
 import { ROUTES } from '@/constants';
-import { useCreateCustomerMutation } from '../../../API/api';
-import { AdminFormStepper } from '../../../components/admin/admin-form-stepper';
-import { AdminFormStep } from '../../../components/admin/admin-form-step';
-import { AdminReviewCard } from '../../../components/admin/admin-review-card';
-import { Button } from '../../../components/ui/button';
+import { useCreateCustomerMutation } from '@/API/api';
+import { AdminFormStepper } from '@/components/admin/admin-form-stepper';
+import { AdminFormStep } from '@/components/admin/admin-form-step';
+import { AdminReviewCard } from '@/components/admin/admin-review-card';
+import { Button } from '@/components/ui/button';
 import { validatePhone } from '@/lib/phone-validation';
 
 const createCustomerSchema = z.object({

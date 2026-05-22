@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { AppLayout } from '@/components/layout/app-layout';
 import { Button } from '@/components/ui/button';
-import { useGetNotificationsQuery } from '../../API/api';
+import { useGetNotificationsQuery } from '@/API/api';
 
 type NotificationType = 'info' | 'success' | 'warning' | 'error';
 

@@ -30,11 +30,11 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ROUTES } from '@/constants';
 
-import type { IEmployee } from '../../../types';
-import Loader from '../../../components/loader';
-import { StatusBadge } from '../../../components/data-table/status-badge';
+import type { IEmployee } from '@/types';
+import Loader from '@/components/loader';
+import { StatusBadge } from '@/components/data-table/status-badge';
 import { STATUS_CONFIG } from '@/constants/status-config';
-import { formatDate } from '../../../lib/format-date';
+import { formatDate } from '@/lib/format-date';
 import {
   useGetEmployeeByIdQuery,
   useToggleEmployeeStatusMutation,

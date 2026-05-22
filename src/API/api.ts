@@ -2,8 +2,8 @@ import {
   createApi,
   fetchBaseQuery,
 } from '@reduxjs/toolkit/query/react';
-import { getDeviceToken, getDeviceType } from '../lib/device';
-import { getToken } from '../lib/auth';
+import { getDeviceToken, getDeviceType } from '@/lib/device';
+import { getToken } from '@/lib/auth';
 import type {
   CustomersResponse,
   CustomerMutationResponse,
@@ -12,23 +12,24 @@ import type {
   GetCustomersParams,
   EmployeesResponse,
   JobsResponse,
+  JobMutationResponse,
   InvoicesResponse,
   NotificationsResponse,
   ListQueryParams,
   UpdateEmployeePayload,
-} from '../types/api.types';
+} from '@/types/api.types';
 import type {
   CreateEmployeePayload,
-} from '../types/employees.types';
-import { setAuth, clearAuth } from '../store/auth-slice';
-import { API_ROUTES } from '../constants';
+} from '@/types/employees.types';
+import { setAuth, clearAuth } from '@/store/auth-slice';
+import { API_ROUTES } from '@/constants';
 import type {
   ICustomer,
   IEmployee,
   IJob,
   IInvoice,
   IAdminUser,
-} from '../types';
+} from '@/types';
 
 export const api = createApi({
   reducerPath: 'api',
@@ -218,6 +219,14 @@ export const api = createApi({
       ],
     }),
 
+    uploadDocument: builder.mutation<{ urls: string[] }, FormData>({
+      query: (formData) => ({
+        url: API_ROUTES.EMPLOYEES.UPLOAD,
+        method: 'POST',
+        body: formData,
+      }),
+    }),
+
     createEmployee: builder.mutation<
       IEmployee,
       CreateEmployeePayload
@@ -296,15 +305,18 @@ export const api = createApi({
     }),
 
     // Job endpoints
-    getJobs: builder.query<JobsResponse, void>({
-      query: () => API_ROUTES.JOBS.LIST,
+    getJobs: builder.query<JobsResponse, ListQueryParams>({
+      query: (params) => ({
+        url: API_ROUTES.JOBS.LIST,
+        params,
+      }),
       providesTags: ['Jobs'],
     }),
     getJobById: builder.query<IJob, string>({
       query: (id) => API_ROUTES.JOBS.DETAILS(id),
       providesTags: (_result, _error, id) => [{ type: 'Jobs', id }],
     }),
-    createJob: builder.mutation<IJob, Partial<IJob>>({
+    createJob: builder.mutation<JobMutationResponse, Partial<IJob>>({
       query: (job) => ({
         url: API_ROUTES.JOBS.CREATE,
         method: 'POST',
@@ -312,25 +324,65 @@ export const api = createApi({
       }),
       invalidatesTags: ['Jobs'],
     }),
-    updateJob: builder.mutation<IJob, { id: string } & Partial<IJob>>(
-      {
-        query: ({ id, ...job }) => ({
-          url: API_ROUTES.JOBS.UPDATE(id),
-          method: 'PATCH',
-          body: job,
-        }),
-        invalidatesTags: (_result, _error, { id }) => [
-          'Jobs',
-          { type: 'Jobs', id },
-        ],
-      },
-    ),
+    updateJob: builder.mutation<
+      JobMutationResponse,
+      { id: string } & Partial<IJob>
+    >({
+      query: ({ id, ...job }) => ({
+        url: API_ROUTES.JOBS.UPDATE(id),
+        method: 'PUT',
+        body: job,
+      }),
+      invalidatesTags: (_result, _error, { id }) => [
+        'Jobs',
+        { type: 'Jobs', id },
+      ],
+    }),
     deleteJob: builder.mutation<void, string>({
       query: (id) => ({
         url: API_ROUTES.JOBS.DELETE(id),
         method: 'DELETE',
       }),
       invalidatesTags: ['Jobs'],
+    }),
+    cancelJob: builder.mutation<JobMutationResponse, { jobId: string }>({
+      query: ({ jobId }) => ({
+        url: API_ROUTES.JOBS.CANCEL,
+        method: 'POST',
+        body: { jobId },
+      }),
+      invalidatesTags: (_result, _error, { jobId }) => [
+        'Jobs',
+        { type: 'Jobs', id: jobId },
+      ],
+    }),
+    completeJob: builder.mutation<JobMutationResponse, { jobId: string; receivePrice?: number }>({
+      query: ({ jobId, receivePrice }) => ({
+        url: API_ROUTES.JOBS.COMPLETE,
+        method: 'POST',
+        body: { jobId, receivePrice },
+      }),
+      invalidatesTags: (_result, _error, { jobId }) => [
+        'Jobs',
+        { type: 'Jobs', id: jobId },
+      ],
+    }),
+    assignJobEmployee: builder.mutation<
+      JobMutationResponse,
+      { jobId: string; employeeId: string }
+    >({
+      query: ({ jobId, employeeId }) => ({
+        url: API_ROUTES.JOBS.ASSIGN_EMPLOYEE,
+        method: 'POST',
+        body: { jobId, employeeId },
+      }),
+      invalidatesTags: (_result, _error, { jobId }) => [
+        'Jobs',
+        { type: 'Jobs', id: jobId },
+      ],
+    }),
+    getJobReceipt: builder.query<{ receiptUrl: string }, string>({
+      query: (id) => API_ROUTES.JOBS.RECEIPT(id),
     }),
 
     // Invoice endpoints
@@ -527,6 +579,10 @@ export const {
   useCreateJobMutation,
   useUpdateJobMutation,
   useDeleteJobMutation,
+  useCancelJobMutation,
+  useCompleteJobMutation,
+  useAssignJobEmployeeMutation,
+  useGetJobReceiptQuery,
 
   useGetInvoicesQuery,
   useGetInvoiceByIdQuery,

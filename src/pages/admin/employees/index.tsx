@@ -1,4 +1,11 @@
-import { Calendar, Ellipsis, Eye, Pencil, Power, PowerOff } from 'lucide-react';
+import {
+  Calendar,
+  Ellipsis,
+  Eye,
+  Pencil,
+  Power,
+  PowerOff,
+} from 'lucide-react';
 
 import type { ColumnDef } from '@/components/data-table/data-table';
 import DataTable, {
@@ -13,23 +20,23 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../../components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import {
   useGetEmployeesQuery,
   useDeleteEmployeeMutation,
   useToggleEmployeeStatusMutation,
   useDeleteEmployeeValidityMutation,
-} from '../../../API/api';
-import type { ListQueryParams } from '../../../types/common.types';
-import { useDataTableQueryParams } from '../../../hooks/use-data-table-query-params';
-import { AvatarCell } from '../../../components/data-table/avatar-cell';
-import { StatusBadge } from '../../../components/data-table/status-badge';
+} from '@/API/api';
+import type { ListQueryParams } from '@/types/common.types';
+import { useDataTableQueryParams } from '@/hooks/use-data-table-query-params';
+import { AvatarCell } from '@/components/data-table/avatar-cell';
+import { StatusBadge } from '@/components/data-table/status-badge';
 import { STATUS_CONFIG } from '@/constants/status-config';
 import type { IEmployee } from '@/types';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 import { useState } from 'react';
-import { EmployeeValidityDialog } from '../../../components/admin/employee-validity-dialog';
+import { EmployeeValidityDialog } from '@/components/admin/employee-validity-dialog';
 
 import { getErrorMessage } from '@/lib/get-error-message';
 
@@ -37,10 +44,10 @@ export default function EmployeeManagementPage() {
   const navigate = useNavigate();
   const [_deleteEmployee] = useDeleteEmployeeMutation();
   const [toggleEmployeeStatus] = useToggleEmployeeStatusMutation();
-  const [deleteEmployeeValidity] = useDeleteEmployeeValidityMutation();
-  const [validityEmployee, setValidityEmployee] = useState<IEmployee | null>(
-    null,
-  );
+  const [deleteEmployeeValidity] =
+    useDeleteEmployeeValidityMutation();
+  const [validityEmployee, setValidityEmployee] =
+    useState<IEmployee | null>(null);
 
   const {
     setPage,
@@ -140,24 +147,24 @@ export default function EmployeeManagementPage() {
         />
       ),
     },
-    {
-      accessorKey: 'validity',
-      header: 'Validity',
-      cell: (row: IEmployee) => {
-        if (row.validity) {
-          return (
-            <StatusBadge
-              status="valid"
-              config={validityConfig}
-              label={format(new Date(row.validity), 'MMM d, yyyy')}
-            />
-          );
-        }
-        return (
-          <StatusBadge status="notSet" config={validityConfig} />
-        );
-      },
-    },
+    // {
+    //   accessorKey: 'validity',
+    //   header: 'Validity',
+    //   cell: (row: IEmployee) => {
+    //     if (row.validity) {
+    //       return (
+    //         <StatusBadge
+    //           status="valid"
+    //           config={validityConfig}
+    //           label={format(new Date(row.validity), 'MMM d, yyyy')}
+    //         />
+    //       );
+    //     }
+    //     return (
+    //       <StatusBadge status="notSet" config={validityConfig} />
+    //     );
+    //   },
+    // },
     {
       accessorKey: 'actions',
       header: 'Actions',
@@ -226,7 +233,9 @@ export default function EmployeeManagementPage() {
               {row.validity && (
                 <DropdownMenuItem
                   onClick={async () => {
-                    await deleteEmployeeValidity({ id: row._id }).unwrap();
+                    await deleteEmployeeValidity({
+                      id: row._id,
+                    }).unwrap();
                     toast.success('Validity removed');
                   }}
                   className="text-red-500 focus:text-red-500 truncate"

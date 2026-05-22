@@ -7,9 +7,9 @@ import { Leaf, Mail, ArrowLeft, Lock } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { getErrorMessage } from '@/lib/get-error-message';
-import { InputWithIcon } from '../../components/forms/input-with-icon';
-import { Button } from '../../components/ui/button';
-import { ROUTES } from '../../constants';
+import { InputWithIcon } from '@/components/forms/input-with-icon';
+import { Button } from '@/components/ui/button';
+import { ROUTES } from '@/constants';
 
 const forgotPasswordSchema = z.object({
   email: z

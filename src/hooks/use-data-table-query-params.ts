@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useDataTableState } from './use-data-table-state';
-import { mapSortToApi } from '../lib/map-sort-to-api';
+import { mapSortToApi } from '@/lib/map-sort-to-api';
 
 interface UseDataTableQueryParamsOptions<TParams extends Record<string, unknown>> {
   defaultLimit?: number;

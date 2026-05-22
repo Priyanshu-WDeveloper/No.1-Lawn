@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,32 +9,41 @@ import {
   Calendar,
   CreditCard,
   ArrowLeft,
+  DollarSign,
+  FileText,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { AppLayout } from '@/components/layout/app-layout';
 import { Navbar } from '@/components/layout/navbar';
 import { ROUTES } from '@/constants';
-import { AdminFormStepper } from '../../../components/admin/admin-form-stepper';
-import { Button } from '../../../components/ui/button';
-import { Input } from '../../../components/ui/input';
-import { Textarea } from '../../../components/ui/textarea';
+import { AdminFormStepper } from '@/components/admin/admin-form-stepper';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../components/ui/select';
+} from '@/components/ui/select';
 import { LocationModeToggle } from '@/components/forms/location-mode-toggle';
 import { MockMapPicker } from '@/components/forms/mock-map-picker';
 import { ManualCoordinates } from '@/components/forms/manual-coordinates';
 import { Check } from 'lucide-react';
+import { SearchableSelect } from '@/components/ui/searchable-select';
+import { useCreateJobMutation, useGetCustomersQuery, useGetEmployeesQuery } from '@/API/api';
+import { getErrorMessage } from '@/lib/get-error-message';
 
 const createJobSchema = z.object({
   customer: z.string().min(1, 'Customer is required'),
-  employee: z.string().min(1, 'Employee is required'),
+  employee: z.string().optional(),
   jobAddress: z.string().min(1, 'Job address is required'),
+  city: z.string().optional(),
+  state: z.string().optional(),
+  country: z.string().optional(),
+  postalCode: z.string().optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
   locationMode: z.enum(['map', 'manual']),
@@ -42,7 +51,9 @@ const createJobSchema = z.object({
   jobDate: z.string().min(1, 'Job date is required'),
   frequencyValue: z.number().optional(),
   frequencyUnit: z.string().optional(),
+  price: z.number().min(0, 'Price must be at least 0').optional(),
   paymentType: z.string().min(1, 'Payment type is required'),
+  description: z.string().optional(),
   notes: z.string().optional(),
 });
 
@@ -52,14 +63,20 @@ const initialFormData: CreateJobFormData = {
   customer: '',
   employee: '',
   jobAddress: '',
+  city: '',
+  state: '',
+  country: '',
+  postalCode: '',
   latitude: undefined,
   longitude: undefined,
   locationMode: 'map',
   jobType: '',
   frequencyValue: 1,
   frequencyUnit: 'week',
+  price: undefined,
   paymentType: '',
   jobDate: '',
+  description: '',
   notes: '',
 };
 
@@ -90,7 +107,15 @@ const steps = [
   },
 ];
 
-function ReviewCard({ formData }: { formData: CreateJobFormData }) {
+function ReviewCard({
+  formData,
+  customerName,
+  employeeName,
+}: {
+  formData: CreateJobFormData;
+  customerName: string;
+  employeeName: string;
+}) {
   return (
     <div className="rounded-xl border border-dashed border-[#e5e5e5] bg-[#fafaf8] p-6">
       <div className="text-center">
@@ -112,7 +137,7 @@ function ReviewCard({ formData }: { formData: CreateJobFormData }) {
           </div>
           <div className="text-right">
             <p className="text-sm font-medium text-[#151515]">
-              {formData.customer || 'Not provided'}
+              {customerName}
             </p>
           </div>
         </div>
@@ -125,7 +150,7 @@ function ReviewCard({ formData }: { formData: CreateJobFormData }) {
           </div>
           <div className="text-right">
             <p className="text-sm font-medium text-[#151515]">
-              {formData.employee || 'Not provided'}
+              {employeeName}
             </p>
           </div>
         </div>
@@ -144,27 +169,14 @@ function ReviewCard({ formData }: { formData: CreateJobFormData }) {
         </div>
         <div className="flex items-center gap-3 border-b border-[#e5e5e5] py-2">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[#777]">
-            <Calendar className="h-4 w-4" />
+            <FileText className="h-4 w-4" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-[#777]">Job Type</p>
+            <p className="text-sm text-[#777]">Description</p>
           </div>
-          <div className="text-right">
-            <p className="text-sm font-medium text-[#151515]">
-              {formData.jobType || 'Not provided'}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center gap-3 border-b border-[#e5e5e5] py-2">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center text-[#777]">
-            <CreditCard className="h-4 w-4" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm text-[#777]">Payment</p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm font-medium text-[#151515]">
-              {formData.paymentType || 'Not provided'}
+          <div className="text-right max-w-[200px]">
+            <p className="text-sm font-medium text-[#151515] truncate">
+              {formData.description || 'Not provided'}
             </p>
           </div>
         </div>
@@ -189,6 +201,30 @@ function ReviewCard({ formData }: { formData: CreateJobFormData }) {
 export default function CreateJobPage() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [createJob, { isLoading: isCreating }] = useCreateJobMutation();
+
+  const { data: customersData } = useGetCustomersQuery({ limit: 500, page: 1 });
+  const { data: employeesData } = useGetEmployeesQuery({ limit: 500, page: 1 });
+
+  const customerOptions = useMemo(
+    () =>
+      (customersData?.customers ?? []).map((c) => ({
+        _id: c._id,
+        label: c.fullName,
+        subtitle: c.email,
+      })),
+    [customersData],
+  );
+
+  const employeeOptions = useMemo(
+    () =>
+      (employeesData?.employees ?? []).map((e) => ({
+        _id: e._id,
+        label: e.fullName,
+        subtitle: e.email,
+      })),
+    [employeesData],
+  );
 
   const {
     register,
@@ -208,7 +244,7 @@ export default function CreateJobPage() {
     let fieldsToValidate: (keyof CreateJobFormData)[] = [];
 
     if (currentStep === 1) {
-      fieldsToValidate = ['customer', 'employee'];
+      fieldsToValidate = ['customer'];
     } else if (currentStep === 2) {
       fieldsToValidate = ['jobAddress'];
     } else if (currentStep === 3) {
@@ -227,20 +263,47 @@ export default function CreateJobPage() {
     }
   };
 
-  const onSubmit = (data: CreateJobFormData) => {
-    const payload = {
-      ...data,
-      location:
-        data.latitude && data.longitude
-          ? {
-              type: 'Point' as const,
-              coordinates: [data.longitude, data.latitude],
-            }
-          : undefined,
-    };
-    console.log('Creating job:', payload);
-    toast.success('Job created successfully');
-    navigate(ROUTES.JOBS);
+  const onSubmit = async (data: CreateJobFormData) => {
+    try {
+      const payload: Record<string, unknown> = {
+        customerId: data.customer,
+        address: data.jobAddress,
+        city: data.city || undefined,
+        state: data.state || undefined,
+        country: data.country || undefined,
+        postalCode: data.postalCode || undefined,
+        jobType: data.jobType.replace('-', '_'),
+        jobDate: new Date(data.jobDate).toISOString(),
+        paymentType: data.paymentType.replace('-', '_'),
+        price: data.price || undefined,
+        description: data.description || undefined,
+        notes: data.notes || undefined,
+        location:
+          data.latitude && data.longitude
+            ? ({
+                type: 'Point' as const,
+                coordinates: [data.longitude, data.latitude] as [number, number],
+              } as const)
+            : undefined,
+        frequency:
+          data.jobType === 'recurring' &&
+          data.frequencyValue &&
+          data.frequencyUnit
+            ? {
+                value: data.frequencyValue,
+                unit: data.frequencyUnit,
+              }
+            : undefined,
+      };
+      if (data.employee) {
+        payload.employeeId = data.employee;
+      }
+      await createJob(payload).unwrap();
+      toast.success('Job created successfully');
+      navigate(ROUTES.JOBS);
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Failed to create job'));
+    }
   };
 
   const renderStepContent = () => {
@@ -257,52 +320,29 @@ export default function CreateJobPage() {
                   Select Customer
                   <span className="text-[#16610E]"> *</span>
                 </label>
-                <Select
+                <SearchableSelect
+                  data={customerOptions}
                   value={formValues.customer || ''}
-                  onValueChange={(v) => setValue('customer', v)}
-                >
-                  <SelectTrigger className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]">
-                    <SelectValue placeholder="Choose a customer" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    <SelectItem value="cust-1">
-                      Babu Kondepudi
-                    </SelectItem>
-                    <SelectItem value="cust-2">John Doe</SelectItem>
-                    <SelectItem value="cust-3">Jane Smith</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.customer && (
-                  <p className="text-sm text-red-500">
-                    {errors.customer.message}
-                  </p>
-                )}
+                  onChange={(v) => setValue('customer', v)}
+                  placeholder="Choose a customer"
+                  searchPlaceholder="Search customers..."
+                  loading={!customersData}
+                  error={errors.customer?.message}
+                />
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium text-[#151515]">
                   Select Employee
-                  <span className="text-[#16610E]"> *</span>
+                  <span className="text-[#9ca3af] text-xs ml-1">(Optional)</span>
                 </label>
-                <Select
+                <SearchableSelect
+                  data={employeeOptions}
                   value={formValues.employee || ''}
-                  onValueChange={(v) => setValue('employee', v)}
-                >
-                  <SelectTrigger className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]">
-                    <SelectValue placeholder="Choose an employee" />
-                  </SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    <SelectItem value="emp-1">
-                      Sarah Miller
-                    </SelectItem>
-                    <SelectItem value="emp-2">Aman Sharma</SelectItem>
-                    <SelectItem value="emp-3">John Smith</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.employee && (
-                  <p className="text-sm text-red-500">
-                    {errors.employee.message}
-                  </p>
-                )}
+                  onChange={(v) => setValue('employee', v)}
+                  placeholder="Choose an employee"
+                  searchPlaceholder="Search employees..."
+                  loading={!employeesData}
+                />
               </div>
             </div>
           </div>
@@ -358,6 +398,41 @@ export default function CreateJobPage() {
                     {errors.jobAddress.message}
                   </p>
                 )}
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#151515]">City</label>
+                  <Input
+                    placeholder="Enter city"
+                    {...register('city')}
+                    className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#151515]">State</label>
+                  <Input
+                    placeholder="Enter state"
+                    {...register('state')}
+                    className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#151515]">Country</label>
+                  <Input
+                    placeholder="Enter country"
+                    {...register('country')}
+                    className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#151515]">Postal Code</label>
+                  <Input
+                    placeholder="Enter postal code"
+                    {...register('postalCode')}
+                    className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -466,33 +541,67 @@ export default function CreateJobPage() {
             Payment & Notes
           </h4>
           <div className="space-y-5">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#151515]">
+                  Payment Type
+                  <span className="text-[#16610E]"> *</span>
+                </label>
+                <Select
+                  value={formValues.paymentType || ''}
+                  onValueChange={(v) => setValue('paymentType', v)}
+                >
+                  <SelectTrigger className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]">
+                    <SelectValue placeholder="Select payment type" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-xl">
+                    <SelectItem value="bank-transfer">
+                      Bank Transfer
+                    </SelectItem>
+                    <SelectItem value="cash">Cash</SelectItem>
+                    <SelectItem value="drop-invoice">
+                      Drop Invoice
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.paymentType && (
+                  <p className="text-sm text-red-500">
+                    {errors.paymentType.message}
+                  </p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#151515]">
+                  Price
+                  <span className="text-[#16610E]"> *</span>
+                </label>
+                <div className="relative">
+                  <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9ca3af]" />
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min={0}
+                    placeholder="0.00"
+                    {...register('price', { valueAsNumber: true })}
+                    className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8] pl-10"
+                  />
+                </div>
+                {errors.price && (
+                  <p className="text-sm text-red-500">
+                    {errors.price.message}
+                  </p>
+                )}
+              </div>
+            </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-[#151515]">
-                Payment Type
-                <span className="text-[#16610E]"> *</span>
+                Description
               </label>
-              <Select
-                value={formValues.paymentType || ''}
-                onValueChange={(v) => setValue('paymentType', v)}
-              >
-                <SelectTrigger className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]">
-                  <SelectValue placeholder="Select payment type" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  <SelectItem value="bank-transfer">
-                    Bank Transfer
-                  </SelectItem>
-                  <SelectItem value="cash">Cash</SelectItem>
-                  <SelectItem value="drop-invoice">
-                    Drop Invoice
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.paymentType && (
-                <p className="text-sm text-red-500">
-                  {errors.paymentType.message}
-                </p>
-              )}
+              <Textarea
+                placeholder="Enter job description..."
+                {...register('description')}
+                className="min-h-[80px] rounded-xl border-[#e5e5e5] bg-[#fafaf8] p-4"
+              />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium text-[#151515]">
@@ -507,7 +616,17 @@ export default function CreateJobPage() {
           </div>
         </div>
 
-        <ReviewCard formData={formValues} />
+        <ReviewCard
+          formData={formValues}
+          customerName={
+            customerOptions.find((c) => c._id === formValues.customer)
+              ?.label || formValues.customer || 'Not provided'
+          }
+          employeeName={
+            employeeOptions.find((e) => e._id === formValues.employee)
+              ?.label || 'Not assigned'
+          }
+        />
       </div>
     );
   };
@@ -542,7 +661,7 @@ export default function CreateJobPage() {
                 onPrevious={handlePrevious}
                 onNext={handleNext}
                 onSubmit={handleSubmit(onSubmit)}
-                isSubmitting={false}
+                isSubmitting={isCreating}
                 isLastStep={currentStep === steps.length}
                 isFirstStep={currentStep === 1}
                 submitLabel="Create Job"

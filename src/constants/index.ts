@@ -68,6 +68,7 @@ export const API_ROUTES = {
     SET_VALIDITY: (id: string) => `/admins/employees/${id}/validity`,
     REMOVE_VALIDITY: (id: string) =>
       `/admins/employees/${id}/validity`,
+    UPLOAD: '/admins/upload',
   },
   JOBS: {
     LIST: '/jobs',
@@ -75,6 +76,10 @@ export const API_ROUTES = {
     CREATE: '/jobs',
     UPDATE: (id: string) => `/jobs/${id}`,
     DELETE: (id: string) => `/jobs/${id}`,
+    CANCEL: '/jobs/cancel',
+    COMPLETE: '/jobs/complete',
+    ASSIGN_EMPLOYEE: `/jobs/assign-employee`,
+    RECEIPT: (id: string) => `/jobs/${id}/receipt`,
   },
   INVOICES: {
     LIST: '/invoices',

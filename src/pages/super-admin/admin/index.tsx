@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import DataTable, {
   ActionButton,
   type ColumnDef,
-} from '../../../components/data-table/data-table';
-import type { IAdmins } from '../../../types/admins.types';
+} from '@/components/data-table/data-table';
+import type { IAdmins } from '@/types/admins.types';
 import toast from 'react-hot-toast';
 
 import { getErrorMessage } from '@/lib/get-error-message';
@@ -15,20 +15,20 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../../components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu';
 import { ROUTES } from '@/constants';
 import {
   useGetAdminUsersQuery,
   useUpdateAdminUserMutation,
   useDeleteAdminValidityMutation,
-} from '../../../API/api';
-import type { GetAdminsParams } from '../../../types/api.types';
-import { useDataTableState } from '../../../hooks/use-data-table-state';
-import { StatusBadge } from '../../../components/data-table/status-badge';
-import { AvatarCell } from '../../../components/data-table/avatar-cell';
+} from '@/API/api';
+import type { GetAdminsParams } from '@/types/api.types';
+import { useDataTableState } from '@/hooks/use-data-table-state';
+import { StatusBadge } from '@/components/data-table/status-badge';
+import { AvatarCell } from '@/components/data-table/avatar-cell';
 import { format } from 'date-fns';
 import { useState } from 'react';
-import { AdminValidityDialog } from '../../../components/admin/admin-validity-dialog';
+import { AdminValidityDialog } from '@/components/admin/admin-validity-dialog';
 
 const statusConfig: Record<string, { color: string; label: string }> =
   {

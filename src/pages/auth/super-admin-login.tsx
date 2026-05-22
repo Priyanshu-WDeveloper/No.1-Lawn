@@ -12,13 +12,13 @@ import {
 import toast from 'react-hot-toast';
 
 import { getErrorMessage } from '@/lib/get-error-message';
-import { InputWithIcon } from '../../components/forms/input-with-icon';
-import { Button } from '../../components/ui/button';
+import { InputWithIcon } from '@/components/forms/input-with-icon';
+import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
-import { useSuperLoginMutation } from '../../API/api';
-import { ROUTES } from '../../constants';
+import { useSuperLoginMutation } from '@/API/api';
+import { ROUTES } from '@/constants';
 
 const loginSchema = z.object({
   email: z

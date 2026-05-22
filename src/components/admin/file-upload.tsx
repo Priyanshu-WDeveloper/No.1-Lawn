@@ -1,6 +1,6 @@
 import { Upload, X } from 'lucide-react';
 
-import { getFileIcon, formatFileSize } from '../../lib/file-utils';
+import { getFileIcon, formatFileSize } from '@/lib/file-utils';
 
 interface FileUploadProps {
   files: File[];

@@ -21,11 +21,11 @@ import type { RootState } from '@/store';
 import toast from 'react-hot-toast';
 import { ConfirmDialog } from './ui/confirm-dialog';
 import { useState } from 'react';
-import { ROUTES } from '../constants';
-import { localLogout } from '../lib/auth';
+import { ROUTES } from '@/constants';
+import { localLogout } from '@/lib/auth';
 import { useDispatch } from 'react-redux';
-import { clearAuth } from '../store/auth-slice';
-import { api } from '../API/api';
+import { clearAuth } from '@/store/auth-slice';
+import { api } from '@/API/api';
 
 export default function AccountDropdown({
   superAccess = false,

@@ -26,15 +26,16 @@ import { ROUTES } from '@/constants';
 import {
   useUpdateEmployeeMutation,
   useGetEmployeeByIdQuery,
-} from '../../../API/api';
-import { AdminFormStepper } from '../../../components/admin/admin-form-stepper';
-import { AdminReviewCard } from '../../../components/admin/admin-review-card';
+  useUploadDocumentMutation,
+} from '@/API/api';
+import { AdminFormStepper } from '@/components/admin/admin-form-stepper';
+import { AdminReviewCard } from '@/components/admin/admin-review-card';
 import {
   NamedDocumentUpload,
   type NamedDoc,
-} from '../../../components/admin/named-document-upload';
-import { Button } from '../../../components/ui/button';
-import { Textarea } from '../../../components/ui/textarea';
+} from '@/components/admin/named-document-upload';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { PhoneInput } from '@/components/forms/phone-input';
 import { LocationModeToggle } from '@/components/forms/location-mode-toggle';
 import { GoogleMapPicker } from '@/components/google-maps/picker';
@@ -117,6 +118,7 @@ export default function EditEmployeePage() {
     useGetEmployeeByIdQuery(id ?? '', { skip: !id });
   const [updateEmployee, { isLoading: isUpdating }] =
     useUpdateEmployeeMutation();
+  const [uploadDocument] = useUploadDocumentMutation();
   const [currentStep, setCurrentStep] = useState(1);
   const [documents, setDocuments] = useState<NamedDoc[]>([]);
   const profileInputRef = useRef<HTMLInputElement>(null);
@@ -243,14 +245,22 @@ export default function EditEmployeePage() {
 
   const onSubmit = async (data: UpdateEmployeeFormData) => {
     if (!id) return;
-    console.log(
-      '\n===================== 🟢 data =====================',
-    );
-    console.log(data);
-    console.log(
-      '=================================================\n',
-    );
     try {
+      let attachments: Array<{ key: string; value: string }> | undefined;
+
+      const docsToUpload = documents.filter((d) => d.file && d.name);
+      if (docsToUpload.length > 0) {
+        const formData = new FormData();
+        for (const doc of docsToUpload) {
+          formData.append('files', doc.file!);
+        }
+        const res = await uploadDocument(formData).unwrap();
+        attachments = res.urls.map((url, i) => ({
+          key: docsToUpload[i].name,
+          value: url,
+        }));
+      }
+
       const res = await updateEmployee({
         id,
         firstName: data.firstName,
@@ -266,14 +276,8 @@ export default function EditEmployeePage() {
         profileImage: data.profileImage,
         latitude: data.latitude,
         longitude: data.longitude,
+        attachments,
       }).unwrap();
-      console.log(
-        '\n===================== 🟢 employee edit =====================',
-      );
-      console.log(res);
-      console.log(
-        '=================================================\n',
-      );
       toast.success('Employee updated successfully');
       navigate(ROUTES.EMPLOYEES);
     } catch (error: any) {

@@ -1,6 +1,6 @@
 import { Eye, FileText, Image as ImageIcon, File } from 'lucide-react';
 
-import { formatFileSize } from '../../lib/file-utils';
+import { formatFileSize } from '@/lib/file-utils';
 import type { NamedDoc } from './named-document-upload';
 
 interface DocumentRowProps {
