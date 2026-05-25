@@ -31,43 +31,54 @@ import { MockMapPicker } from '@/components/forms/mock-map-picker';
 import { ManualCoordinates } from '@/components/forms/manual-coordinates';
 import { SearchableSelect } from '@/components/ui/searchable-select';
 import { DatePicker } from '@/components/ui/date-picker';
-import { useCreateJobMutation, useGetCustomersQuery, useGetEmployeesQuery } from '@/API/api';
+import {
+  useCreateJobMutation,
+  useGetCustomersQuery,
+  useGetEmployeesQuery,
+} from '@/API/api';
 import { getErrorMessage } from '@/lib/get-error-message';
 import { AddressInputs } from '@/components/forms/address-inputs';
 import { validateAddress } from '@/lib/address-validation';
 
-const createJobSchema = z.object({
-  customer: z.string().min(1, 'Customer is required'),
-  employee: z.string().optional(),
-  jobAddress: z.string().min(1, 'Job address is required'),
-  city: z.string().min(1, 'City is required'),
-  state: z.string().min(1, 'State is required'),
-  country: z.string().min(1, 'Country is required'),
-  postalCode: z.string().min(1, 'Postal code is required'),
-  countryIso: z.string().optional(),
-  latitude: z.number().optional(),
-  longitude: z.number().optional(),
-  locationMode: z.enum(['map', 'manual']),
-  jobType: z.string().min(1, 'Job type is required'),
-  jobDate: z.string().min(1, 'Job date is required'),
-  frequencyValue: z.number().optional(),
-  frequencyUnit: z.string().optional(),
-  price: z.number().min(0, 'Price must be at least 0'),
-  paymentType: z.string().min(1, 'Payment type is required'),
-  description: z.string().optional(),
-  notes: z.string().optional(),
-}).superRefine((data, ctx) => {
-  if (data.countryIso) {
-    const addrResult = validateAddress(data.countryIso, data.state, data.city, data.postalCode);
-    if (!addrResult.valid && addrResult.error && addrResult.path) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: addrResult.error,
-        path: [addrResult.path as any],
-      });
+const createJobSchema = z
+  .object({
+    customer: z.string().min(1, 'Customer is required'),
+    employee: z.string().optional(),
+    jobAddress: z.string().min(1, 'Job address is required'),
+    city: z.string().min(1, 'City is required'),
+    state: z.string().min(1, 'State is required'),
+    country: z.string().min(1, 'Country is required'),
+    postalCode: z.string().min(1, 'Postal code is required'),
+    countryIso: z.string().optional(),
+    latitude: z.number().optional(),
+    longitude: z.number().optional(),
+    locationMode: z.enum(['map', 'manual']),
+    jobType: z.string().min(1, 'Job type is required'),
+    jobDate: z.string().min(1, 'Job date is required'),
+    frequencyValue: z.number().optional(),
+    frequencyUnit: z.string().optional(),
+    price: z.number().min(0, 'Price must be at least 0'),
+    paymentType: z.string().min(1, 'Payment type is required'),
+    description: z.string().optional(),
+    notes: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.countryIso) {
+      const addrResult = validateAddress(
+        data.countryIso,
+        data.state,
+        data.city,
+        data.postalCode,
+      );
+      if (!addrResult.valid && addrResult.error && addrResult.path) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: addrResult.error,
+          path: [addrResult.path as any],
+        });
+      }
     }
-  }
-});
+  });
 
 type CreateJobFormData = z.infer<typeof createJobSchema>;
 
@@ -117,10 +128,17 @@ const steps = [
 export default function CreateJobPage() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
-  const [createJob, { isLoading: isCreating }] = useCreateJobMutation();
+  const [createJob, { isLoading: isCreating }] =
+    useCreateJobMutation();
 
-  const { data: customersData } = useGetCustomersQuery({ limit: 500, page: 1 });
-  const { data: employeesData } = useGetEmployeesQuery({ limit: 500, page: 1 });
+  const { data: customersData } = useGetCustomersQuery({
+    limit: 500,
+    page: 1,
+  });
+  const { data: employeesData } = useGetEmployeesQuery({
+    limit: 500,
+    page: 1,
+  });
 
   const customerOptions = useMemo(
     () =>
@@ -160,7 +178,15 @@ export default function CreateJobPage() {
     let fieldsToValidate: (keyof CreateJobFormData)[] = [];
 
     if (currentStep === 1) {
-      fieldsToValidate = ['locationMode', 'jobAddress', 'state', 'city', 'postalCode', 'country', 'countryIso'];
+      fieldsToValidate = [
+        'locationMode',
+        'jobAddress',
+        'state',
+        'city',
+        'postalCode',
+        'country',
+        'countryIso',
+      ];
     } else if (currentStep === 2) {
       fieldsToValidate = ['customer', 'jobType', 'jobDate'];
     }
@@ -196,7 +222,10 @@ export default function CreateJobPage() {
           data.latitude && data.longitude
             ? ({
                 type: 'Point' as const,
-                coordinates: [data.longitude, data.latitude] as [number, number],
+                coordinates: [data.longitude, data.latitude] as [
+                  number,
+                  number,
+                ],
               } as const)
             : undefined,
         frequency:
@@ -280,7 +309,9 @@ export default function CreateJobPage() {
                 postalCode={formValues.postalCode}
                 onCountryChange={(name, iso) => {
                   setValue('country', name, { shouldValidate: true });
-                  setValue('countryIso', iso, { shouldValidate: true });
+                  setValue('countryIso', iso, {
+                    shouldValidate: true,
+                  });
                   setValue('state', '', { shouldValidate: true });
                   setValue('city', '', { shouldValidate: true });
                 }}
@@ -292,7 +323,9 @@ export default function CreateJobPage() {
                   setValue('city', name, { shouldValidate: true })
                 }
                 onPostalCodeChange={(val) =>
-                  setValue('postalCode', val, { shouldValidate: true })
+                  setValue('postalCode', val, {
+                    shouldValidate: true,
+                  })
                 }
                 errors={{
                   country: errors.country?.message,
@@ -334,7 +367,9 @@ export default function CreateJobPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">
                   Select Employee
-                  <span className="text-[#9ca3af] text-xs ml-1">(Optional)</span>
+                  <span className="text-[#9ca3af] text-xs ml-1">
+                    (Optional)
+                  </span>
                 </label>
                 <SearchableSelect
                   data={employeeOptions}
@@ -529,7 +564,7 @@ export default function CreateJobPage() {
                 className="text-[#6b7280] hover:text-foreground"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back
+                Back to Jobs
               </Button>
             </div>
 

@@ -130,7 +130,7 @@ export function GoogleMapPicker({
           type="button"
           onClick={handleSearch}
           disabled={isSearching || !searchQuery.trim()}
-          className="h-12 px-4 rounded-xl bg-[var(--sidebar-bg-from)] text-white font-medium text-sm hover:bg-[var(--sidebar-bg-to)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="h-12 px-4 rounded-xl bg-green-600 text-white font-medium text-sm hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isSearching ? 'Searching...' : 'Search'}
         </button>

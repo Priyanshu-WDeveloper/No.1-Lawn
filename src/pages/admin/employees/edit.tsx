@@ -15,6 +15,12 @@ import {
   ArrowLeft,
   X,
   Camera,
+  User,
+  Phone,
+  Building2,
+  Map,
+  Hash,
+  Globe,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -29,7 +35,7 @@ import {
   useUploadDocumentMutation,
 } from '@/API/api';
 import { AdminFormStepper } from '@/components/admin/admin-form-stepper';
-import { AdminReviewCard } from '@/components/admin/admin-review-card';
+import { ReviewCard } from '@/components/admin/review-card';
 import {
   NamedDocumentUpload,
   type NamedDoc,
@@ -180,7 +186,7 @@ export default function EditEmployeePage() {
       profileImage: '',
       latitude: 5.8485,
       longitude: 14.7633,
-      locationMode: 'map',
+      locationMode: 'manual',
     },
   });
 
@@ -210,7 +216,7 @@ export default function EditEmployeePage() {
       const coords1 = emp.location?.coordinates;
       setValue('latitude', coords1 ? coords1[1] : 5.8485);
       setValue('longitude', coords1 ? coords1[0] : 14.7633);
-      setValue('locationMode', emp.locationMode ?? 'map');
+      setValue('locationMode', emp.locationMode ?? 'manual');
     } else if (employeeData) {
       const emp = employeeData;
       setValue('firstName', emp.firstName ?? '');
@@ -234,7 +240,7 @@ export default function EditEmployeePage() {
       const coords2 = emp.location?.coordinates;
       setValue('latitude', coords2 ? coords2[1] : 5.8485);
       setValue('longitude', coords2 ? coords2[0] : 14.7633);
-      setValue('locationMode', emp.locationMode ?? 'map');
+      setValue('locationMode', emp.locationMode ?? 'manual');
     }
   }, [employeeData, location.state, setValue]);
 
@@ -331,7 +337,11 @@ export default function EditEmployeePage() {
               }),
           );
         }
-        uploads.push(Promise.resolve().then(() => { attachments = results; }));
+        uploads.push(
+          Promise.resolve().then(() => {
+            attachments = results;
+          }),
+        );
       }
 
       await Promise.all(uploads);
@@ -546,7 +556,7 @@ export default function EditEmployeePage() {
     }
 
     if (currentStep === 2) {
-      const locationMode = formValues.locationMode || 'map';
+      const locationMode = formValues.locationMode || 'manual';
       const latitude = formValues.latitude || 0;
       const longitude = formValues.longitude || 0;
 
@@ -557,25 +567,6 @@ export default function EditEmployeePage() {
               Address Information
             </h4>
             <div className="space-y-5">
-              <LocationModeToggle
-                value={locationMode}
-                onChange={(mode) => setValue('locationMode', mode)}
-              />
-
-              {locationMode === 'map' ? (
-                <GoogleMapPicker
-                  latitude={latitude}
-                  longitude={longitude}
-                  onPick={handleCoordinatePick}
-                />
-              ) : (
-                <ManualCoordinates
-                  latitude={latitude}
-                  longitude={longitude}
-                  onChange={handleCoordinatePick}
-                />
-              )}
-
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">
                   Address
@@ -626,6 +617,25 @@ export default function EditEmployeePage() {
                   postalCode: errors.postalCode?.message,
                 }}
               />
+
+              <LocationModeToggle
+                value={locationMode}
+                onChange={(mode) => setValue('locationMode', mode)}
+              />
+
+              {locationMode === 'map' ? (
+                <GoogleMapPicker
+                  latitude={latitude}
+                  longitude={longitude}
+                  onPick={handleCoordinatePick}
+                />
+              ) : (
+                <ManualCoordinates
+                  latitude={latitude}
+                  longitude={longitude}
+                  onChange={handleCoordinatePick}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -648,21 +658,89 @@ export default function EditEmployeePage() {
 
     return (
       <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
-        <AdminReviewCard
-          firstName={formValues.firstName}
-          lastName={formValues.lastName}
-          email={formValues.email}
-          countryCode={formValues.countryCode}
-          phoneNumber={formValues.phoneNumber}
-          address={formValues.address}
-          city={formValues.city}
-          state={formValues.state}
-          postalCode={formValues.postalCode}
-          country={formValues.country}
-          profileImage={formValues.profileImage}
-          latitude={formValues.latitude}
-          longitude={formValues.longitude}
-          documents={documents}
+        <ReviewCard
+          sections={[
+            {
+              icon: <User className="h-5 w-5 text-white" />,
+              title: 'Employee Information',
+              subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+              image: formValues.profileImage
+                ? {
+                    src: formValues.profileImage,
+                    alt: `${formValues.firstName} ${formValues.lastName}`,
+                  }
+                : undefined,
+              fields: [
+                {
+                  icon: <User className="h-3 w-3" />,
+                  label: 'First Name',
+                  value: formValues.firstName,
+                },
+                {
+                  icon: <User className="h-3 w-3" />,
+                  label: 'Last Name',
+                  value: formValues.lastName,
+                },
+                {
+                  icon: <Mail className="h-3 w-3" />,
+                  label: 'Email',
+                  value: formValues.email,
+                },
+                {
+                  icon: <Phone className="h-3 w-3" />,
+                  label: 'Phone Number',
+                  value: `${formValues.countryCode} ${formValues.phoneNumber}`,
+                },
+                {
+                  icon: <MapPin className="h-3 w-3" />,
+                  label: 'Address',
+                  value: formValues.address,
+                },
+                {
+                  icon: <Building2 className="h-3 w-3" />,
+                  label: 'City',
+                  value: formValues.city,
+                },
+                {
+                  icon: <Map className="h-3 w-3" />,
+                  label: 'State',
+                  value: formValues.state,
+                },
+                {
+                  icon: <Hash className="h-3 w-3" />,
+                  label: 'Postal Code',
+                  value: formValues.postalCode,
+                },
+                {
+                  icon: <Globe className="h-3 w-3" />,
+                  label: 'Country',
+                  value: formValues.country,
+                },
+                ...(formValues.latitude != null &&
+                formValues.longitude != null
+                  ? [
+                      {
+                        icon: <Map className="h-3 w-3" />,
+                        label: 'Latitude',
+                        value: String(formValues.latitude),
+                      },
+                      {
+                        icon: <Map className="h-3 w-3" />,
+                        label: 'Longitude',
+                        value: String(formValues.longitude),
+                      },
+                    ]
+                  : [
+                      {
+                        icon: <Map className="h-3 w-3" />,
+                        label: 'Coordinates',
+                        value: 'Not provided',
+                      },
+                    ]),
+              ],
+              documents,
+            },
+          ]}
         />
       </form>
     );

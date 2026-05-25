@@ -30,6 +30,7 @@ import { localLogout } from '@/lib/auth';
 import { useDispatch } from 'react-redux';
 import { clearAuth } from '@/store/auth-slice';
 import { api } from '@/API/api';
+import { ChangeSuperAdminPasswordDialog } from '@/pages/super-admin/change-password';
 
 const items = [
   {
@@ -55,6 +56,27 @@ export function SuperAdminSidebar() {
   const navigate = useNavigate();
   const { toggleSidebar } = useSidebar();
   const dispatch = useDispatch();
+
+  const [confirmAction, setConfirmAction] = useState<{
+    type: 'change-password';
+  } | null>(null);
+
+  const handleChangePassword = async (data: {
+    currentPassword: string;
+    newPassword: string;
+  }) => {
+    try {
+      // your api call
+      console.log(data);
+
+      // example:
+      // await changePasswordMutation(data).unwrap();
+
+      setConfirmAction(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleLogout = async () => {
     try {
@@ -116,7 +138,12 @@ export function SuperAdminSidebar() {
       <SidebarFooter className="bg-[var(--sidebar-bg-to)] p-4 space-y-2">
         <button
           className="w-full rounded-2xl bg-white/10 p-4 text-left backdrop-blur transition hover:bg-white/20"
-          onClick={() => navigate(ROUTES.SUPER_ADMIN_CHANGE_PASSWORD)}
+          // onClick={() => navigate(ROUTES.CHANGE_PASSWORD)}
+          onClick={() =>
+            setConfirmAction({
+              type: 'change-password',
+            })
+          }
         >
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
@@ -154,6 +181,16 @@ export function SuperAdminSidebar() {
           </div>
         </button>
       </SidebarFooter>
+
+      <ChangeSuperAdminPasswordDialog
+        open={confirmAction?.type === 'change-password'}
+        onOpenChange={(open) => {
+          if (!open) setConfirmAction(null);
+        }}
+        onConfirm={async (data) => {
+          await handleChangePassword(data);
+        }}
+      />
 
       <ConfirmDialog
         open={showLogoutDialog}

@@ -18,7 +18,7 @@ export default function NotFoundPage() {
           </p>
           <Button
             onClick={() => navigate(-1)}
-            className="mt-6 h-10 gap-2 rounded-xl bg-[var(--sidebar-bg-from)] text-white hover:bg-[var(--sidebar-bg-to)]"
+            className="mt-6 h-10 gap-2 rounded-xl bg-green-600 text-white hover:bg-green-700"
           >
             <ArrowLeft className="h-4 w-4" />
             Go Back

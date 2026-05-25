@@ -169,7 +169,7 @@ export function DynamicForm({
         </Button>
         <Button
           type="submit"
-          className="h-12 px-8 rounded-xl bg-[var(--sidebar-bg-from)] hover:bg-[var(--sidebar-bg-to)] text-white font-medium shadow-md hover:shadow-lg transition-all"
+          className="h-12 px-8 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium shadow-md hover:shadow-lg transition-all"
         >
           Save Details
         </Button>

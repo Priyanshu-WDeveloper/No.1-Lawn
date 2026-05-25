@@ -7,7 +7,7 @@ import { ManualCoordinates } from '@/components/forms/manual-coordinates';
 import { useEffect } from 'react';
 import { Country } from 'country-state-city';
 import { AddressInputs } from '@/components/forms/address-inputs';
-import { validatePhone } from '@/lib/phone-validation';
+// import { validatePhone } from '@/lib/phone-validation';
 
 interface AdminFormStepProps {
   step: number;
@@ -24,20 +24,66 @@ export function AdminFormStep({
   watch,
   setValue,
   errors,
-  trigger,
+  // trigger,
 }: AdminFormStepProps) {
-  const formValues = watch();
+  // const formValues = watch();
+
+  // const country = watch('country');
+  // const countryIso = watch('countryIso');
+  // const phoneNumber = watch('phoneNumber')
+  const formValues = {
+    phoneNumber: watch('phoneNumber'),
+    countryCode: watch('countryCode'),
+    country: watch('country'),
+    countryIso: watch('countryIso'),
+    state: watch('state'),
+    city: watch('city'),
+    postalCode: watch('postalCode'),
+  };
+
+  // useEffect(() => {
+  //   if (!formValues.countryIso && formValues.country) {
+  //     const match = Country.getAllCountries().find(
+  //       (c) =>
+  //         c.name.toLowerCase() === formValues.country.toLowerCase(),
+  //     );
+
+  //     if (match) {
+  //       setValue('countryIso', match.isoCode, {
+  //         shouldValidate: true,
+  //       });
+  //     }
+  //   }
+  // }, [formValues.country, formValues.countryIso, setValue]);
 
   useEffect(() => {
-    if (!watch('countryIso') && formValues.country) {
+    // Sync country -> countryIso
+    if (formValues.country && !formValues.countryIso) {
       const match = Country.getAllCountries().find(
-        (c) => c.name.toLowerCase() === formValues.country.toLowerCase(),
+        (c) =>
+          c.name.toLowerCase() === formValues.country.toLowerCase(),
       );
+
       if (match) {
-        setValue('countryIso', match.isoCode);
+        setValue('countryIso', match.isoCode, {
+          shouldValidate: false,
+        });
       }
     }
-  }, []);
+
+    // Sync countryIso -> country
+    if (formValues.countryIso && !formValues.country) {
+      const match = Country.getAllCountries().find(
+        (c) => c.isoCode === formValues.countryIso,
+      );
+
+      if (match) {
+        setValue('country', match.name, {
+          shouldValidate: false,
+        });
+      }
+    }
+  }, [formValues.country, formValues.countryIso, setValue]);
 
   if (step === 1) {
     return (
@@ -104,11 +150,12 @@ export function AdminFormStep({
                 Phone Number
                 <span className="text-primary"> *</span>
               </label>
-              <PhoneInput
-                value={formValues.phoneNumber}
+              {/* <PhoneInput
+                value={formValues.phoneNumber ?? ''}
                 onChange={(val) =>
                   setValue('phoneNumber', val, {
                     shouldValidate: true,
+                    shouldDirty: true,
                   })
                 }
                 countryCode={formValues.countryCode}
@@ -123,13 +170,39 @@ export function AdminFormStep({
                     setValue('phoneNumber', formValues.phoneNumber, {
                       shouldValidate: true,
                     });
-                    const result = validatePhone(formValues.phoneNumber, formValues.countryCode);
-                    if (!result.valid && result.error) {
-                      setValue('phoneNumber', undefined, { shouldValidate: true });
-                    }
+                    const result = validatePhone(
+                      formValues.phoneNumber,
+                      formValues.countryCode,
+                    );
+                    // if (!result.valid && result.error) {
+                    //   setValue('phoneNumber', undefined, {
+                    //     shouldValidate: true,
+                    //   });
+                    // }
+                    // if (!result.valid && result.error) {
+                    //   setValue('phoneNumber', '', {
+                    //     shouldValidate: true,
+                    //     shouldDirty: true,
+                    //   });
+                    // }
                   }
                   trigger?.('phoneNumber');
                 }}
+              /> */}
+              <PhoneInput
+                value={formValues.phoneNumber ?? ''}
+                onChange={(val) =>
+                  setValue('phoneNumber', val ?? '', {
+                    shouldDirty: true,
+                  })
+                }
+                countryCode={formValues.countryCode ?? '+64'}
+                onCountryCodeChange={(code) =>
+                  setValue('countryCode', code, {
+                    shouldDirty: true,
+                  })
+                }
+                error={errors.phoneNumber?.message}
               />
             </div>
           </div>
@@ -139,7 +212,7 @@ export function AdminFormStep({
   }
 
   if (step === 2) {
-    const locationMode = watch('locationMode') || 'map';
+    const locationMode = watch('locationMode') || 'manual';
     const latitude = watch('latitude') || 0;
     const longitude = watch('longitude') || 0;
 
@@ -159,25 +232,6 @@ export function AdminFormStep({
             Address Information
           </h4>
           <div className="space-y-5">
-            <LocationModeToggle
-              value={locationMode}
-              onChange={handleModeChange}
-            />
-
-            {locationMode === 'map' ? (
-              <GoogleMapPicker
-                latitude={latitude}
-                longitude={longitude}
-                onPick={handleCoordinatePick}
-              />
-            ) : (
-              <ManualCoordinates
-                latitude={latitude}
-                longitude={longitude}
-                onChange={handleCoordinatePick}
-              />
-            )}
-
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
                 Address
@@ -196,26 +250,56 @@ export function AdminFormStep({
             </div>
 
             <AddressInputs
-              countryIso={watch('countryIso') || ''}
+              // countryIso={watch('countryIso') || ''}
+              countryIso={formValues.countryIso || ''}
               country={formValues.country}
               state={formValues.state}
               city={formValues.city}
               postalCode={formValues.postalCode}
               onCountryChange={(name, iso) => {
-                setValue('country', name);
-                setValue('countryIso', iso);
-                setValue('state', '');
-                setValue('city', '');
+                // setValue('country', name);
+                // setValue('countryIso', iso);
+                setValue('country', name, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+
+                setValue('countryIso', iso, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+                setValue('state', '', {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+
+                setValue('city', '', {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
               }}
               onStateChange={(name, _iso) => {
-                setValue('state', name);
-                setValue('city', '');
+                setValue('state', name, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+                setValue('city', '', {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
               }}
               onCityChange={(name) =>
-                setValue('city', name)
+                // setValue('city', name)
+                setValue('city', name, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                })
               }
               onPostalCodeChange={(val) =>
-                setValue('postalCode', val)
+                setValue('postalCode', val, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                })
               }
               errors={{
                 country: errors.country?.message,
@@ -224,6 +308,25 @@ export function AdminFormStep({
                 postalCode: errors.postalCode?.message,
               }}
             />
+
+            <LocationModeToggle
+              value={locationMode}
+              onChange={handleModeChange}
+            />
+
+            {locationMode === 'map' ? (
+              <GoogleMapPicker
+                latitude={latitude}
+                longitude={longitude}
+                onPick={handleCoordinatePick}
+              />
+            ) : (
+              <ManualCoordinates
+                latitude={latitude}
+                longitude={longitude}
+                onChange={handleCoordinatePick}
+              />
+            )}
           </div>
         </div>
       </div>

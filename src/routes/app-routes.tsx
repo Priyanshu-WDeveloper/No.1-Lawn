@@ -9,35 +9,89 @@ import { ROUTES } from '@/constants';
 import Loader from '@/components/loader';
 
 const Login = React.lazy(() => import('../pages/auth/login'));
-const SuperAdminLogin = React.lazy(() => import('../pages/auth/super-admin-login'));
-const ForgotPassword = React.lazy(() => import('../pages/auth/forgot-password'));
-const DashboardPage = React.lazy(() => import('../pages/admin/dashboard'));
-const AdminProfilePage = React.lazy(() => import('../pages/admin/profile'));
-const SuperAdminProfilePage = React.lazy(() => import('../pages/super-admin/profile'));
-const ChangePasswordPage = React.lazy(() => import('../pages/admin/change-password'));
-const SuperAdminChangePasswordPage = React.lazy(() => import('../pages/super-admin/change-password'));
-const SuperAdminDashboardPage = React.lazy(() => import('../pages/super-admin/dashboard'));
-const SuperAdminBillingPage = React.lazy(() => import('../pages/super-admin/billing'));
-const CustomerManagementPage = React.lazy(() => import('../pages/admin/customers'));
-const CreateCustomerPage = React.lazy(() => import('../pages/admin/customers/create'));
-const CustomerViewPage = React.lazy(() => import('../pages/admin/customers/view'));
-const CustomerEditPage = React.lazy(() => import('../pages/admin/customers/edit'));
-const EmployeeManagementPage = React.lazy(() => import('../pages/admin/employees'));
-const CreateEmployeePage = React.lazy(() => import('../pages/admin/employees/create'));
-const EmployeeViewPage = React.lazy(() => import('../pages/admin/employees/view'));
-const EmployeeEditPage = React.lazy(() => import('../pages/admin/employees/edit'));
-const JobManagementPage = React.lazy(() => import('../pages/admin/jobs'));
-const CreateJobPage = React.lazy(() => import('../pages/admin/jobs/create'));
-const JobViewPage = React.lazy(() => import('../pages/admin/jobs/view'));
-const JobEditPage = React.lazy(() => import('../pages/admin/jobs/edit'));
-const NotificationsPage = React.lazy(() => import('../pages/notification'));
-const InvoiceManagementPage = React.lazy(() => import('../pages/admin/invoices'));
-const InvoiceViewPage = React.lazy(() => import('../pages/admin/invoices/view'));
-const SuperAdminAdminsPage = React.lazy(() => import('../pages/super-admin/admin'));
-const AdminCreatePage = React.lazy(() => import('../pages/super-admin/admin/create'));
-const AdminViewPage = React.lazy(() => import('../pages/super-admin/admin/view'));
-const AdminEditPage = React.lazy(() => import('../pages/super-admin/admin/edit'));
-const SubscriptionExpiredPage = React.lazy(() => import('../pages/admin/subscription-expired'));
+const SuperAdminLogin = React.lazy(
+  () => import('../pages/auth/super-admin-login'),
+);
+const ForgotPassword = React.lazy(
+  () => import('../pages/auth/forgot-password'),
+);
+const DashboardPage = React.lazy(
+  () => import('../pages/admin/dashboard'),
+);
+const AdminProfilePage = React.lazy(
+  () => import('../pages/admin/profile'),
+);
+const SuperAdminProfilePage = React.lazy(
+  () => import('../pages/super-admin/profile'),
+);
+// const ChangePasswordPage = React.lazy(() => import('../pages/admin/change-password'));
+// const SuperAdminChangePasswordPage = React.lazy(() => import('../pages/super-admin/change-password'));
+const SuperAdminDashboardPage = React.lazy(
+  () => import('../pages/super-admin/dashboard'),
+);
+const SuperAdminBillingPage = React.lazy(
+  () => import('../pages/super-admin/billing'),
+);
+const CustomerManagementPage = React.lazy(
+  () => import('../pages/admin/customers'),
+);
+const CreateCustomerPage = React.lazy(
+  () => import('../pages/admin/customers/create'),
+);
+const CustomerViewPage = React.lazy(
+  () => import('../pages/admin/customers/view'),
+);
+const CustomerEditPage = React.lazy(
+  () => import('../pages/admin/customers/edit'),
+);
+const EmployeeManagementPage = React.lazy(
+  () => import('../pages/admin/employees'),
+);
+const CreateEmployeePage = React.lazy(
+  () => import('../pages/admin/employees/create'),
+);
+const EmployeeViewPage = React.lazy(
+  () => import('../pages/admin/employees/view'),
+);
+const EmployeeEditPage = React.lazy(
+  () => import('../pages/admin/employees/edit'),
+);
+const JobManagementPage = React.lazy(
+  () => import('../pages/admin/jobs'),
+);
+const CreateJobPage = React.lazy(
+  () => import('../pages/admin/jobs/create'),
+);
+const JobViewPage = React.lazy(
+  () => import('../pages/admin/jobs/view'),
+);
+const JobEditPage = React.lazy(
+  () => import('../pages/admin/jobs/edit'),
+);
+const NotificationsPage = React.lazy(
+  () => import('../pages/notification'),
+);
+const InvoiceManagementPage = React.lazy(
+  () => import('../pages/admin/invoices'),
+);
+const InvoiceViewPage = React.lazy(
+  () => import('../pages/admin/invoices/view'),
+);
+const SuperAdminAdminsPage = React.lazy(
+  () => import('../pages/super-admin/admin'),
+);
+const AdminCreatePage = React.lazy(
+  () => import('../pages/super-admin/admin/create'),
+);
+const AdminViewPage = React.lazy(
+  () => import('../pages/super-admin/admin/view'),
+);
+const AdminEditPage = React.lazy(
+  () => import('../pages/super-admin/admin/edit'),
+);
+const SubscriptionExpiredPage = React.lazy(
+  () => import('../pages/admin/subscription-expired'),
+);
 const NotFoundPage = React.lazy(() => import('../pages/not-found'));
 
 const AppRoutes = () => {
@@ -87,14 +141,14 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path={ROUTES.CHANGE_PASSWORD}
           element={
             <ProtectedRoute>
               <ChangePasswordPage />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
           path={ROUTES.CUSTOMERS}
           element={
@@ -241,14 +295,14 @@ const AppRoutes = () => {
             </SuperAdminRoute>
           }
         />
-        <Route
+        {/* <Route
           path={ROUTES.SUPER_ADMIN_CHANGE_PASSWORD}
           element={
             <SuperAdminRoute>
               <SuperAdminChangePasswordPage />
             </SuperAdminRoute>
           }
-        />
+        /> */}
         <Route
           path={ROUTES.SUPER_ADMIN_ADMINS}
           element={

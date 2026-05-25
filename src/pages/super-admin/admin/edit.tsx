@@ -10,7 +10,19 @@ import z from 'zod';
 import toast from 'react-hot-toast';
 
 import { getErrorMessage } from '@/lib/get-error-message';
-import { ArrowLeft, Upload } from 'lucide-react';
+import {
+  ArrowLeft,
+  Upload,
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Building2,
+  Map as MapIcon,
+  Hash,
+  Globe,
+  // FileText,
+} from 'lucide-react';
 import { SuperAdminLayout } from '@/components/layout/super-layout';
 import { Navbar } from '@/components/layout/navbar';
 import { Button } from '@/components/ui/button';
@@ -23,11 +35,14 @@ import {
 } from '@/API/api';
 import { AdminFormStepper } from '@/components/admin/admin-form-stepper';
 import { AdminFormStep } from '@/components/admin/admin-form-step';
-import { AdminReviewCard } from '@/components/admin/admin-review-card';
+import { ReviewCard } from '@/components/admin/review-card';
 import Loader from '@/components/loader';
 import type { IAdmins } from '@/types/admins.types';
 import { validatePhone } from '@/lib/phone-validation';
-import { validateAddress, getCountryIsoFromPhoneCode } from '@/lib/address-validation';
+import {
+  validateAddress,
+  getCountryIsoFromPhoneCode,
+} from '@/lib/address-validation';
 
 const editAdminSchema = z
   .object({
@@ -61,7 +76,10 @@ const editAdminSchema = z
     invoiceLogo: z.string(),
   })
   .superRefine((data, ctx) => {
-    const phoneResult = validatePhone(data.phoneNumber, data.countryCode);
+    const phoneResult = validatePhone(
+      data.phoneNumber,
+      data.countryCode,
+    );
     if (!phoneResult.valid && phoneResult.error) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -70,9 +88,17 @@ const editAdminSchema = z
       });
     }
 
-    const iso = data.countryIso || getCountryIsoFromPhoneCode(data.countryCode) || '';
+    const iso =
+      data.countryIso ||
+      getCountryIsoFromPhoneCode(data.countryCode) ||
+      '';
     if (iso && data.country) {
-      const addrResult = validateAddress(iso, data.state, data.city, data.postalCode);
+      const addrResult = validateAddress(
+        iso,
+        data.state,
+        data.city,
+        data.postalCode,
+      );
       if (!addrResult.valid && addrResult.error && addrResult.path) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -175,8 +201,9 @@ export default function AdminEditPage() {
   const formValues = watch();
   const [profileImageFile, setProfileImageFile] =
     useState<File | null>(null);
-  const [invoiceLogoFile, setInvoiceLogoFile] =
-    useState<File | null>(null);
+  const [invoiceLogoFile, setInvoiceLogoFile] = useState<File | null>(
+    null,
+  );
   const [profileImagePreview, setProfileImagePreview] =
     useState<string>('');
   const [invoiceLogoPreview, setInvoiceLogoPreview] =
@@ -210,7 +237,8 @@ export default function AdminEditPage() {
 
   useEffect(() => {
     return () => {
-      if (profileImagePreview) URL.revokeObjectURL(profileImagePreview);
+      if (profileImagePreview)
+        URL.revokeObjectURL(profileImagePreview);
       if (invoiceLogoPreview) URL.revokeObjectURL(invoiceLogoPreview);
     };
   }, [profileImagePreview, invoiceLogoPreview]);
@@ -451,34 +479,129 @@ export default function AdminEditPage() {
     }
 
     if (currentStep === steps.length) {
+      const profileImg =
+        profileImagePreview ||
+        formValues.profileImage ||
+        admin?.profileImage;
+      const invoiceImg =
+        invoiceLogoPreview ||
+        formValues.invoiceLogo ||
+        admin?.invoiceLogo;
+
       return (
         <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
-          <AdminReviewCard
-            firstName={formValues.firstName}
-            lastName={formValues.lastName}
-            email={formValues.email}
-            countryCode={formValues.countryCode}
-            phoneNumber={formValues.phoneNumber}
-            address={formValues.address}
-            city={formValues.city}
-            state={formValues.state}
-            postalCode={formValues.postalCode}
-            country={formValues.country}
-            latitude={formValues.latitude}
-            longitude={formValues.longitude}
-            profileImage={
-              profileImagePreview ||
-              formValues.profileImage ||
-              admin?.profileImage
-            }
-            companyName={formValues.companyName}
-            gstNumber={formValues.gstNumber}
-            bankAccountNumber={formValues.bankAccountNumber}
-            invoiceLogo={
-              invoiceLogoPreview ||
-              formValues.invoiceLogo ||
-              admin?.invoiceLogo
-            }
+          <ReviewCard
+            sections={[
+              {
+                icon: <User className="h-5 w-5 text-white" />,
+                title: 'Admin Information',
+                subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+                image: profileImg
+                  ? {
+                      src: profileImg,
+                      alt: `${formValues.firstName} ${formValues.lastName}`,
+                    }
+                  : undefined,
+                fields: [
+                  {
+                    icon: <User className="h-3 w-3" />,
+                    label: 'First Name',
+                    value: formValues.firstName,
+                  },
+                  {
+                    icon: <User className="h-3 w-3" />,
+                    label: 'Last Name',
+                    value: formValues.lastName,
+                  },
+                  {
+                    icon: <Mail className="h-3 w-3" />,
+                    label: 'Email',
+                    value: formValues.email,
+                  },
+                  {
+                    icon: <Phone className="h-3 w-3" />,
+                    label: 'Phone Number',
+                    value: `${formValues.countryCode} ${formValues.phoneNumber}`,
+                  },
+                  {
+                    icon: <MapPin className="h-3 w-3" />,
+                    label: 'Address',
+                    value: formValues.address,
+                  },
+                  {
+                    icon: <Building2 className="h-3 w-3" />,
+                    label: 'City',
+                    value: formValues.city,
+                  },
+                  {
+                    icon: <MapIcon className="h-3 w-3" />,
+                    label: 'State',
+                    value: formValues.state,
+                  },
+                  {
+                    icon: <Hash className="h-3 w-3" />,
+                    label: 'Postal Code',
+                    value: formValues.postalCode,
+                  },
+                  {
+                    icon: <Globe className="h-3 w-3" />,
+                    label: 'Country',
+                    value: formValues.country,
+                  },
+                  ...(formValues.latitude != null &&
+                  formValues.longitude != null
+                    ? [
+                        {
+                          icon: <MapIcon className="h-3 w-3" />,
+                          label: 'Latitude',
+                          value: String(formValues.latitude),
+                        },
+                        {
+                          icon: <MapIcon className="h-3 w-3" />,
+                          label: 'Longitude',
+                          value: String(formValues.longitude),
+                        },
+                      ]
+                    : [
+                        {
+                          icon: <MapIcon className="h-3 w-3" />,
+                          label: 'Coordinates',
+                          value: 'Not provided',
+                        },
+                      ]),
+                ],
+              },
+              ...(formValues.companyName
+                ? [
+                    {
+                      icon: (
+                        <Building2 className="h-5 w-5 text-white" />
+                      ),
+                      title: 'Company Details',
+                      image: invoiceImg
+                        ? { src: invoiceImg, alt: 'Invoice Logo' }
+                        : undefined,
+                      fields: [
+                        {
+                          icon: <Building2 className="h-3 w-3" />,
+                          label: 'Company Name',
+                          value: formValues.companyName,
+                        },
+                        {
+                          icon: <Hash className="h-3 w-3" />,
+                          label: 'GST Number',
+                          value: formValues.gstNumber ?? '-',
+                        },
+                        {
+                          icon: <Hash className="h-3 w-3" />,
+                          label: 'Bank Account',
+                          value: formValues.bankAccountNumber ?? '-',
+                        },
+                      ],
+                    },
+                  ]
+                : []),
+            ]}
           />
         </form>
       );

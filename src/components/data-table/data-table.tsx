@@ -467,7 +467,7 @@ export default function DataTable<T extends DataTableData>({
 
             {addButtonLabel && onAddClick && (
               <Button
-                className="h-10 rounded-xl bg-[var(--sidebar-bg-from)] text-white hover:bg-[var(--sidebar-bg-to)] px-5"
+                className="h-10 rounded-xl bg-green-600 text-white hover:bg-green-700 px-5"
                 onClick={onAddClick}
               >
                 <Plus className="h-4 w-4 mr-2" />

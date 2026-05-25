@@ -1,4 +1,4 @@
-import { ArrowLeft, Wallet } from 'lucide-react';
+import { ArrowLeft, Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
@@ -11,6 +11,8 @@ interface ProfileHeroProps {
   role: number;
   balance: number;
   onBack: () => void;
+  isEditing?: boolean;
+  onEditClick?: () => void;
 }
 
 export default function ProfileHero({
@@ -20,11 +22,10 @@ export default function ProfileHero({
   initials,
   status: _status,
   role,
-  balance,
   onBack,
+  isEditing,
+  onEditClick,
 }: ProfileHeroProps) {
-
-
   return (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 pb-10 shadow-lg">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.12)_0%,transparent_60%)]" />
@@ -74,42 +75,31 @@ export default function ProfileHero({
               </div>
             </div>
           </div>
-          {/* <div className="bg-white/15 backdrop-blur-sm rounded-xl px-5 py-3 text-center min-w-[130px] shrink-0">
-            <p className="text-white/60 text-xs font-medium uppercase tracking-wide">
-              Balance
-            </p>
-            <p className="text-white text-2xl font-bold mt-0.5">
-              ${balance ?? 0}
-            </p>
-          </div> */}
-
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-lg px-4 py-3 min-w-[150px] shadow-lg transition-all duration-300 hover:scale-[1.02]">
-            {/* Glow */}
+          <button
+            type="button"
+            onClick={onEditClick}
+            className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-lg shadow-lg transition-all duration-300 hover:scale-[1.02] hover:bg-white/20 cursor-pointer group"
+          >
             <div className="absolute -top-8 -right-8 h-20 w-20 rounded-full bg-white/10 blur-2xl" />
-
             <div className="relative z-10 flex items-center gap-3">
-              {/* Icon */}
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/10">
-                <Wallet className="h-4 w-4 text-white" />
+              <div
+                className={`flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 transition-all duration-300 ${isEditing ? 'bg-white text-[#0f5b0c]' : 'bg-white/10 group-hover:bg-white/20'}`}
+              >
+                <Pencil
+                  className={`h-4 w-4 transition-all duration-300 ${isEditing ? 'text-[#0f5b0c]' : 'text-white'}`}
+                />
               </div>
-
-              {/* Text */}
-              <div>
+              {/* <div>
                 <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white/70">
-                  Balance
+                  Profile
                 </p>
-
-                <div className="flex items-center gap-1 pt-1">
-                  <h2 className="text-2xl font-bold leading-none text-white">
-                    $ {balance}
-                  </h2>
-                </div>
-              </div>
+                <p className="text-sm font-bold text-white leading-none pt-1">
+                  {isEditing ? 'Cancel' : 'Edit Admin'}
+                </p>
+              </div> */}
             </div>
-
-            {/* Shine */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent" />
-          </div>
+          </button>
         </div>
       </div>
     </div>

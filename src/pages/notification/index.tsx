@@ -170,7 +170,7 @@ export default function NotificationsPage() {
               {unreadCount > 0 && (
                 <Button
                   onClick={markAllAsRead}
-                  className="h-10 px-4 rounded-xl bg-[var(--sidebar-bg-from)] hover:bg-[var(--sidebar-bg-to)] text-white text-sm font-medium"
+                  className="h-10 px-4 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-medium"
                 >
                   <Check className="h-4 w-4 mr-2" />
                   Mark all as read

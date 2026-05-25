@@ -49,70 +49,77 @@ export function Combobox({
   const selectedOption = options.find((o) => o.value === value);
 
   return (
-    <div className="space-y-1">
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          disabled={disabled}
-          className={cn(
-            'h-12 w-full justify-between rounded-xl border bg-background px-3 text-sm font-normal hover:bg-background',
-            error ? 'border-red-500' : 'border-border',
-            !selectedOption && 'text-muted-foreground',
-            className,
-          )}
+    // <div className="space-y-1">
+    <div className="w-full min-w-0 space-y-1">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            disabled={disabled}
+            className={cn(
+              'h-12 w-full justify-between rounded-xl border bg-background px-3 text-sm font-normal hover:bg-background',
+              error ? 'border-red-500' : 'border-border',
+              !selectedOption && 'text-muted-foreground',
+              className,
+            )}
+          >
+            {selectedOption ? (
+              // <span className="flex items-center gap-2">
+              <span className="flex min-w-0 items-center gap-2 overflow-hidden">
+                {selectedOption.icon}
+                {/* <span>{selectedOption.label}</span> */}
+                <span className="truncate">
+                  {selectedOption.label}
+                </span>
+              </span>
+            ) : (
+              placeholder
+            )}
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
+          </Button>
+        </PopoverTrigger>
+        {/* <PopoverContent
+        className="w-[--radix-popover-trigger-width] p-0" */}
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] min-w-full p-0"
+          align="start"
         >
-          {selectedOption ? (
-            <span className="flex items-center gap-2">
-              {selectedOption.icon}
-              <span>{selectedOption.label}</span>
-            </span>
-          ) : (
-            placeholder
-          )}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-[--radix-popover-trigger-width] p-0"
-        align="start"
-      >
-        <Command>
-          <CommandInput placeholder={searchPlaceholder} />
-          <CommandList>
-            <CommandEmpty>{emptyText}</CommandEmpty>
-            <CommandGroup>
-              {options.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  onSelect={() => {
-                    onValueChange(
-                      option.value === value ? '' : option.value,
-                    );
-                    setOpen(false);
-                  }}
-                >
-                  <span className="flex items-center gap-2">
-                    {option.icon}
-                    <span>{option.label}</span>
-                  </span>
-                  <Check
-                    className={cn(
-                      'ml-auto h-4 w-4',
-                      value === option.value
-                        ? 'text-primary opacity-100'
-                        : 'opacity-0',
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+          <Command>
+            <CommandInput placeholder={searchPlaceholder} />
+            <CommandList>
+              <CommandEmpty>{emptyText}</CommandEmpty>
+              <CommandGroup>
+                {options.map((option) => (
+                  <CommandItem
+                    key={option.value}
+                    onSelect={() => {
+                      onValueChange(
+                        option.value === value ? '' : option.value,
+                      );
+                      setOpen(false);
+                    }}
+                  >
+                    <span className="flex items-center gap-2">
+                      {option.icon}
+                      <span>{option.label}</span>
+                    </span>
+                    <Check
+                      className={cn(
+                        'ml-auto h-4 w-4',
+                        value === option.value
+                          ? 'text-primary opacity-100'
+                          : 'opacity-0',
+                      )}
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
       {error && <p className="text-sm text-red-500">{error}</p>}
     </div>
   );

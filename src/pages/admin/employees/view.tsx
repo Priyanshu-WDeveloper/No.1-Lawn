@@ -445,7 +445,7 @@ export default function EmployeeViewPage() {
                             href={selectedDoc.value}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--sidebar-bg-from)] text-white hover:bg-[var(--sidebar-bg-to)]"
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700"
                           >
                             <Download className="h-4 w-4" />
                             Download to view

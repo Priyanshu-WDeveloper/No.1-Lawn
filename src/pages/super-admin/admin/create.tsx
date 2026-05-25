@@ -10,6 +10,12 @@ import {
   ArrowLeft,
   Upload,
   Building2,
+  User,
+  Phone,
+  Map as MapIcon,
+  Hash,
+  Globe,
+  // FileText,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -25,67 +31,83 @@ import {
 import { Input } from '@/components/ui/input';
 import { AdminFormStepper } from '@/components/admin/admin-form-stepper';
 import { AdminFormStep } from '@/components/admin/admin-form-step';
-import { AdminReviewCard } from '@/components/admin/admin-review-card';
+import { ReviewCard } from '@/components/admin/review-card';
 import { Button } from '@/components/ui/button';
 import { validatePhone } from '@/lib/phone-validation';
-import { validateAddress, getCountryIsoFromPhoneCode } from '@/lib/address-validation';
+import {
+  validateAddress,
+  getCountryIsoFromPhoneCode,
+} from '@/lib/address-validation';
 
-const createAdminSchema = z.object({
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-  email: z
-    .string()
-    .min(1, 'Email is required')
-    .email('Invalid email address'),
-  phoneNumber: z
-    .string()
-    .min(1, 'Phone number is required')
-    .regex(/^\d+$/, 'Phone number must be numeric'),
-  countryCode: z.string().min(1, 'Country code is required'),
-  address: z.string().min(1, 'Address is required'),
-  city: z.string().min(1, 'City is required'),
-  state: z.string().min(1, 'State is required'),
-  postalCode: z
-    .string()
-    .min(1, 'Postal code is required')
-    .min(3)
-    .max(10)
-    .regex(/^\d+$/, 'Invalid postal code'),
-  country: z.string().min(1, 'Country is required'),
-  countryIso: z.string(),
-  location: z.string(),
-  latitude: z.number(),
-  longitude: z.number(),
-  locationMode: z.enum(['map', 'manual']),
-  companyName: z.string().min(1, 'Company name is required'),
-  gstNumber: z.string().min(1, 'GST number is required'),
-  bankAccountNumber: z
-    .string()
-    .min(1, 'Bank account number is required'),
-  profileImage: z.string(),
-  invoiceLogo: z.string(),
-}).superRefine((data, ctx) => {
-  const phoneResult = validatePhone(data.phoneNumber, data.countryCode);
-  if (!phoneResult.valid && phoneResult.error) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: phoneResult.error,
-      path: ['phoneNumber'],
-    });
-  }
-
-  const iso = data.countryIso || getCountryIsoFromPhoneCode(data.countryCode) || '';
-  if (iso && data.country) {
-    const addrResult = validateAddress(iso, data.state, data.city, data.postalCode);
-    if (!addrResult.valid && addrResult.error && addrResult.path) {
+const createAdminSchema = z
+  .object({
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    email: z
+      .string()
+      .min(1, 'Email is required')
+      .email('Invalid email address'),
+    phoneNumber: z
+      .string()
+      .min(1, 'Phone number is required')
+      .regex(/^\d+$/, 'Phone number must be numeric'),
+    countryCode: z.string().min(1, 'Country code is required'),
+    address: z.string().min(1, 'Address is required'),
+    city: z.string().min(1, 'City is required'),
+    state: z.string().min(1, 'State is required'),
+    postalCode: z
+      .string()
+      .min(1, 'Postal code is required')
+      .min(3)
+      .max(10)
+      .regex(/^\d+$/, 'Invalid postal code'),
+    country: z.string().min(1, 'Country is required'),
+    countryIso: z.string(),
+    location: z.string(),
+    latitude: z.number(),
+    longitude: z.number(),
+    locationMode: z.enum(['map', 'manual']),
+    companyName: z.string().min(1, 'Company name is required'),
+    gstNumber: z.string().min(1, 'GST number is required'),
+    bankAccountNumber: z
+      .string()
+      .min(1, 'Bank account number is required'),
+    profileImage: z.string(),
+    invoiceLogo: z.string(),
+  })
+  .superRefine((data, ctx) => {
+    const phoneResult = validatePhone(
+      data.phoneNumber,
+      data.countryCode,
+    );
+    if (!phoneResult.valid && phoneResult.error) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: addrResult.error,
-        path: [addrResult.path as any],
+        message: phoneResult.error,
+        path: ['phoneNumber'],
       });
     }
-  }
-});
+
+    const iso =
+      data.countryIso ||
+      getCountryIsoFromPhoneCode(data.countryCode) ||
+      '';
+    if (iso && data.country) {
+      const addrResult = validateAddress(
+        iso,
+        data.state,
+        data.city,
+        data.postalCode,
+      );
+      if (!addrResult.valid && addrResult.error && addrResult.path) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: addrResult.error,
+          path: [addrResult.path as any],
+        });
+      }
+    }
+  });
 
 type CreateAdminFormData = z.infer<typeof createAdminSchema>;
 
@@ -161,8 +183,9 @@ export default function CreateAdminPage() {
   const formValues = watch();
   const [profileImageFile, setProfileImageFile] =
     useState<File | null>(null);
-  const [invoiceLogoFile, setInvoiceLogoFile] =
-    useState<File | null>(null);
+  const [invoiceLogoFile, setInvoiceLogoFile] = useState<File | null>(
+    null,
+  );
   const [profileImagePreview, setProfileImagePreview] =
     useState<string>('');
   const [invoiceLogoPreview, setInvoiceLogoPreview] =
@@ -196,7 +219,8 @@ export default function CreateAdminPage() {
 
   useEffect(() => {
     return () => {
-      if (profileImagePreview) URL.revokeObjectURL(profileImagePreview);
+      if (profileImagePreview)
+        URL.revokeObjectURL(profileImagePreview);
       if (invoiceLogoPreview) URL.revokeObjectURL(invoiceLogoPreview);
     };
   }, [profileImagePreview, invoiceLogoPreview]);
@@ -415,24 +439,121 @@ export default function CreateAdminPage() {
     if (currentStep === steps.length) {
       return (
         <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
-          <AdminReviewCard
-            firstName={formValues.firstName}
-            lastName={formValues.lastName}
-            email={formValues.email}
-            countryCode={formValues.countryCode}
-            phoneNumber={formValues.phoneNumber}
-            address={formValues.address}
-            city={formValues.city}
-            state={formValues.state}
-            postalCode={formValues.postalCode}
-            country={formValues.country}
-            latitude={formValues.latitude}
-            longitude={formValues.longitude}
-            profileImage={formValues.profileImage}
-            companyName={formValues.companyName}
-            gstNumber={formValues.gstNumber}
-            bankAccountNumber={formValues.bankAccountNumber}
-            invoiceLogo={formValues.invoiceLogo}
+          <ReviewCard
+            sections={[
+              {
+                icon: <User className="h-5 w-5 text-white" />,
+                title: 'Admin Information',
+                subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+                image: formValues.profileImage
+                  ? {
+                      src: formValues.profileImage,
+                      alt: `${formValues.firstName} ${formValues.lastName}`,
+                    }
+                  : undefined,
+                fields: [
+                  {
+                    icon: <User className="h-3 w-3" />,
+                    label: 'First Name',
+                    value: formValues.firstName,
+                  },
+                  {
+                    icon: <User className="h-3 w-3" />,
+                    label: 'Last Name',
+                    value: formValues.lastName,
+                  },
+                  {
+                    icon: <Mail className="h-3 w-3" />,
+                    label: 'Email',
+                    value: formValues.email,
+                  },
+                  {
+                    icon: <Phone className="h-3 w-3" />,
+                    label: 'Phone Number',
+                    value: `${formValues.countryCode} ${formValues.phoneNumber}`,
+                  },
+                  {
+                    icon: <MapPin className="h-3 w-3" />,
+                    label: 'Address',
+                    value: formValues.address,
+                  },
+                  {
+                    icon: <Building2 className="h-3 w-3" />,
+                    label: 'City',
+                    value: formValues.city,
+                  },
+                  {
+                    icon: <MapIcon className="h-3 w-3" />,
+                    label: 'State',
+                    value: formValues.state,
+                  },
+                  {
+                    icon: <Hash className="h-3 w-3" />,
+                    label: 'Postal Code',
+                    value: formValues.postalCode,
+                  },
+                  {
+                    icon: <Globe className="h-3 w-3" />,
+                    label: 'Country',
+                    value: formValues.country,
+                  },
+                  ...(formValues.latitude != null &&
+                  formValues.longitude != null
+                    ? [
+                        {
+                          icon: <MapIcon className="h-3 w-3" />,
+                          label: 'Latitude',
+                          value: String(formValues.latitude),
+                        },
+                        {
+                          icon: <MapIcon className="h-3 w-3" />,
+                          label: 'Longitude',
+                          value: String(formValues.longitude),
+                        },
+                      ]
+                    : [
+                        {
+                          icon: <MapIcon className="h-3 w-3" />,
+                          label: 'Coordinates',
+                          value: 'Not provided',
+                        },
+                      ]),
+                ],
+              },
+              ...(formValues.companyName
+                ? [
+                    {
+                      icon: (
+                        <Building2 className="h-5 w-5 text-white" />
+                      ),
+                      title: 'Company Details',
+                      image: formValues.invoiceLogo
+                        ? {
+                            src: formValues.invoiceLogo,
+                            alt: 'Invoice Logo',
+                          }
+                        : undefined,
+                      fields: [
+                        {
+                          icon: <Building2 className="h-3 w-3" />,
+                          label: 'Company Name',
+                          value: formValues.companyName,
+                        },
+                        {
+                          icon: <Hash className="h-3 w-3" />,
+                          label: 'GST Number',
+                          value: formValues.gstNumber ?? '-',
+                        },
+                        {
+                          icon: <Hash className="h-3 w-3" />,
+                          label: 'Bank Account',
+                          value: formValues.bankAccountNumber ?? '-',
+                        },
+                      ],
+                    },
+                  ]
+                : []),
+            ]}
           />
         </form>
       );

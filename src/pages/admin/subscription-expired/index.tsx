@@ -37,7 +37,7 @@ export default function SubscriptionExpiredPage() {
           </div>
 
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <Button className="h-11 w-full rounded-xl bg-[var(--sidebar-bg-from)] px-8 text-white hover:bg-[var(--sidebar-bg-to)] sm:w-auto">
+            <Button className="h-11 w-full rounded-xl bg-green-600 px-8 text-white hover:bg-green-700 sm:w-auto">
               Renew Subscription
             </Button>
             <Button

@@ -69,7 +69,7 @@ export function CompleteJobDialog({
               Cancel
             </Button>
             <Button
-              className="bg-primary hover:bg-primary/90 text-white"
+              className="bg-green-600 hover:bg-green-700 text-white"
               onClick={handleConfirm}
               disabled={loading}
             >

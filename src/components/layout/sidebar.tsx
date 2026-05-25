@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import { KeyRound, LogOutIcon } from 'lucide-react';
+import {
+  KeyRound,
+  LogOutIcon,
+  // ShieldCheck
+} from 'lucide-react';
 
 import Dashboard from '@/assets/dashboard.png';
 import Customer from '@/assets/customer.png';
@@ -28,6 +32,7 @@ import { localLogout } from '@/lib/auth';
 import { useDispatch } from 'react-redux';
 import { clearAuth } from '@/store/auth-slice';
 import { api } from '@/API/api';
+import { ChangeAdminPasswordDialog } from '@/pages/admin/change-password';
 
 const items = [
   {
@@ -64,6 +69,26 @@ export function DashboardSidebar() {
   const { toggleSidebar } = useSidebar();
   const dispatch = useDispatch();
 
+  const [confirmAction, setConfirmAction] = useState<{
+    type: 'change-password';
+  } | null>(null);
+
+  const handleChangePassword = async (data: {
+    currentPassword: string;
+    newPassword: string;
+  }) => {
+    try {
+      // your api call
+      console.log(data);
+
+      // example:
+      // await changePasswordMutation(data).unwrap();
+
+      setConfirmAction(null);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const handleLogout = async () => {
     try {
       localLogout();
@@ -130,7 +155,12 @@ export function DashboardSidebar() {
       <SidebarFooter className="bg-[var(--sidebar-bg-to)] p-4 space-y-2">
         <button
           className="w-full rounded-2xl bg-white/10 p-4 text-left backdrop-blur transition hover:bg-white/20"
-          onClick={() => navigate(ROUTES.CHANGE_PASSWORD)}
+          // onClick={() => navigate(ROUTES.CHANGE_PASSWORD)}
+          onClick={() =>
+            setConfirmAction({
+              type: 'change-password',
+            })
+          }
         >
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
@@ -146,6 +176,18 @@ export function DashboardSidebar() {
             </div>
           </div>
         </button>
+        {/* <button
+          type="button"
+          onClick={() =>
+            setConfirmAction({
+              type: 'change-password',
+            })
+          }
+          className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md text-sm font-medium bg-green-600 text-white hover:bg-green-700 transition-colors"
+        >
+          <ShieldCheck className="h-3.5 w-3.5" />
+          Change Password
+        </button> */}
 
         <button
           className="w-full rounded-2xl bg-white/10 p-4 text-left backdrop-blur transition hover:bg-white/20"
@@ -169,6 +211,15 @@ export function DashboardSidebar() {
         </button>
       </SidebarFooter>
 
+      <ChangeAdminPasswordDialog
+        open={confirmAction?.type === 'change-password'}
+        onOpenChange={(open) => {
+          if (!open) setConfirmAction(null);
+        }}
+        onConfirm={async (data) => {
+          await handleChangePassword(data);
+        }}
+      />
       <ConfirmDialog
         open={showLogoutDialog}
         onOpenChange={setShowLogoutDialog}

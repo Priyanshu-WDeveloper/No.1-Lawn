@@ -11,6 +11,12 @@ import {
   ArrowLeft,
   X,
   Camera,
+  User,
+  Phone,
+  Building2,
+  Map,
+  Hash,
+  Globe,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -24,7 +30,7 @@ import {
   useUploadDocumentMutation,
 } from '@/API/api';
 import { AdminFormStepper } from '@/components/admin/admin-form-stepper';
-import { AdminReviewCard } from '@/components/admin/admin-review-card';
+import { ReviewCard } from '@/components/admin/review-card';
 import {
   NamedDocumentUpload,
   type NamedDoc,
@@ -565,22 +571,34 @@ export default function CreateEmployeePage() {
 
     return (
       <form ref={formRef} onSubmit={handleSubmit(onSubmit, onFormError)}>
-        <AdminReviewCard
-          firstName={formValues.firstName}
-          lastName={formValues.lastName}
-          email={formValues.email}
-          countryCode={formValues.countryCode}
-          phoneNumber={formValues.phoneNumber}
-          address={formValues.address}
-          city={formValues.city}
-          state={formValues.state}
-          postalCode={formValues.postalCode}
-          country={formValues.country}
-          profileImage={formValues.profileImage}
-          latitude={formValues.latitude}
-          longitude={formValues.longitude}
-          documents={documents}
-        />
+        <ReviewCard sections={[
+          {
+            icon: <User className="h-5 w-5 text-white" />,
+            title: 'Employee Information',
+            subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+            image: formValues.profileImage
+              ? { src: formValues.profileImage, alt: `${formValues.firstName} ${formValues.lastName}` }
+              : undefined,
+            fields: [
+              { icon: <User className="h-3 w-3" />, label: 'First Name', value: formValues.firstName },
+              { icon: <User className="h-3 w-3" />, label: 'Last Name', value: formValues.lastName },
+              { icon: <Mail className="h-3 w-3" />, label: 'Email', value: formValues.email },
+              { icon: <Phone className="h-3 w-3" />, label: 'Phone Number', value: `${formValues.countryCode} ${formValues.phoneNumber}` },
+              { icon: <MapPin className="h-3 w-3" />, label: 'Address', value: formValues.address },
+              { icon: <Building2 className="h-3 w-3" />, label: 'City', value: formValues.city },
+              { icon: <Map className="h-3 w-3" />, label: 'State', value: formValues.state },
+              { icon: <Hash className="h-3 w-3" />, label: 'Postal Code', value: formValues.postalCode },
+              { icon: <Globe className="h-3 w-3" />, label: 'Country', value: formValues.country },
+              ...(formValues.latitude != null && formValues.longitude != null
+                ? [
+                    { icon: <Map className="h-3 w-3" />, label: 'Latitude', value: String(formValues.latitude) },
+                    { icon: <Map className="h-3 w-3" />, label: 'Longitude', value: String(formValues.longitude) },
+                  ]
+                : [{ icon: <Map className="h-3 w-3" />, label: 'Coordinates', value: 'Not provided' }]),
+            ],
+            documents,
+          },
+        ]} />
       </form>
     );
   };

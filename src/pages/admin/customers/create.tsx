@@ -3,7 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
-import { Mail, MapPin, Check, ArrowLeft } from 'lucide-react';
+import {
+  Mail,
+  MapPin,
+  Check,
+  ArrowLeft,
+  User,
+  Phone,
+  Building2,
+  Map,
+  Hash,
+  Globe,
+} from 'lucide-react';
 import toast from 'react-hot-toast';
 
 import { getErrorMessage } from '@/lib/get-error-message';
@@ -14,7 +25,7 @@ import { ROUTES } from '@/constants';
 import { useCreateCustomerMutation } from '@/API/api';
 import { AdminFormStepper } from '@/components/admin/admin-form-stepper';
 import { AdminFormStep } from '@/components/admin/admin-form-step';
-import { AdminReviewCard } from '@/components/admin/admin-review-card';
+import { ReviewCard } from '@/components/admin/review-card';
 import { Button } from '@/components/ui/button';
 import { validatePhone } from '@/lib/phone-validation';
 import { validateAddress, getCountryIsoFromPhoneCode } from '@/lib/address-validation';
@@ -198,20 +209,30 @@ export default function CreateCustomerPage() {
     if (currentStep === 3) {
       return (
         <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
-          <AdminReviewCard
-            firstName={formValues.firstName}
-            lastName={formValues.lastName}
-            email={formValues.email}
-            countryCode={formValues.countryCode}
-            phoneNumber={formValues.phoneNumber}
-            address={formValues.address}
-            city={formValues.city}
-            state={formValues.state}
-            postalCode={formValues.postalCode}
-            country={formValues.country}
-            latitude={formValues.latitude}
-            longitude={formValues.longitude}
-          />
+          <ReviewCard sections={[
+            {
+              icon: <User className="h-5 w-5 text-white" />,
+              title: 'Customer Information',
+              subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+              fields: [
+                { icon: <User className="h-3 w-3" />, label: 'First Name', value: formValues.firstName },
+                { icon: <User className="h-3 w-3" />, label: 'Last Name', value: formValues.lastName },
+                { icon: <Mail className="h-3 w-3" />, label: 'Email', value: formValues.email },
+                { icon: <Phone className="h-3 w-3" />, label: 'Phone Number', value: `${formValues.countryCode} ${formValues.phoneNumber}` },
+                { icon: <MapPin className="h-3 w-3" />, label: 'Address', value: formValues.address },
+                { icon: <Building2 className="h-3 w-3" />, label: 'City', value: formValues.city },
+                { icon: <Map className="h-3 w-3" />, label: 'State', value: formValues.state },
+                { icon: <Hash className="h-3 w-3" />, label: 'Postal Code', value: formValues.postalCode },
+                { icon: <Globe className="h-3 w-3" />, label: 'Country', value: formValues.country },
+                ...(formValues.latitude != null && formValues.longitude != null
+                  ? [
+                      { icon: <Map className="h-3 w-3" />, label: 'Latitude', value: String(formValues.latitude) },
+                      { icon: <Map className="h-3 w-3" />, label: 'Longitude', value: String(formValues.longitude) },
+                    ]
+                  : [{ icon: <Map className="h-3 w-3" />, label: 'Coordinates', value: 'Not provided' }]),
+              ],
+            },
+          ]} />
         </form>
       );
     }

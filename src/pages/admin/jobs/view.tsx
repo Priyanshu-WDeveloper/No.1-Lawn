@@ -305,7 +305,7 @@ export default function JobViewPage() {
                   <>
                     <Button
                       size="sm"
-                      className="bg-[var(--sidebar-bg-from)] hover:bg-[var(--sidebar-bg-to)] text-white rounded-xl h-9"
+                      className="bg-green-600 hover:bg-green-700 text-white rounded-xl h-9"
                       onClick={() => setCompleteDialogOpen(true)}
                     >
                       <Check className="h-4 w-4 mr-1" />
@@ -442,7 +442,7 @@ export default function JobViewPage() {
                       onOpenChange={setAssignDialogOpen}
                     >
                       <DialogTrigger asChild>
-                        <Button className="bg-[var(--sidebar-bg-from)] hover:bg-[var(--sidebar-bg-to)] text-white rounded-xl">
+                        <Button className="bg-green-600 hover:bg-green-700 text-white rounded-xl">
                           <User className="h-4 w-4 mr-1" />
                           Assign Employee
                         </Button>
@@ -461,7 +461,7 @@ export default function JobViewPage() {
                             loading={!employeesData}
                           />
                           <Button
-                            className="w-full bg-[var(--sidebar-bg-from)] hover:bg-[var(--sidebar-bg-to)] text-white rounded-xl"
+                            className="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl"
                             disabled={!selectedEmployee}
                             onClick={handleAssignEmployee}
                           >

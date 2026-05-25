@@ -60,7 +60,7 @@ export function AddressInputs({
   const cities = useMemo(
     () =>
       selectedStateIso
-        ? City.getCitiesOfState(countryIso, selectedStateIso) ?? []
+        ? (City.getCitiesOfState(countryIso, selectedStateIso) ?? [])
         : [],
     [countryIso, selectedStateIso],
   );
@@ -95,8 +95,10 @@ export function AddressInputs({
   const postalExample = getPostalCodeExample(countryIso);
 
   return (
-    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-      <div className="space-y-2">
+    // <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+      {/* <div className="space-y-2"> */}
+      <div className="space-y-2 w-full min-w-0">
         <label className="text-sm font-medium text-foreground">
           Country
           <span className="text-primary"> *</span>
@@ -115,7 +117,8 @@ export function AddressInputs({
         />
       </div>
 
-      <div className="space-y-2">
+      {/* <div className="space-y-2"> */}
+      <div className="space-y-2 w-full">
         <label className="text-sm font-medium text-foreground">
           State
           <span className="text-primary"> *</span>
@@ -126,7 +129,7 @@ export function AddressInputs({
           disabled={!countryIso}
         >
           <SelectTrigger
-            className={`h-12 rounded-xl border bg-background px-3 text-sm ${
+            className={`h-12 w-full min-w-0 rounded-xl border bg-background px-3 text-sm ${
               errors.state ? 'border-red-500' : 'border-border'
             }`}
           >
@@ -153,7 +156,8 @@ export function AddressInputs({
         )}
       </div>
 
-      <div className="space-y-2">
+      {/* <div className="space-y-2"> */}
+      <div className="space-y-2 w-full min-w-0">
         <label className="text-sm font-medium text-foreground">
           City
           <span className="text-primary"> *</span>
@@ -161,13 +165,15 @@ export function AddressInputs({
         {cities.length > 0 ? (
           <Select value={city} onValueChange={handleCityChange}>
             <SelectTrigger
-              className={`h-12 rounded-xl border bg-background px-3 text-sm ${
+              className={`h-12  w-full min-w-0 rounded-xl border bg-background px-3 text-sm ${
                 errors.city ? 'border-red-500' : 'border-border'
               }`}
             >
               <SelectValue
                 placeholder={
-                  !selectedStateIso ? 'Select a state first' : 'Select city'
+                  !selectedStateIso
+                    ? 'Select a state first'
+                    : 'Select city'
                 }
               />
             </SelectTrigger>
@@ -182,12 +188,14 @@ export function AddressInputs({
         ) : (
           <Input
             placeholder={
-              !selectedStateIso ? 'Select a state first' : 'Enter city'
+              !selectedStateIso
+                ? 'Select a state first'
+                : 'Enter city'
             }
             value={city}
             onChange={(e) => onCityChange(e.target.value)}
             disabled={!selectedStateIso}
-            className={`h-12 rounded-xl border bg-background text-sm ${
+            className={`h-12 w-full min-w-0 rounded-xl border bg-background text-sm ${
               errors.city ? 'border-red-500' : 'border-border'
             }`}
           />
@@ -197,7 +205,8 @@ export function AddressInputs({
         )}
       </div>
 
-      <div className="space-y-2">
+      {/* <div className="space-y-2"> */}
+      <div className="space-y-2 w-full min-w-0">
         <label className="text-sm font-medium text-foreground">
           Postal Code
           <span className="text-primary"> *</span>
@@ -206,7 +215,7 @@ export function AddressInputs({
           placeholder={`Enter postal code${postalExample ? ` ${postalExample}` : ''}`}
           value={postalCode}
           onChange={(e) => onPostalCodeChange(e.target.value)}
-          className={`h-12 rounded-xl border bg-background text-sm ${
+          className={`h-12 w-full min-w-0 rounded-xl border bg-background text-sm ${
             errors.postalCode ? 'border-red-500' : 'border-border'
           }`}
         />
