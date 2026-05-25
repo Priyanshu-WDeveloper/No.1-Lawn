@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Leaf, Eye, EyeOff, Globe } from 'lucide-react';
+import { Leaf, Eye, EyeOff, Shield } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ROUTES } from '@/constants';
 import { useChangePasswordMutation } from '@/API/api';
