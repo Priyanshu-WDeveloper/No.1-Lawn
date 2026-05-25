@@ -112,7 +112,7 @@ export default function EmployeeViewPage() {
     return (
       <AppLayout>
         <div className="flex h-full items-center justify-center">
-          <p className="text-[#777]">Employee not found</p>
+          <p className="text-muted-foreground">Employee not found</p>
         </div>
       </AppLayout>
     );
@@ -126,7 +126,7 @@ export default function EmployeeViewPage() {
             <Button
               variant="ghost"
               onClick={() => navigate(ROUTES.EMPLOYEES)}
-              className="mb-4 text-[#777] hover:text-[#16610E] hover:bg-[#edf8e7]"
+              className="mb-4 text-muted-foreground hover:text-primary hover:bg-primary/10"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Employees
@@ -150,7 +150,7 @@ export default function EmployeeViewPage() {
                   </Avatar>
                   <div>
                     <div className="flex items-center gap-3">
-                      <h1 className="text-2xl font-bold text-[#151515]">
+                      <h1 className="text-2xl font-bold text-foreground">
                         {employee.fullName}
                       </h1>
 
@@ -160,7 +160,7 @@ export default function EmployeeViewPage() {
                       />
                     </div>
 
-                    <p className="text-sm text-[#777]">
+                    <p className="text-sm text-muted-foreground">
                       Employee ID: {employee.employeeId}
                     </p>
                   </div>
@@ -221,12 +221,12 @@ export default function EmployeeViewPage() {
                         </DropdownMenuItem>
                       ) : (
                         <DropdownMenuItem
-                          className="text-green-600 focus:text-green-600"
+                          className="text-primary focus:text-primary"
                           onClick={() =>
                             handleStatusChange(employee._id, 'active')
                           }
                         >
-                          <Power className="mr-2 h-4 w-4 text-green-600 focus:text-green-600" />
+                          <Power className="mr-2 h-4 w-4 text-primary focus:text-primary" />
                           Set Active
                         </DropdownMenuItem>
                       )}
@@ -239,37 +239,37 @@ export default function EmployeeViewPage() {
             <div className="grid gap-6 md:grid-cols-2">
               <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec]">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                    <Mail className="h-4 w-4 text-[#16610E]" />
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Mail className="h-4 w-4 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">
+                  <h3 className="text-lg font-semibold text-foreground">
                     Contact Information
                   </h3>
                 </div>
                 <div className="space-y-4">
                   {/* <div className="flex items-center gap-3">
-                    <User className="h-4 w-4 text-[#777]" />
+                    <User className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm text-[#777]">Name</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Name</p>
+                      <p className="text-foreground font-medium">
                         {employee.fullName}
                       </p>
                     </div>
                   </div> */}
                   <div className="flex items-center gap-3">
-                    <Mail className="h-4 w-4 text-[#777]" />
+                    <Mail className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm text-[#777]">Email</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Email</p>
+                      <p className="text-foreground font-medium">
                         {employee.email}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Phone className="h-4 w-4 text-[#777]" />
+                    <Phone className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm text-[#777]">Phone</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Phone</p>
+                      <p className="text-foreground font-medium">
                         {employee.countryCode} {employee.phoneNumber}
                       </p>
                     </div>
@@ -279,32 +279,32 @@ export default function EmployeeViewPage() {
 
               <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec]">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                    <CreditCard className="h-4 w-4 text-[#16610E]" />
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <CreditCard className="h-4 w-4 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">
+                  <h3 className="text-lg font-semibold text-foreground">
                     Account Summary
                   </h3>
                 </div>
                 <div className="space-y-4">
                   {/* <div className="space-y-4">
                   <div>
-                    <p className="text-sm text-[#777]">Managed By</p>
-                    <p className="text-[#151515] font-medium mt-1">
+                    <p className="text-sm text-muted-foreground">Managed By</p>
+                    <p className="text-foreground font-medium mt-1">
                       {employee.parentAdmin || '-'}
                     </p>
                   </div> */}
                   <div>
-                    <p className="text-sm text-[#777]">Created At</p>
-                    <p className="text-[#151515] font-medium mt-1">
+                    <p className="text-sm text-muted-foreground">Created At</p>
+                    <p className="text-foreground font-medium mt-1">
                       {formatDate(employee.createdAt)}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-[#777]">
+                    <p className="text-sm text-muted-foreground">
                       Last Updated
                     </p>
-                    <p className="text-[#151515] font-medium mt-1">
+                    <p className="text-foreground font-medium mt-1">
                       {formatDate(employee.updatedAt)}
                     </p>
                   </div>
@@ -313,61 +313,61 @@ export default function EmployeeViewPage() {
 
               <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] md:col-span-2">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                    <MapPin className="h-4 w-4 text-[#16610E]" />
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <MapPin className="h-4 w-4 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">
+                  <h3 className="text-lg font-semibold text-foreground">
                     Address Details
                   </h3>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <MapPin className="h-4 w-4 text-[#777] mt-0.5" />
+                    <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
                     <div className="flex-1">
-                      <p className="text-sm text-[#777]">
+                      <p className="text-sm text-muted-foreground">
                         Street Address
                       </p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-foreground font-medium">
                         {employee.address || '-'}
                       </p>
                     </div>
                   </div>
                   <div className="grid grid-cols-4 gap-4">
                     <div>
-                      <p className="text-sm text-[#777]">City</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">City</p>
+                      <p className="text-foreground font-medium">
                         {employee.city || '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-[#777]">State</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">State</p>
+                      <p className="text-foreground font-medium">
                         {employee.state || '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-[#777]">
+                      <p className="text-sm text-muted-foreground">
                         Postal Code
                       </p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-foreground font-medium">
                         {employee.postalCode || '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-[#777]">Country</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Country</p>
+                      <p className="text-foreground font-medium">
                         {employee.country || '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-[#777]">Latitude</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Latitude</p>
+                      <p className="text-foreground font-medium">
                         {employee.location?.coordinates?.[1] ?? '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-[#777]">Longitude</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Longitude</p>
+                      <p className="text-foreground font-medium">
                         {employee.location?.coordinates?.[0] ?? '-'}
                       </p>
                     </div>
@@ -379,10 +379,10 @@ export default function EmployeeViewPage() {
               {employee.attachments && employee.attachments.length > 0 && (
                 <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] md:col-span-2">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                      <FileText className="h-4 w-4 text-[#16610E]" />
+                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <FileText className="h-4 w-4 text-primary" />
                     </div>
-                    <h3 className="text-lg font-semibold text-[#151515]">
+                    <h3 className="text-lg font-semibold text-foreground">
                       Documents
                     </h3>
                   </div>
@@ -392,12 +392,12 @@ export default function EmployeeViewPage() {
                         key={index}
                         type="button"
                         onClick={() => setSelectedDoc(doc)}
-                        className="w-full flex items-center justify-between p-3 rounded-lg bg-[#fafafa] hover:bg-[#edf8e7] transition-colors group text-left"
+                        className="w-full flex items-center justify-between p-3 rounded-lg bg-background hover:bg-primary/10 transition-colors group text-left"
                       >
-                        <span className="text-sm font-medium text-[#151515]">
+                        <span className="text-sm font-medium text-foreground">
                           {doc.key}
                         </span>
-                        <ExternalLink className="h-4 w-4 text-[#777] group-hover:text-[#16610E] transition-colors shrink-0" />
+                        <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
                       </button>
                     ))}
                   </div>
@@ -429,23 +429,23 @@ export default function EmployeeViewPage() {
                       ) : isPdfUrl(selectedDoc.value) ? (
                         <iframe
                           src={selectedDoc.value}
-                          className="w-full h-[65vh] rounded-lg border border-[#e5e5e5]"
+                          className="w-full h-[65vh] rounded-lg border border-border"
                           title={selectedDoc.key}
                         />
                       ) : (
                         <div className="flex flex-col items-center justify-center h-[40vh] text-center">
-                          <FileText className="h-16 w-16 text-[#777] mb-4" />
-                          <p className="text-lg font-medium text-[#151515] mb-2">
+                          <FileText className="h-16 w-16 text-muted-foreground mb-4" />
+                          <p className="text-lg font-medium text-foreground mb-2">
                             Preview not available
                           </p>
-                          <p className="text-sm text-[#777] mb-6">
+                          <p className="text-sm text-muted-foreground mb-6">
                             This file type cannot be previewed
                           </p>
                           <a
                             href={selectedDoc.value}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#16610E] text-white hover:bg-[#0f4a09]"
+                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--sidebar-bg-from)] text-white hover:bg-[var(--sidebar-bg-to)]"
                           >
                             <Download className="h-4 w-4" />
                             Download to view

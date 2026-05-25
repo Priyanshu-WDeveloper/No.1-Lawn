@@ -318,7 +318,7 @@ export default function AdminEditPage() {
     return (
       <SuperAdminLayout>
         <div className="flex h-full items-center justify-center">
-          <p className="text-[#777]">Admin not found</p>
+          <p className="text-muted-foreground">Admin not found</p>
         </div>
       </SuperAdminLayout>
     );
@@ -328,20 +328,20 @@ export default function AdminEditPage() {
     if (currentStep === 3) {
       return (
         <div className="space-y-6">
-          <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
+          <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
             Company Details
           </h4>
 
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[#151515]">
+              <label className="text-sm font-medium text-foreground">
                 Company Name
-                <span className="text-[#16610E]"> *</span>
+                <span className="text-primary"> *</span>
               </label>
               <Input
                 placeholder="Enter company name"
                 {...register('companyName')}
-                className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                className="h-12 rounded-xl border-border bg-background"
               />
               {errors.companyName && (
                 <p className="text-sm text-red-500">
@@ -351,14 +351,14 @@ export default function AdminEditPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[#151515]">
+              <label className="text-sm font-medium text-foreground">
                 GST Number
-                <span className="text-[#16610E]"> *</span>
+                <span className="text-primary"> *</span>
               </label>
               <Input
                 placeholder="Enter GST number"
                 {...register('gstNumber')}
-                className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                className="h-12 rounded-xl border-border bg-background"
               />
               {errors.gstNumber && (
                 <p className="text-sm text-red-500">
@@ -368,14 +368,14 @@ export default function AdminEditPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[#151515]">
+              <label className="text-sm font-medium text-foreground">
                 Bank Account Number
-                <span className="text-[#16610E]"> *</span>
+                <span className="text-primary"> *</span>
               </label>
               <Input
                 placeholder="Enter bank account number"
                 {...register('bankAccountNumber')}
-                className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                className="h-12 rounded-xl border-border bg-background"
               />
               {errors.bankAccountNumber && (
                 <p className="text-sm text-red-500">
@@ -387,9 +387,9 @@ export default function AdminEditPage() {
 
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[#151515]">
+              <label className="text-sm font-medium text-foreground">
                 Profile Image
-                <span className="text-[#16610E]"> *</span>
+                <span className="text-primary"> *</span>
               </label>
               <div className="flex items-center gap-4">
                 {(profileImagePreview || admin?.profileImage) && (
@@ -403,7 +403,7 @@ export default function AdminEditPage() {
                     className="h-16 w-16 rounded-full object-cover border"
                   />
                 )}
-                <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-[#e5e5e5] bg-[#fafaf8] text-sm text-[#151515] hover:bg-[#edf8e7]">
+                <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-background text-sm text-foreground hover:bg-primary/10">
                   <Upload className="h-4 w-4" />
                   {profileImageFile ? 'Change' : 'Choose File'}
                   <input
@@ -417,9 +417,9 @@ export default function AdminEditPage() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[#151515]">
+              <label className="text-sm font-medium text-foreground">
                 Invoice Logo
-                <span className="text-[#16610E]"> *</span>
+                <span className="text-primary"> *</span>
               </label>
               <div className="flex items-center gap-4">
                 {(invoiceLogoPreview || admin?.invoiceLogo) && (
@@ -433,7 +433,7 @@ export default function AdminEditPage() {
                     className="h-16 w-16 rounded object-cover border"
                   />
                 )}
-                <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-[#e5e5e5] bg-[#fafaf8] text-sm text-[#151515] hover:bg-[#edf8e7]">
+                <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-background text-sm text-foreground hover:bg-primary/10">
                   <Upload className="h-4 w-4" />
                   {invoiceLogoFile ? 'Change' : 'Choose File'}
                   <input
@@ -506,7 +506,7 @@ export default function AdminEditPage() {
           <Button
             variant="ghost"
             onClick={() => navigate(ROUTES.SUPER_ADMIN_ADMINS)}
-            className="mb-4 text-[#777] hover:text-[#16610E] hover:bg-[#edf8e7]"
+            className="mb-4 text-muted-foreground hover:text-primary hover:bg-primary/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Admins

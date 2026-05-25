@@ -316,9 +316,9 @@ export default function CreateEmployeePage() {
       return (
         <div className="space-y-6">
           <div>
-            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide mx-auto text-[#777]">
+            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide mx-auto text-muted-foreground">
               Profile Image
-              <span className="text-[#16610E]"> *</span>
+              <span className="text-primary"> *</span>
             </h4>
             <div className="flex items-center gap-4">
               <div className="relative">
@@ -327,7 +327,7 @@ export default function CreateEmployeePage() {
                     <img
                       src={profileImage}
                       alt="Profile preview"
-                      className="h-24 w-24 rounded-full object-cover border-2 border-[#e5e5e5]"
+                      className="h-24 w-24 rounded-full object-cover border-2 border-border"
                     />
                     <button
                       type="button"
@@ -349,9 +349,9 @@ export default function CreateEmployeePage() {
                   <button
                     type="button"
                     onClick={() => profileInputRef.current?.click()}
-                    className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-dashed border-[#e5e5e5] bg-[#fafaf8] hover:border-[#16610E]"
+                    className="flex h-24 w-24 items-center justify-center rounded-full border-2 border-dashed border-border bg-background hover:border-primary"
                   >
-                    <Camera className="h-6 w-6 text-[#777]" />
+                    <Camera className="h-6 w-6 text-muted-foreground" />
                   </button>
                 )}
               </div>
@@ -363,12 +363,12 @@ export default function CreateEmployeePage() {
                 onChange={handleProfileImageChange}
               />
               <div>
-                <p className="text-sm font-medium text-[#151515]">
+                <p className="text-sm font-medium text-foreground">
                   {profileImage
                     ? 'Click image to change'
                     : 'Upload profile image'}
                 </p>
-                <p className="text-xs text-[#777]">
+                <p className="text-xs text-muted-foreground">
                   PNG, JPG up to 5MB
                 </p>
                 {errors.profileImage && (
@@ -382,19 +382,19 @@ export default function CreateEmployeePage() {
 
           <div className="space-y-6">
             <div>
-              <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
+              <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
                 Basic Information
               </h4>
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-[#151515]">
+                  <label className="text-sm font-medium text-foreground">
                     First Name
-                    <span className="text-[#16610E]"> *</span>
+                    <span className="text-primary"> *</span>
                   </label>
                   <input
                     placeholder="Enter first name"
                     {...register('firstName')}
-                    className="w-full h-12 rounded-xl border border-[#e5e5e5] bg-[#fafaf8] px-3 text-sm outline-none focus:border-[#16610E] focus:ring-1 focus:ring-[#16610E]/20"
+                    className="w-full h-12 rounded-xl border border-border bg-background px-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring/20"
                   />
                   {errors.firstName && (
                     <p className="text-sm text-red-500">
@@ -404,14 +404,14 @@ export default function CreateEmployeePage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-[#151515]">
+                  <label className="text-sm font-medium text-foreground">
                     Last Name
-                    <span className="text-[#16610E]"> *</span>
+                    <span className="text-primary"> *</span>
                   </label>
                   <input
                     placeholder="Enter last name"
                     {...register('lastName')}
-                    className="w-full h-12 rounded-xl border border-[#e5e5e5] bg-[#fafaf8] px-3 text-sm outline-none focus:border-[#16610E] focus:ring-1 focus:ring-[#16610E]/20"
+                    className="w-full h-12 rounded-xl border border-border bg-background px-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring/20"
                   />
                   {errors.lastName && (
                     <p className="text-sm text-red-500">
@@ -421,15 +421,15 @@ export default function CreateEmployeePage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-[#151515]">
+                  <label className="text-sm font-medium text-foreground">
                     Email
-                    <span className="text-[#16610E]"> *</span>
+                    <span className="text-primary"> *</span>
                   </label>
                   <input
                     type="email"
                     placeholder="Enter email"
                     {...register('email')}
-                    className="w-full h-12 rounded-xl border border-[#e5e5e5] bg-[#fafaf8] px-3 text-sm outline-none focus:border-[#16610E] focus:ring-1 focus:ring-[#16610E]/20"
+                    className="w-full h-12 rounded-xl border border-border bg-background px-3 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring/20"
                   />
                   {errors.email && (
                     <p className="text-sm text-red-500">
@@ -439,9 +439,9 @@ export default function CreateEmployeePage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-[#151515]">
+                  <label className="text-sm font-medium text-foreground">
                     Phone Number
-                    <span className="text-[#16610E]"> *</span>
+                    <span className="text-primary"> *</span>
                   </label>
                   <PhoneInput
                     value={formValues.phoneNumber}
@@ -474,7 +474,7 @@ export default function CreateEmployeePage() {
       return (
         <div className="space-y-6">
           <div>
-            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
+            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
               Address Information
             </h4>
             <div className="space-y-5">
@@ -498,14 +498,14 @@ export default function CreateEmployeePage() {
               )}
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-[#151515]">
+                <label className="text-sm font-medium text-foreground">
                   Address
-                  <span className="text-[#16610E]"> *</span>
+                  <span className="text-primary"> *</span>
                 </label>
                 <Textarea
                   placeholder="Enter address"
                   {...register('address')}
-                  className="min-h-[80px] rounded-xl border-[#e5e5e5] bg-[#fafaf8] p-4"
+                  className="min-h-[80px] rounded-xl border-border bg-background p-4"
                 />
                 {errors.address && (
                   <p className="text-sm text-red-500">
@@ -592,7 +592,7 @@ export default function CreateEmployeePage() {
           <Button
             variant="ghost"
             onClick={() => navigate(ROUTES.EMPLOYEES)}
-            className="mb-4 text-[#777] hover:text-[#16610E] hover:bg-[#edf8e7]"
+            className="mb-4 text-muted-foreground hover:text-primary hover:bg-primary/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Employees

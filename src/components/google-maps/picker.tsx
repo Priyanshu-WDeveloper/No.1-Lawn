@@ -100,10 +100,10 @@ export function GoogleMapPicker({
 
   if (!isLoaded) {
     return (
-      <div className="relative h-56 rounded-xl overflow-hidden border border-[#e5e5e5] bg-[#e8f0e4] flex items-center justify-center">
+      <div className="relative h-56 rounded-xl overflow-hidden border border-border bg-[#e8f0e4] flex items-center justify-center">
         <div className="text-center">
-          <MapPin className="h-10 w-10 text-[#16610E]/20 mx-auto" />
-          <p className="text-xs text-[#16610E]/40 mt-1">Loading map...</p>
+          <MapPin className="h-10 w-10 text-primary/20 mx-auto" />
+          <p className="text-xs text-primary/40 mt-1">Loading map...</p>
         </div>
       </div>
     );
@@ -113,7 +113,7 @@ export function GoogleMapPicker({
     <div className="space-y-3">
       <div className="flex gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#777]" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             value={searchQuery}
@@ -123,14 +123,14 @@ export function GoogleMapPicker({
             }}
             onKeyDown={handleKeyDown}
             placeholder="Enter address to search..."
-            className="w-full h-12 pl-10 pr-4 rounded-xl border border-[#e5e5e5] bg-[#fafaf8] text-sm focus:outline-none focus:ring-2 focus:ring-[#16610E]/20 focus:border-[#16610E]"
+            className="w-full h-12 pl-10 pr-4 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring/20 focus:border-primary"
           />
         </div>
         <button
           type="button"
           onClick={handleSearch}
           disabled={isSearching || !searchQuery.trim()}
-          className="h-12 px-4 rounded-xl bg-[#16610E] text-white font-medium text-sm hover:bg-[#145a0c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="h-12 px-4 rounded-xl bg-[var(--sidebar-bg-from)] text-white font-medium text-sm hover:bg-[var(--sidebar-bg-to)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isSearching ? 'Searching...' : 'Search'}
         </button>
@@ -140,7 +140,7 @@ export function GoogleMapPicker({
         <p className="text-xs text-red-500">{searchError}</p>
       )}
 
-      <div className="relative h-56 rounded-xl overflow-hidden border border-[#e5e5e5]">
+      <div className="relative h-56 rounded-xl overflow-hidden border border-border">
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={initialCenter.current}
@@ -164,14 +164,14 @@ export function GoogleMapPicker({
       </div>
 
       <div className="flex items-center justify-between">
-        <p className="text-xs text-[#777] flex items-center gap-1">
+        <p className="text-xs text-muted-foreground flex items-center gap-1">
           <MapPin className="h-3 w-3" />
           Click on the map or search to set coordinates
         </p>
         {(latitude || longitude) && (
-          <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1.5 text-xs border border-[#e5e5e5]">
-            <Crosshair className="h-3 w-3 text-[#16610E]" />
-            <span className="text-[#151515] font-mono">
+          <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1.5 text-xs border border-border">
+            <Crosshair className="h-3 w-3 text-primary" />
+            <span className="text-foreground font-mono">
               {latitude.toFixed(4)}, {longitude.toFixed(4)}
             </span>
           </div>

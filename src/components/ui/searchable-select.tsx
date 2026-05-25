@@ -65,13 +65,13 @@ export function SearchableSelect({
             aria-expanded={open}
             disabled={disabled}
             className={cn(
-              "h-12 w-full justify-between rounded-xl border-[#e5e5e5] bg-[#fafaf8] px-4 text-sm font-normal hover:bg-[#fafaf8] focus-visible:ring-2 focus-visible:ring-[#16610E] focus-visible:ring-offset-2",
-              !selectedItem && "text-[#9ca3af]",
+              "h-12 w-full justify-between rounded-xl border-border bg-background px-4 text-sm font-normal hover:bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              !selectedItem && "text-muted-foreground",
               error && "border-red-500",
             )}
           >
             {loading ? (
-              <span className="flex items-center gap-2 text-[#9ca3af]">
+              <span className="flex items-center gap-2 text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Loading...
               </span>
@@ -79,7 +79,7 @@ export function SearchableSelect({
               <div className="flex flex-col items-start">
                 <span>{selectedItem.label}</span>
                 {selectedItem.subtitle && (
-                  <span className="text-xs text-[#9ca3af]">
+                  <span className="text-xs text-muted-foreground">
                     {selectedItem.subtitle}
                   </span>
                 )}
@@ -87,7 +87,7 @@ export function SearchableSelect({
             ) : (
               placeholder
             )}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-[#9ca3af]" />
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
           </Button>
         </PopoverTrigger>
         <PopoverContent
@@ -99,7 +99,7 @@ export function SearchableSelect({
             <CommandList>
               <CommandEmpty>{notFoundMessage}</CommandEmpty>
               {data.length === 0 && !loading ? (
-                <div className="py-6 text-center text-sm text-[#9ca3af]">
+                <div className="py-6 text-center text-sm text-muted-foreground">
                   {emptyMessage}
                 </div>
               ) : (
@@ -116,7 +116,7 @@ export function SearchableSelect({
                       <div className="flex flex-1 flex-col">
                         <span>{item.label}</span>
                         {item.subtitle && (
-                          <span className="text-xs text-[#9ca3af]">
+                          <span className="text-xs text-muted-foreground">
                             {item.subtitle}
                           </span>
                         )}
@@ -125,7 +125,7 @@ export function SearchableSelect({
                         className={cn(
                           "ml-auto h-4 w-4",
                           value === item._id
-                            ? "text-[#16610E] opacity-100"
+                            ? "text-primary opacity-100"
                             : "opacity-0",
                         )}
                       />

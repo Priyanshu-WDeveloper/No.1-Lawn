@@ -220,7 +220,7 @@ export default function CustomerTable({
                       }
                       className={
                         customer.status === 'Active'
-                          ? 'bg-green-100 text-green-700 hover:bg-green-100'
+                          ? 'bg-primary/10 text-primary hover:bg-primary/10'
                           : ''
                       }
                     >
@@ -232,7 +232,7 @@ export default function CustomerTable({
                     className={`px-5 py-4 text-sm font-medium ${
                       customer.balance < 0
                         ? 'text-red-500'
-                        : 'text-green-600'
+                        : 'text-primary'
                     }`}
                   >
                     {customer.balance.toFixed(2)}
@@ -300,7 +300,7 @@ function ActionButton({ icon }: ActionButtonProps) {
     <Button
       variant="outline"
       size="sm"
-      className="gap-2 rounded-xl border-green-200 text-green-700 hover:bg-green-50 hover:text-green-700"
+      className="gap-2 rounded-xl border-primary/20 text-primary hover:bg-primary/10 hover:text-primary"
     >
       {icon}
       {/* label is no longer rendered */}

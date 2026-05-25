@@ -36,10 +36,10 @@ export function FormField({
     case 'date':
       return (
         <div className="space-y-2">
-          <label className="text-sm font-medium text-[#151515]">
+          <label className="text-sm font-medium text-foreground">
             {field.label}
             {field.required && (
-              <span className="text-[#16610E] ml-1">*</span>
+              <span className="text-primary ml-1">*</span>
             )}
           </label>
           <Input
@@ -56,7 +56,7 @@ export function FormField({
               handleChange(e.target.value)
             }
             required={field.required}
-            className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all placeholder:text-[#999]"
+            className="h-12 border-border rounded-xl bg-background focus:bg-white focus:border-primary focus:ring-ring transition-all placeholder:text-muted-foreground"
           />
           {error && (
             <p className="text-sm text-red-500 mt-1">{error}</p>
@@ -67,10 +67,10 @@ export function FormField({
     case 'textarea':
       return (
         <div className="space-y-2">
-          <label className="text-sm font-medium text-[#151515]">
+          <label className="text-sm font-medium text-foreground">
             {field.label}
             {field.required && (
-              <span className="text-[#16610E] ml-1">*</span>
+              <span className="text-primary ml-1">*</span>
             )}
           </label>
           <Textarea
@@ -78,7 +78,7 @@ export function FormField({
             value={(value as string) || ''}
             onChange={(e) => handleChange(e.target.value)}
             required={field.required}
-            className="min-h-[100px] p-4 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all resize-none placeholder:text-[#999]"
+            className="min-h-[100px] p-4 border-border rounded-xl bg-background focus:bg-white focus:border-primary focus:ring-ring transition-all resize-none placeholder:text-muted-foreground"
           />
           {error && (
             <p className="text-sm text-red-500 mt-1">{error}</p>
@@ -89,29 +89,29 @@ export function FormField({
     case 'select':
       return (
         <div className="space-y-2">
-          <label className="text-sm font-medium text-[#151515]">
+          <label className="text-sm font-medium text-foreground">
             {field.label}
             {field.required && (
-              <span className="text-[#16610E] ml-1">*</span>
+              <span className="text-primary ml-1">*</span>
             )}
           </label>
           <Select
             value={(value as string) || ''}
             onValueChange={handleChange}
           >
-            <SelectTrigger className="h-12 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all">
+            <SelectTrigger className="h-12 border-border rounded-xl bg-background focus:bg-white focus:border-primary focus:ring-ring transition-all">
               <SelectValue
                 placeholder={
                   field.placeholder || `Select ${field.label}`
                 }
               />
             </SelectTrigger>
-            <SelectContent className="rounded-xl border-[#e5e5e5] shadow-lg">
+            <SelectContent className="rounded-xl border-border shadow-lg">
               {field.options?.map((option) => (
                 <SelectItem
                   key={option.value}
                   value={option.value}
-                  className="rounded-lg focus:bg-[#edf8e7]"
+                  className="rounded-lg focus:bg-primary/10"
                 >
                   {option.label}
                 </SelectItem>

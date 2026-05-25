@@ -7,7 +7,9 @@ export const ROUTES = {
 
   // Admin routes
   DASHBOARD: '/dashboard',
+  SUBSCRIPTION_EXPIRED: '/subscription-expired',
   PROFILE: '/profile',
+  CHANGE_PASSWORD: '/change-password',
   CUSTOMERS: '/customers',
   CUSTOMERS_CREATE: '/customers/create',
   CUSTOMERS_VIEW: '/customers/:id',
@@ -27,6 +29,7 @@ export const ROUTES = {
   // Super Admin routes
   SUPER_ADMIN_DASHBOARD: '/super-admin/dashboard',
   SUPER_ADMIN_PROFILE: '/super-admin/profile',
+  SUPER_ADMIN_CHANGE_PASSWORD: '/super-admin/change-password',
   SUPER_ADMIN_ADMINS: '/super-admin/admins',
   ADMIN_CREATE: '/super-admin/admin/create',
   ADMIN_VIEW: '/super-admin/admin/:id',
@@ -97,6 +100,7 @@ export const API_ROUTES = {
     LIST: '/admins',
     DETAILS: (id: string) => `/admins/${id}`,
     SELF: '/admins/details',
+    CHANGE_PASSWORD: '/admins/change-password',
   },
   SUPER_ADMINS: {
     ADMINS: {
@@ -108,6 +112,7 @@ export const API_ROUTES = {
       SET_VALIDITY: (id: string) => `/superadmins/validity/${id}`,
       REMOVE_VALIDITY: (id: string) => `/superadmins/validity/${id}`,
     },
+    CHANGE_PASSWORD: '/superadmins/change-password',
     BILLING: {
       STATS: '/super-admin/billing/stats',
       INVOICES: '/super-admin/billing/invoices',

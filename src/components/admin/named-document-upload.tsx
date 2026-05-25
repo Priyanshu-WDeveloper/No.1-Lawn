@@ -45,7 +45,7 @@ export function NamedDocumentUpload({
 
   return (
     <div>
-      <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
+      <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
         Upload Documents
       </h4>
 
@@ -58,9 +58,9 @@ export function NamedDocumentUpload({
           return (
             <div
               key={index}
-              className="flex items-start gap-3 rounded-xl border border-[#e5e5e5] bg-[#fafaf8] p-3"
+              className="flex items-start gap-3 rounded-xl border border-border bg-background p-3"
             >
-              <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-[#e5e5e5] bg-white">
+              <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-border bg-white">
                 {doc.file && isImage ? (
                   <img
                     src={URL.createObjectURL(doc.file)}
@@ -75,7 +75,7 @@ export function NamedDocumentUpload({
                     </span>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center gap-1 text-[#777]">
+                  <div className="flex flex-col items-center gap-1 text-muted-foreground">
                     <Upload className="h-6 w-6" />
                     <span className="text-[10px]">No file</span>
                   </div>
@@ -88,10 +88,10 @@ export function NamedDocumentUpload({
                   placeholder="Document name (e.g. PAN Card, Aadhaar)"
                   value={doc.name}
                   onChange={(e) => onNameChange(index, e.target.value)}
-                  className="w-full rounded-lg border border-[#e5e5e5] bg-white px-3 py-2 text-sm outline-none focus:border-[#16610E]"
+                  className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm outline-none focus:border-primary"
                 />
                 <div className="flex items-center gap-2">
-                  <label className="cursor-pointer rounded-lg border border-[#e5e5e5] bg-white px-3 py-1.5 text-xs text-[#6b7280] hover:bg-[#f3f4f6]">
+                  <label className="cursor-pointer rounded-lg border border-border bg-white px-3 py-1.5 text-xs text-muted-foreground hover:bg-[#f3f4f6]">
                     <Upload className="mr-1 inline h-3.5 w-3.5" />
                     {doc.file ? 'Change' : 'Choose'}
                     <input
@@ -105,8 +105,8 @@ export function NamedDocumentUpload({
                   </label>
                   {doc.file && (
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-xs font-medium text-[#151515]">{doc.file.name}</p>
-                      <p className="text-[11px] text-[#777]">{formatFileSize(doc.file.size)}</p>
+                      <p className="truncate text-xs font-medium text-foreground">{doc.file.name}</p>
+                      <p className="text-[11px] text-muted-foreground">{formatFileSize(doc.file.size)}</p>
                     </div>
                   )}
                 </div>
@@ -116,7 +116,7 @@ export function NamedDocumentUpload({
                 onClick={() => onRemove(index)}
                 className="mt-1 shrink-0 rounded-full p-1 transition-colors hover:bg-red-100"
               >
-                <X className="h-4 w-4 text-[#777] hover:text-red-500" />
+                <X className="h-4 w-4 text-muted-foreground hover:text-red-500" />
               </button>
             </div>
           );
@@ -126,7 +126,7 @@ export function NamedDocumentUpload({
       <button
         type="button"
         onClick={onAdd}
-        className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#e5e5e5] py-3 text-sm font-medium text-[#6b7280] transition-colors hover:border-[#16610E] hover:text-[#16610E]"
+        className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border py-3 text-sm font-medium text-muted-foreground transition-colors hover:border-primary hover:text-primary"
       >
         <Plus className="h-4 w-4" />
         Add Document

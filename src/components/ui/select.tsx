@@ -72,7 +72,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex w-full sm:w-fit items-center justify-between gap-1.5 rounded-xl border border-[#e5e5e5] bg-[#fafaf8] py-2.5 pr-3 pl-4 text-sm whitespace-nowrap transition-all outline-none select-none focus-visible:border-[#16610E] focus-visible:ring-2 focus-visible:ring-[#16610E] focus:bg-white disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-[#999] data-[size=default]:h-10 sm:h-11 data-[size=sm]:h-9",
+        "flex w-full sm:w-fit items-center justify-between gap-1.5 rounded-xl border border-border bg-background py-2.5 pr-3 pl-4 text-sm whitespace-nowrap transition-all outline-none select-none focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring focus:bg-white disabled:cursor-not-allowed disabled:opacity-50 data-[placeholder]:text-muted-foreground data-[size=default]:h-10 sm:h-11 data-[size=sm]:h-9",
         className
       )}
       {...props}
@@ -102,7 +102,7 @@ function SelectContent({
         data-slot="select-content"
         position={position}
         className={cn(
-          "relative z-50 min-w-[8rem] overflow-hidden rounded-xl bg-white text-[#151515] shadow-lg border border-[#e5e5e5] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          "relative z-50 min-w-[8rem] overflow-hidden rounded-xl bg-white text-foreground shadow-lg border border-border data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
           className
@@ -145,7 +145,7 @@ function SelectItem({
     <SelectPrimitive.Item
       data-slot="select-item"
       className={cn(
-        "relative flex w-full cursor-pointer items-center gap-2 rounded-lg py-2.5 pr-8 pl-4 text-sm outline-none select-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-[#edf8e7] data-[highlighted]:text-[#16610E] data-[highlighted]:outline-none",
+        "relative flex w-full cursor-pointer items-center gap-2 rounded-lg py-2.5 pr-8 pl-4 text-sm outline-none select-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50 data-[highlighted]:bg-primary/10 data-[highlighted]:text-primary data-[highlighted]:outline-none",
         className
       )}
       {...props}

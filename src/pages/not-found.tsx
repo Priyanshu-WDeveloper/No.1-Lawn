@@ -11,14 +11,14 @@ export default function NotFoundPage() {
     <AppLayout>
       <div className="flex h-full items-center justify-center">
         <div className="text-center">
-          <h1 className="text-6xl font-bold text-[#16610E]">404</h1>
-          <p className="mt-4 text-xl text-[#6b7280]">Page not found</p>
-          <p className="mt-2 text-sm text-[#9ca3af]">
+          <h1 className="text-6xl font-bold text-primary">404</h1>
+          <p className="mt-4 text-xl text-muted-foreground">Page not found</p>
+          <p className="mt-2 text-sm text-muted-foreground">
             The page you're looking for doesn't exist or has been moved.
           </p>
           <Button
             onClick={() => navigate(-1)}
-            className="mt-6 h-10 gap-2 rounded-xl bg-[#16610E] text-white hover:bg-[#1a7a12]"
+            className="mt-6 h-10 gap-2 rounded-xl bg-[var(--sidebar-bg-from)] text-white hover:bg-[var(--sidebar-bg-to)]"
           >
             <ArrowLeft className="h-4 w-4" />
             Go Back

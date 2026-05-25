@@ -6,6 +6,7 @@ import {
   Users,
   CreditCard,
   Shield,
+  KeyRound,
   LogOutIcon,
 } from 'lucide-react';
 
@@ -72,12 +73,12 @@ export function SuperAdminSidebar() {
   };
 
   return (
-    <Sidebar className="border-r-0 w-78 bg-gradient-to-b from-[#0f5b0c] to-[#0b4308]">
-      <SidebarHeader className="bg-gradient-to-b from-[#0f5b0c] to-[#0b4308] text-white border-b border-[#0a3a0a]">
+    <Sidebar className="border-r-0 w-78">
+      <SidebarHeader className="bg-gradient-to-b from-[var(--sidebar-bg-from)] to-[var(--sidebar-bg-to)] border-b border-sidebar-border">
         <div className="flex items-center justify-between px-4 py-6">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
-              <Shield className="h-5 w-5 text-[#0b4308]" />
+              <Shield className="h-5 w-5 text-sidebar" />
             </div>
             <h2 className="text-xl font-bold text-white">
               Super Admin
@@ -93,7 +94,7 @@ export function SuperAdminSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="bg-gradient-to-b from-[#0f5b0c] to-[#0b4308] text-white">
+      <SidebarContent className="bg-gradient-to-b from-[var(--sidebar-bg-from)] to-[var(--sidebar-bg-to)]">
         <SidebarGroup>
           <SidebarMenu className="space-y-2 px-3">
             {items.map((item) => (
@@ -101,7 +102,7 @@ export function SuperAdminSidebar() {
                 <SidebarMenuButton
                   onClick={() => navigate(item.url)}
                   isActive={location.pathname === item.url}
-                  className="h-14 rounded-2xl text-base text-white hover:bg-[#2a7d20] hover:text-white data-[active=true]:bg-[#2a7d20] data-[active=true]:text-white"
+                  className="h-14 rounded-2xl text-base hover:bg-[var(--sidebar-active)] data-[active=true]:bg-[var(--sidebar-active)]"
                 >
                   <item.icon className="h-5 w-5" />
                   <span>{item.title}</span>
@@ -112,14 +113,33 @@ export function SuperAdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="bg-[#0b4308] p-4">
+      <SidebarFooter className="bg-[var(--sidebar-bg-to)] p-4 space-y-2">
+        <button
+          className="w-full rounded-2xl bg-white/10 p-4 text-left backdrop-blur transition hover:bg-white/20"
+          onClick={() => navigate(ROUTES.SUPER_ADMIN_CHANGE_PASSWORD)}
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
+              <KeyRound className="h-5 w-5 text-sidebar" />
+            </div>
+
+            <div>
+              <h4 className="text-base font-semibold text-white">
+                Change Password
+              </h4>
+
+              <p className="text-sm text-white/70">Update password</p>
+            </div>
+          </div>
+        </button>
+
         <button
           className="w-full rounded-2xl bg-white/10 p-4 text-left backdrop-blur transition hover:bg-white/20"
           onClick={() => setShowLogoutDialog(true)}
         >
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
-              <span className="font-bold text-[#0b4308]">
+              <span className="font-bold text-sidebar">
                 <LogOutIcon />
               </span>
             </div>

@@ -119,7 +119,7 @@ const SuperAdminAdminsPage = () => {
       header: 'Admin ID',
       sortable: true,
       cell: (row: IAdmins) => (
-        <span className="text-[#6b7280]">{row.adminId}</span>
+        <span className="text-muted-foreground">{row.adminId}</span>
       ),
     },
     {
@@ -142,7 +142,7 @@ const SuperAdminAdminsPage = () => {
       header: 'Phone',
       sortable: true,
       cell: (row: IAdmins) => (
-        <span className="text-[#6b7280]">
+        <span className="text-muted-foreground">
           {row.countryCode} {row.phoneNumber}
         </span>
       ),
@@ -152,7 +152,7 @@ const SuperAdminAdminsPage = () => {
       header: 'Joined',
       sortable: true,
       cell: (row: IAdmins) => (
-        <span className="text-[#6b7280]">
+        <span className="text-muted-foreground">
           {format(new Date(row.createdAt), 'MMM d, yyyy')}
         </span>
       ),
@@ -182,7 +182,7 @@ const SuperAdminAdminsPage = () => {
         <div className="flex items-center gap-1">
           <ActionButton
             icon={<Eye className="h-3.5 w-3.5" />}
-            className="h-8 w-8 rounded-full border border-[#e5e7eb] bg-white text-[#6b7280] hover:bg-[#f3f4f6] hover:text-[#374151] shadow-none"
+            className="h-8 w-8 rounded-full border border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground shadow-none"
             onClick={() =>
               navigate(
                 ROUTES.ADMIN_VIEW.replace(':id', String(row._id)),
@@ -194,7 +194,7 @@ const SuperAdminAdminsPage = () => {
           />
           <ActionButton
             icon={<Pencil className="h-3.5 w-3.5" />}
-            className="h-8 w-8 rounded-full border border-[#e5e7eb] bg-white text-[#6b7280] hover:bg-[#f3f4f6] hover:text-[#374151] shadow-none"
+            className="h-8 w-8 rounded-full border border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground shadow-none"
             onClick={() =>
               navigate(
                 ROUTES.ADMIN_EDIT.replace(':id', String(row._id)),
@@ -208,7 +208,7 @@ const SuperAdminAdminsPage = () => {
             <DropdownMenuTrigger asChild>
               <ActionButton
                 icon={<Ellipsis className="h-3.5 w-3.5" />}
-                className="h-8 w-8 rounded-full border border-[#e5e7eb] bg-white text-[#6b7280] hover:bg-[#f3f4f6] hover:text-[#374151] shadow-none"
+                className="h-8 w-8 rounded-full border border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground shadow-none"
               />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -231,7 +231,7 @@ const SuperAdminAdminsPage = () => {
                 </DropdownMenuItem>
               ) : (
                 <DropdownMenuItem
-                  className="text-green-600 focus:text-green-600"
+                  className="text-primary focus:text-primary"
                   onClick={() =>
                     handleStatusChange(row._id, 'active')
                   }

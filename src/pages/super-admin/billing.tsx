@@ -21,32 +21,32 @@ const SuperAdminBillingPage = () => {
       value: (stats as any)?.totalRevenue ?? '$45,231',
       change: (stats as any)?.revenueChange ?? '+12.5%',
       icon: DollarSign,
-      color: 'text-[#16610E]',
-      bgColor: 'bg-[#edf8e7]',
+      color: 'text-primary',
+      bgColor: 'bg-primary/10',
     },
     {
       label: 'Pending Payments',
       value: (stats as any)?.pendingPayments ?? '$3,450',
       change: (stats as any)?.pendingChange ?? '-2.3%',
       icon: CreditCard,
-      color: 'text-[#16610E]',
-      bgColor: 'bg-[#edf8e7]',
+      color: 'text-primary',
+      bgColor: 'bg-primary/10',
     },
     {
       label: 'Monthly Growth',
       value: (stats as any)?.monthlyGrowth ?? '+18.2%',
       change: '',
       icon: TrendingUp,
-      color: 'text-[#16610E]',
-      bgColor: 'bg-[#edf8e7]',
+      color: 'text-primary',
+      bgColor: 'bg-primary/10',
     },
     {
       label: 'Active Subscriptions',
       value: (stats as any)?.activeSubscriptions ?? '142',
       change: (stats as any)?.subscriptionChange ?? '+8.1%',
       icon: Calendar,
-      color: 'text-[#16610E]',
-      bgColor: 'bg-[#edf8e7]',
+      color: 'text-primary',
+      bgColor: 'bg-primary/10',
     },
   ];
 
@@ -106,7 +106,7 @@ const SuperAdminBillingPage = () => {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-[13px] text-[#777]">
+                    <p className="text-[13px] text-muted-foreground">
                       {stat.label}
                     </p>
                     <p className="text-2xl font-bold text-[#151515] mt-1">
@@ -114,7 +114,7 @@ const SuperAdminBillingPage = () => {
                     </p>
                     {stat.change && (
                       <p
-                        className={`text-xs mt-1 ${stat.change.startsWith('+') ? 'text-green-600' : 'text-red-500'}`}
+                        className={`text-xs mt-1 ${stat.change.startsWith('+') ? 'text-primary' : 'text-red-500'}`}
                       >
                         {stat.change}
                       </p>
@@ -138,19 +138,19 @@ const SuperAdminBillingPage = () => {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-[#ececec]">
-                    <th className="text-left text-[#777] text-sm font-medium pb-3">
+                    <th className="text-left text-muted-foreground text-sm font-medium pb-3">
                       Invoice
                     </th>
-                    <th className="text-left text-[#777] text-sm font-medium pb-3">
+                    <th className="text-left text-muted-foreground text-sm font-medium pb-3">
                       Customer
                     </th>
-                    <th className="text-left text-[#777] text-sm font-medium pb-3">
+                    <th className="text-left text-muted-foreground text-sm font-medium pb-3">
                       Amount
                     </th>
-                    <th className="text-left text-[#777] text-sm font-medium pb-3">
+                    <th className="text-left text-muted-foreground text-sm font-medium pb-3">
                       Status
                     </th>
-                    <th className="text-left text-[#777] text-sm font-medium pb-3">
+                    <th className="text-left text-muted-foreground text-sm font-medium pb-3">
                       Date
                     </th>
                   </tr>
@@ -164,7 +164,7 @@ const SuperAdminBillingPage = () => {
                       <td className="py-4 text-sm font-medium text-[#151515]">
                         {invoice.id}
                       </td>
-                      <td className="py-4 text-sm text-[#777]">
+                      <td className="py-4 text-sm text-muted-foreground">
                         {invoice.customer}
                       </td>
                       <td className="py-4 text-sm font-medium text-[#151515]">
@@ -175,7 +175,7 @@ const SuperAdminBillingPage = () => {
                           variant="default"
                           className={
                             invoice.status === 'Paid'
-                              ? 'bg-[#edf8e7] text-[#16610E] border-[#16610E]/20'
+                              ? 'bg-primary/10 text-primary border-primary/20'
                               : invoice.status === 'Pending'
                                 ? 'bg-amber-100 text-amber-700 border-amber-200'
                                 : 'bg-red-100 text-red-600 border-red-200'
@@ -184,7 +184,7 @@ const SuperAdminBillingPage = () => {
                           {invoice.status}
                         </Badge>
                       </td>
-                      <td className="py-4 text-sm text-[#777]">
+                      <td className="py-4 text-sm text-muted-foreground">
                         {invoice.date}
                       </td>
                     </tr>

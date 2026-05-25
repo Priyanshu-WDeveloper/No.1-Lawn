@@ -48,7 +48,7 @@ export function DocumentPreviewModal({
     >
       <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#e5e5e5] p-4">
+        <div className="flex items-center justify-between border-b border-border p-4">
           <div className="flex items-center gap-3 min-w-0">
             {isPdf ? (
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fee2e2]">
@@ -63,7 +63,7 @@ export function DocumentPreviewModal({
                 <File className="h-4 w-4 text-[#3b82f6]" />
               </div>
             )}
-            <span className="text-sm font-medium text-[#151515] truncate">
+            <span className="text-sm font-medium text-foreground truncate">
               {file.name}
             </span>
           </div>
@@ -71,7 +71,7 @@ export function DocumentPreviewModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full hover:bg-red-50 text-[#777] hover:text-red-500"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full hover:bg-red-50 text-muted-foreground hover:text-red-500"
           >
             <X className="h-5 w-5" />
           </button>
@@ -90,22 +90,22 @@ export function DocumentPreviewModal({
           ) : isPdf ? (
             <iframe
               src={blobUrl}
-              className="w-full h-[70vh] rounded-lg border border-[#e5e5e5]"
+              className="w-full h-[70vh] rounded-lg border border-border"
               title={file.name}
             />
           ) : (
             <div className="flex flex-col items-center justify-center h-[70vh] text-center">
-              <File className="h-16 w-16 text-[#777] mb-4" />
-              <p className="text-lg font-medium text-[#151515] mb-2">
+              <File className="h-16 w-16 text-muted-foreground mb-4" />
+              <p className="text-lg font-medium text-foreground mb-2">
                 Preview not available
               </p>
-              <p className="text-sm text-[#777] mb-6">
+              <p className="text-sm text-muted-foreground mb-6">
                 This file type cannot be previewed in the browser
               </p>
               <button
                 type="button"
                 onClick={handleDownload}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#16610E] text-white hover:bg-[#0f4a09]"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[var(--sidebar-bg-from)] text-white hover:bg-[var(--sidebar-bg-to)]"
               >
                 <Download className="h-4 w-4" />
                 Download to view

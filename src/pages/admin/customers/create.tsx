@@ -235,7 +235,7 @@ export default function CreateCustomerPage() {
           <Button
             variant="ghost"
             onClick={() => navigate(ROUTES.CUSTOMERS)}
-            className="mb-4 text-[#777] hover:text-[#16610E] hover:bg-[#edf8e7]"
+            className="mb-4 text-muted-foreground hover:text-primary hover:bg-primary/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Customers

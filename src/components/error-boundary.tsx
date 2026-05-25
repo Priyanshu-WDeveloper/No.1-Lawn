@@ -41,8 +41,8 @@ export class ErrorBoundary extends React.Component<
       }
 
       return (
-        <div className="flex min-h-screen items-center justify-center bg-[#F4F7EF]">
-          <div className="rounded-2xl border border-[#ececec] bg-white p-8 shadow-sm text-center max-w-md">
+        <div className="flex min-h-screen items-center justify-center bg-muted">
+          <div className="rounded-2xl border border-border bg-white p-8 shadow-sm text-center max-w-md">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
               <svg
                 className="h-8 w-8 text-red-500"
@@ -58,15 +58,15 @@ export class ErrorBoundary extends React.Component<
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-[#151515]">
+            <h2 className="text-xl font-semibold text-foreground">
               Something went wrong
             </h2>
-            <p className="mt-2 text-sm text-[#6b7280]">
+            <p className="mt-2 text-sm text-muted-foreground">
               {this.state.error?.message || 'An unexpected error occurred.'}
             </p>
             <button
               onClick={this.handleReset}
-              className="mt-6 rounded-xl bg-[#16610E] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#1a7a12] transition-colors"
+              className="mt-6 rounded-xl bg-[var(--sidebar-bg-from)] px-6 py-2.5 text-sm font-medium text-white hover:bg-[var(--sidebar-bg-to)] transition-colors"
             >
               Try Again
             </button>

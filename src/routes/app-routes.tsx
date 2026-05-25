@@ -14,6 +14,8 @@ const ForgotPassword = React.lazy(() => import('../pages/auth/forgot-password'))
 const DashboardPage = React.lazy(() => import('../pages/admin/dashboard'));
 const AdminProfilePage = React.lazy(() => import('../pages/admin/profile'));
 const SuperAdminProfilePage = React.lazy(() => import('../pages/super-admin/profile'));
+const ChangePasswordPage = React.lazy(() => import('../pages/admin/change-password'));
+const SuperAdminChangePasswordPage = React.lazy(() => import('../pages/super-admin/change-password'));
 const SuperAdminDashboardPage = React.lazy(() => import('../pages/super-admin/dashboard'));
 const SuperAdminBillingPage = React.lazy(() => import('../pages/super-admin/billing'));
 const CustomerManagementPage = React.lazy(() => import('../pages/admin/customers'));
@@ -35,6 +37,7 @@ const SuperAdminAdminsPage = React.lazy(() => import('../pages/super-admin/admin
 const AdminCreatePage = React.lazy(() => import('../pages/super-admin/admin/create'));
 const AdminViewPage = React.lazy(() => import('../pages/super-admin/admin/view'));
 const AdminEditPage = React.lazy(() => import('../pages/super-admin/admin/edit'));
+const SubscriptionExpiredPage = React.lazy(() => import('../pages/admin/subscription-expired'));
 const NotFoundPage = React.lazy(() => import('../pages/not-found'));
 
 const AppRoutes = () => {
@@ -81,6 +84,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <AdminProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.CHANGE_PASSWORD}
+          element={
+            <ProtectedRoute>
+              <ChangePasswordPage />
             </ProtectedRoute>
           }
         />
@@ -204,6 +215,14 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path={ROUTES.SUBSCRIPTION_EXPIRED}
+          element={
+            <ProtectedRoute>
+              <SubscriptionExpiredPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Super Admin Protected Routes */}
         <Route
@@ -219,6 +238,14 @@ const AppRoutes = () => {
           element={
             <SuperAdminRoute>
               <SuperAdminProfilePage />
+            </SuperAdminRoute>
+          }
+        />
+        <Route
+          path={ROUTES.SUPER_ADMIN_CHANGE_PASSWORD}
+          element={
+            <SuperAdminRoute>
+              <SuperAdminChangePasswordPage />
             </SuperAdminRoute>
           }
         />

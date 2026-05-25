@@ -67,7 +67,7 @@ export function PhoneInput({
 
   return (
     <div ref={ref} className="relative">
-      <div className="flex h-12 items-center rounded-xl border border-[#e5e5e5] bg-[#fafaf8] px-3 transition-colors focus-within:border-[#16610E] focus-within:ring-1 focus-within:ring-[#16610E]/20">
+      <div className="flex h-12 items-center rounded-xl border border-border bg-background px-3 transition-colors focus-within:border-primary focus-within:ring-1 focus-within:ring-ring/20">
         <button
           type="button"
           onClick={() => !disabledCountryCode && setOpen(!open)}
@@ -77,16 +77,16 @@ export function PhoneInput({
             disabledCountryCode && 'opacity-50 cursor-not-allowed',
           )}
         >
-          <span className="relative inline-flex items-center justify-center w-6 h-4 rounded-sm overflow-hidden shrink-0 bg-[#f0f0f0]">
+          <span className="relative inline-flex items-center justify-center w-6 h-4 rounded-sm overflow-hidden shrink-0 bg-muted">
             <span className={`fi fi-${selected.isoCode.toLowerCase()} absolute inset-0`} />
           </span>
-          <span className="text-sm font-medium text-[#151515] ml-1.5">
+          <span className="text-sm font-medium text-foreground ml-1.5">
             {selected.code}
           </span>
-          <ChevronDown className="h-4 w-4 text-[#9ca3af]" />
+          <ChevronDown className="h-4 w-4 text-muted-foreground" />
         </button>
 
-        <div className="h-6 w-px bg-[#e5e5e5]" />
+        <div className="h-6 w-px bg-border" />
 
         <input
           type="tel"
@@ -108,14 +108,14 @@ export function PhoneInput({
             }
           }}
           placeholder={placeholder}
-          className="flex-1 bg-transparent text-sm text-[#151515] outline-none placeholder:text-muted-foreground ml-3"
+          className="flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground ml-3"
         />
       </div>
 
       {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
 
       {open && (
-        <div className={`absolute left-0 z-50 w-72 rounded-xl border border-[#e5e5e5] bg-white shadow-xl max-h-80 overflow-hidden ${
+        <div className={`absolute left-0 z-50 w-72 rounded-xl border border-border bg-white shadow-xl max-h-80 overflow-hidden ${
           dropdownPosition === 'bottom' ? 'top-full mt-1' : 'bottom-full mb-1'
         }`}>
           <div className="p-2">
@@ -125,7 +125,7 @@ export function PhoneInput({
                 placeholder="Search country..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 h-10 rounded-lg border border-[#e5e5e5] bg-[#fafaf8] focus:border-[#e5e5e5] focus:ring-0 focus:bg-white"
+                className="pl-9 h-10 rounded-lg border border-border bg-background focus:border-border focus:ring-0 focus:bg-white"
                 autoFocus
               />
             </div>
@@ -147,7 +147,7 @@ export function PhoneInput({
                   setSearch('');
                 }}
               >
-                <span className="relative inline-flex items-center justify-center w-6 h-4 rounded-sm overflow-hidden shrink-0 bg-[#f0f0f0]">
+                <span className="relative inline-flex items-center justify-center w-6 h-4 rounded-sm overflow-hidden shrink-0 bg-muted">
                   <span className={`fi fi-${country.isoCode.toLowerCase()} absolute inset-0`} />
                 </span>
                 <span className="flex-1 text-left">{country.name}</span>

@@ -79,7 +79,7 @@ export default function AdminViewPage() {
     return (
       <SuperAdminLayout>
         <div className="flex h-full items-center justify-center">
-          <p className="text-[#777]">Admin not found</p>
+          <p className="text-muted-foreground">Admin not found</p>
         </div>
       </SuperAdminLayout>
     );
@@ -90,7 +90,7 @@ export default function AdminViewPage() {
   };
 
   const statusColors: Record<string, string> = {
-    active: 'bg-green-100 text-green-700 border-green-200',
+    active: 'bg-primary/10 text-primary border-primary/20',
     inactive: 'bg-gray-100 text-gray-700 border-gray-200',
     expired: 'bg-red-100 text-red-700 border-red-200',
   };
@@ -102,7 +102,7 @@ export default function AdminViewPage() {
           <Button
             variant="ghost"
             onClick={() => navigate(ROUTES.SUPER_ADMIN_ADMINS)}
-            className="mb-4 text-[#777] hover:text-[#16610E] hover:bg-[#edf8e7]"
+            className="mb-4 text-muted-foreground hover:text-primary hover:bg-primary/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Admins
@@ -111,22 +111,22 @@ export default function AdminViewPage() {
           <div className="mb-6 rounded-xl border border-[#ececec] bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <Avatar className="h-16 w-16 bg-[#16610E] text-white">
+                <Avatar className="h-16 w-16 bg-primary text-white">
                   <AvatarFallback className="text-xl font-bold">
                     {getInitials(admin.firstName, admin.lastName)}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <div className="flex items-center gap-3">
-                    <h1 className="text-2xl font-bold text-[#151515]">
+                    <h1 className="text-2xl font-bold text-foreground">
                       {admin.firstName} {admin.lastName}
                     </h1>
 
-                    {/* <Badge className="bg-[#16610E] text-white">
+                    {/* <Badge className="bg-primary text-white">
                       {admin.adminId}
                     </Badge> */}
                   </div>
-                  {/* <p className="text-[#777] text-sm mt-1">
+                  {/* <p className="text-muted-foreground text-sm mt-1">
                     Admin Details
                   </p> */}
                   <Badge
@@ -180,7 +180,7 @@ export default function AdminViewPage() {
                       </DropdownMenuItem>
                     ) : (
                       <DropdownMenuItem
-                        className="text-green-600 focus:text-green-600"
+                        className="text-primary focus:text-primary"
                         onClick={() =>
                           handleStatusChange(admin._id, 'active')
                         }
@@ -207,41 +207,41 @@ export default function AdminViewPage() {
           <div className="grid gap-6 md:grid-cols-2">
             <div className="rounded-xl border border-[#ececec] bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#edf8e7]">
-                  <User className="h-4 w-4 text-[#16610E]" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                  <User className="h-4 w-4 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#151515]">
+                <h3 className="text-lg font-semibold text-foreground">
                   Personal Details
                 </h3>
               </div>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#f8f8f5]">
-                    <span className="text-xs font-semibold text-[#151515]">
+                    <span className="text-xs font-semibold text-foreground">
                       ID
                     </span>
                   </div>
                   <div>
-                    <p className="text-sm text-[#777]">Admin ID</p>
-                    <p className="text-[#151515] font-medium">
+                    <p className="text-sm text-muted-foreground">Admin ID</p>
+                    <p className="text-foreground font-medium">
                       {admin.adminId}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <User className="h-4 w-4 text-[#777]" />
+                  <User className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-[#777]">Full Name</p>
-                    <p className="text-[#151515] font-medium">
+                    <p className="text-sm text-muted-foreground">Full Name</p>
+                    <p className="text-foreground font-medium">
                       {admin.firstName} {admin.lastName}
                     </p>
                   </div>
                 </div>
                 {/* <div className="flex items-center gap-3">
-                  <Shield className="h-4 w-4 text-[#777]" />
+                  <Shield className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-[#777]">Role</p>
-                    <p className="text-[#151515] font-medium">
+                    <p className="text-sm text-muted-foreground">Role</p>
+                    <p className="text-foreground font-medium">
                       {admin.role === 1 ? 'Super Admin' : 'Admin'}
                     </p>
                   </div>
@@ -251,32 +251,32 @@ export default function AdminViewPage() {
 
             <div className="rounded-xl border border-[#ececec] bg-white p-6 shadow-sm">
               <div className="mb-4 flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#edf8e7]">
-                  <Mail className="h-4 w-4 text-[#16610E]" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                  <Mail className="h-4 w-4 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#151515]">
+                <h3 className="text-lg font-semibold text-foreground">
                   Contact Information
                 </h3>
               </div>
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <Mail className="h-4 w-4 text-[#777]" />
+                  <Mail className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-[#777]">
+                    <p className="text-sm text-muted-foreground">
                       Email Address
                     </p>
-                    <p className="text-[#151515] font-medium">
+                    <p className="text-foreground font-medium">
                       {admin.email}
                     </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Phone className="h-4 w-4 text-[#777]" />
+                  <Phone className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-[#777]">
+                    <p className="text-sm text-muted-foreground">
                       Phone Number
                     </p>
-                    <p className="text-[#151515] font-medium">
+                    <p className="text-foreground font-medium">
                       {admin.countryCode} {admin.phoneNumber}
                     </p>
                   </div>
@@ -286,42 +286,42 @@ export default function AdminViewPage() {
 
             <div className="rounded-xl border border-[#ececec] bg-white p-6 shadow-sm md:col-span-2">
               <div className="mb-4 flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#edf8e7]">
-                  <MapPin className="h-4 w-4 text-[#16610E]" />
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                  <MapPin className="h-4 w-4 text-primary" />
                 </div>
-                <h3 className="text-lg font-semibold text-[#151515]">
+                <h3 className="text-lg font-semibold text-foreground">
                   Address
                 </h3>
               </div>
               <div className="space-y-4">
                 <div>
-                  <p className="text-sm text-[#777]">Address</p>
-                  <p className="text-[#151515] font-medium mt-1">
+                  <p className="text-sm text-muted-foreground">Address</p>
+                  <p className="text-foreground font-medium mt-1">
                     {admin.address || '-'}
                   </p>
                 </div>
                 <div className="grid grid-cols-4 gap-4">
                   <div>
-                    <p className="text-sm text-[#777]">City</p>
-                    <p className="text-[#151515] font-medium mt-1">
+                    <p className="text-sm text-muted-foreground">City</p>
+                    <p className="text-foreground font-medium mt-1">
                       {admin.city || '-'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-[#777]">State</p>
-                    <p className="text-[#151515] font-medium mt-1">
+                    <p className="text-sm text-muted-foreground">State</p>
+                    <p className="text-foreground font-medium mt-1">
                       {admin.state || '-'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-[#777]">Postal Code</p>
-                    <p className="text-[#151515] font-medium mt-1">
+                    <p className="text-sm text-muted-foreground">Postal Code</p>
+                    <p className="text-foreground font-medium mt-1">
                       {admin.postalCode || '-'}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-[#777]">Country</p>
-                    <p className="text-[#151515] font-medium mt-1">
+                    <p className="text-sm text-muted-foreground">Country</p>
+                    <p className="text-foreground font-medium mt-1">
                       {admin.country || '-'}
                     </p>
                   </div>

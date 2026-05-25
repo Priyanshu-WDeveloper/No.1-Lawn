@@ -15,9 +15,9 @@ export function ManualCoordinates({ latitude, longitude, onChange }: ManualCoord
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <label className="text-sm font-medium text-[#151515]">
+          <label className="text-sm font-medium text-foreground">
             Latitude
-            <span className="text-[#16610E]"> *</span>
+            <span className="text-primary"> *</span>
           </label>
           <Input
             type="number"
@@ -28,8 +28,8 @@ export function ManualCoordinates({ latitude, longitude, onChange }: ManualCoord
               const val = parseFloat(e.target.value);
               onChange(isNaN(val) ? 0 : val, longitude);
             }}
-            className={`h-12 rounded-xl border bg-[#fafaf8] ${
-              !latValid ? 'border-red-300 bg-red-50' : 'border-[#e5e5e5]'
+            className={`h-12 rounded-xl border bg-background ${
+              !latValid ? 'border-red-300 bg-red-50' : 'border-border'
             }`}
           />
           {!latValid && (
@@ -38,9 +38,9 @@ export function ManualCoordinates({ latitude, longitude, onChange }: ManualCoord
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-[#151515]">
+          <label className="text-sm font-medium text-foreground">
             Longitude
-            <span className="text-[#16610E]"> *</span>
+            <span className="text-primary"> *</span>
           </label>
           <Input
             type="number"
@@ -51,8 +51,8 @@ export function ManualCoordinates({ latitude, longitude, onChange }: ManualCoord
               const val = parseFloat(e.target.value);
               onChange(latitude, isNaN(val) ? 0 : val);
             }}
-            className={`h-12 rounded-xl border bg-[#fafaf8] ${
-              !lngValid ? 'border-red-300 bg-red-50' : 'border-[#e5e5e5]'
+            className={`h-12 rounded-xl border bg-background ${
+              !lngValid ? 'border-red-300 bg-red-50' : 'border-border'
             }`}
           />
           {!lngValid && (
@@ -61,7 +61,7 @@ export function ManualCoordinates({ latitude, longitude, onChange }: ManualCoord
         </div>
       </div>
 
-      <p className="text-xs text-[#777] flex items-center gap-1">
+      <p className="text-xs text-muted-foreground flex items-center gap-1">
         <Hash className="h-3 w-3" />
         Enter coordinates directly. Address fields below can be filled manually.
       </p>

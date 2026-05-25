@@ -297,7 +297,7 @@ export default function EditJobPage() {
         <div className="space-y-8">
           {/* Location Section */}
           <div>
-            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
+            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
               Job Location
             </h4>
             <div className="space-y-5">
@@ -327,14 +327,14 @@ export default function EditJobPage() {
               )}
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-[#151515]">
+                <label className="text-sm font-medium text-foreground">
                   Job Address
-                  <span className="text-[#16610E]"> *</span>
+                  <span className="text-primary"> *</span>
                 </label>
                 <Textarea
                   placeholder="Enter job address"
                   {...register('jobAddress')}
-                  className="min-h-[80px] rounded-xl border-[#e5e5e5] bg-[#fafaf8] p-4"
+                  className="min-h-[80px] rounded-xl border-border bg-background p-4"
                 />
                 {errors.jobAddress && (
                   <p className="text-sm text-red-500">
@@ -383,14 +383,14 @@ export default function EditJobPage() {
         <div className="space-y-8">
           {/* Assignment & Schedule Section */}
           <div>
-            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
+            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
               Job Assignment & Schedule
             </h4>
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-[#151515]">
+                <label className="text-sm font-medium text-foreground">
                   Select Customer
-                  <span className="text-[#16610E]"> *</span>
+                  <span className="text-primary"> *</span>
                 </label>
                 <SearchableSelect
                   data={customerOptions}
@@ -403,7 +403,7 @@ export default function EditJobPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-[#151515]">
+                <label className="text-sm font-medium text-foreground">
                   Select Employee
                   <span className="text-[#9ca3af] text-xs ml-1">
                     (Optional)
@@ -419,15 +419,15 @@ export default function EditJobPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-[#151515]">
+                <label className="text-sm font-medium text-foreground">
                   Job Type
-                  <span className="text-[#16610E]"> *</span>
+                  <span className="text-primary"> *</span>
                 </label>
                 <Select
                   value={formValues.jobType || ''}
                   onValueChange={(v) => setValue('jobType', v)}
                 >
-                  <SelectTrigger className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]">
+                  <SelectTrigger className="h-12 rounded-xl border-border bg-background">
                     <SelectValue placeholder="Select job type" />
                   </SelectTrigger>
                   <SelectContent className="rounded-xl">
@@ -444,9 +444,9 @@ export default function EditJobPage() {
                 )}
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-[#151515]">
+                <label className="text-sm font-medium text-foreground">
                   Job Date
-                  <span className="text-[#16610E]"> *</span>
+                  <span className="text-primary"> *</span>
                 </label>
                 <DatePicker
                   value={formValues.jobDate}
@@ -459,7 +459,7 @@ export default function EditJobPage() {
               {formValues.jobType === 'recurring' && (
                 <>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-[#151515]">
+                    <label className="text-sm font-medium text-foreground">
                       Frequency Value
                     </label>
                     <Input
@@ -468,11 +468,11 @@ export default function EditJobPage() {
                       {...register('frequencyValue', {
                         valueAsNumber: true,
                       })}
-                      className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-appearance]:textfield"
+                      className="h-12 rounded-xl border-border bg-background [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-appearance]:textfield"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-[#151515]">
+                    <label className="text-sm font-medium text-foreground">
                       Frequency Unit
                     </label>
                     <Select
@@ -481,7 +481,7 @@ export default function EditJobPage() {
                         setValue('frequencyUnit', v)
                       }
                     >
-                      <SelectTrigger className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]">
+                      <SelectTrigger className="h-12 rounded-xl border-border bg-background">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -504,21 +504,21 @@ export default function EditJobPage() {
       return (
         <div className="space-y-6">
           <div>
-            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
+            <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
               Payment & Details
             </h4>
             <div className="space-y-5">
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-[#151515]">
+                  <label className="text-sm font-medium text-foreground">
                     Payment Type
-                    <span className="text-[#16610E]"> *</span>
+                    <span className="text-primary"> *</span>
                   </label>
                   <Select
                     value={formValues.paymentType || ''}
                     onValueChange={(v) => setValue('paymentType', v)}
                   >
-                    <SelectTrigger className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]">
+                    <SelectTrigger className="h-12 rounded-xl border-border bg-background">
                       <SelectValue placeholder="Select payment type" />
                     </SelectTrigger>
                     <SelectContent className="rounded-xl">
@@ -538,9 +538,9 @@ export default function EditJobPage() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-[#151515]">
+                  <label className="text-sm font-medium text-foreground">
                     Price
-                    <span className="text-[#16610E]"> *</span>
+                    <span className="text-primary"> *</span>
                   </label>
                   <div className="relative">
                     <DollarSign className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9ca3af]" />
@@ -549,7 +549,7 @@ export default function EditJobPage() {
                       inputMode="decimal"
                       placeholder="0.00"
                       {...register('price', { valueAsNumber: true })}
-                      className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8] pl-10"
+                      className="h-12 rounded-xl border-border bg-background pl-10"
                     />
                   </div>
                   {errors.price && (
@@ -560,23 +560,23 @@ export default function EditJobPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-[#151515]">
+                <label className="text-sm font-medium text-foreground">
                   Description
                 </label>
                 <Textarea
                   placeholder="Enter job description..."
                   {...register('description')}
-                  className="min-h-[80px] rounded-xl border-[#e5e5e5] bg-[#fafaf8] p-4"
+                  className="min-h-[80px] rounded-xl border-border bg-background p-4"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-[#151515]">
+                <label className="text-sm font-medium text-foreground">
                   Notes
                 </label>
                 <Textarea
                   placeholder="Add any additional notes..."
                   {...register('notes')}
-                  className="min-h-[100px] rounded-xl border-[#e5e5e5] bg-[#fafaf8] p-4"
+                  className="min-h-[100px] rounded-xl border-border bg-background p-4"
                 />
               </div>
             </div>
@@ -792,7 +792,7 @@ export default function EditJobPage() {
                 onClick={() =>
                   navigate(ROUTES.JOBS_VIEW.replace(':id', id!))
                 }
-                className="text-[#6b7280] hover:text-[#151515]"
+                className="text-[#6b7280] hover:text-foreground"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back

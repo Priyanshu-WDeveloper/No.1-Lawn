@@ -198,7 +198,7 @@ export function PaginationButton({
     <Button
       variant={active ? 'default' : 'outline'}
       size="icon"
-      className={`h-8 w-8 rounded-lg text-sm ${active ? 'border-[#16610E] bg-[#edf8e7] text-[#16610E]' : 'border-[#e5e7eb] bg-white text-[#6b7280] hover:bg-[#f9fafb]'}`}
+      className={`h-8 w-8 rounded-lg text-sm ${active ? 'border-primary bg-primary/10 text-primary' : 'border-border bg-background text-muted-foreground hover:bg-muted'}`}
       onClick={onClick}
     >
       {icon || label}
@@ -409,7 +409,7 @@ export default function DataTable<T extends DataTableData>({
   };
 
   const renderSkeletonRow = () => (
-    <tr className="border-b border-[#f3f4f6]">
+    <tr className="border-b border-border">
       {columns.map((column) => (
         <td key={column.accessorKey} className="px-4 py-2.5">
           {getSkeletonForColumn(column)}
@@ -424,18 +424,18 @@ export default function DataTable<T extends DataTableData>({
         {/* Filter Row */}
         <div className="flex items-center justify-between gap-3 mb-3">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9ca3af]" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={searchPlaceholder}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 pr-12 rounded-xl border-[#e5e7eb] bg-white h-10"
+              className="pl-10 pr-12 rounded-xl border-border bg-background h-10"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 flex items-center justify-center rounded-full text-[#9ca3af] hover:text-[#6b7280] hover:bg-[#f3f4f6] transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 flex items-center justify-center rounded-full text-muted-foreground hover:text-muted-foreground hover:bg-muted transition-colors"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -448,7 +448,7 @@ export default function DataTable<T extends DataTableData>({
                 value={filterValue}
                 onValueChange={handleFilterChange}
               >
-                <SelectTrigger className="w-[140px] rounded-xl h-10 border-[#e5e7eb]">
+                <SelectTrigger className="w-[140px] rounded-xl h-10 border-border">
                   <SelectValue placeholder={`All ${filterField}`} />
                 </SelectTrigger>
                 <SelectContent>
@@ -467,7 +467,7 @@ export default function DataTable<T extends DataTableData>({
 
             {addButtonLabel && onAddClick && (
               <Button
-                className="h-10 rounded-xl bg-[#16610E] text-white hover:bg-[#1a7a12] px-5"
+                className="h-10 rounded-xl bg-[var(--sidebar-bg-from)] text-white hover:bg-[var(--sidebar-bg-to)] px-5"
                 onClick={onAddClick}
               >
                 <Plus className="h-4 w-4 mr-2" />
@@ -478,21 +478,21 @@ export default function DataTable<T extends DataTableData>({
         </div>
 
         {/* Table */}
-        {/* <div className="rounded-xl border border-[#f3f4f6] overflow-auto flex-1 min-h-0"> */}
-        {/* <div className="rounded-xl border border-[#f3f4f6] flex-1 min-h-0"> */}
-        <div className="rounded-xl border border-[#f3f4f6] flex-1 min-h-0 overflow-auto">
+        {/* <div className="rounded-xl border border-border overflow-auto flex-1 min-h-0"> */}
+        {/* <div className="rounded-xl border border-border flex-1 min-h-0"> */}
+        <div className="rounded-xl border border-border flex-1 min-h-0 overflow-auto">
           <table className="w-full min-w-[900px]">
-            <thead className="bg-[#f9fafb]">
-              <tr className="border-b border-[#f3f4f6]">
+            <thead className="bg-muted">
+              <tr className="border-b border-border">
                 {columns.map((column) => (
                   <th
                     key={column.accessorKey}
-                    className="px-4 py-2.5 text-[12px] font-medium text-[#6b7280] uppercase tracking-wider text-left whitespace-nowrap"
+                    className="px-4 py-2.5 text-[12px] font-medium text-muted-foreground uppercase tracking-wider text-left whitespace-nowrap"
                   >
                     <div className="flex items-center gap-1">
                       {column.header}
                       {column.sortable !== false && (
-                        <ChevronsUpDown className="h-3 w-3 text-[#d1d5db]" />
+                        <ChevronsUpDown className="h-3 w-3 text-muted-foreground" />
                       )}
                     </div>
                   </th>
@@ -511,12 +511,12 @@ export default function DataTable<T extends DataTableData>({
                 filteredData.map((row: T) => (
                   <tr
                     key={row._id}
-                    className="border-b border-[#f3f4f6] transition-colors hover:bg-[#f9fafb]"
+                    className="border-b border-border transition-colors hover:bg-muted"
                   >
                     {columns.map((column) => (
                       <td
                         key={column.accessorKey}
-                        className="px-4 py-2.5 text-sm text-[#374151] whitespace-nowrap"
+                        className="px-4 py-2.5 text-sm text-foreground whitespace-nowrap"
                       >
                         {renderCell(row, column)}
                       </td>
@@ -530,10 +530,10 @@ export default function DataTable<T extends DataTableData>({
                     className="h-[240px] text-center"
                   >
                     <div className="flex flex-col items-center justify-center gap-2">
-                      <p className="text-lg font-medium text-[#6b7280]">
+                      <p className="text-lg font-medium text-muted-foreground">
                         No matching results
                       </p>
-                      <p className="text-sm text-[#9ca3af]">
+                      <p className="text-sm text-muted-foreground">
                         Try adjusting your search or filters
                       </p>
                     </div>
@@ -546,8 +546,8 @@ export default function DataTable<T extends DataTableData>({
 
         {/* Pagination */}
         {pagination && pagination.total > 8 && (
-          <div className="flex items-center justify-end gap-3 px-6 pt-2 pb-0 border-t border-[#f3f4f6]">
-            <p className="text-[13px] text-[#6b7280] whitespace-nowrap">
+          <div className="flex items-center justify-end gap-3 px-6 pt-2 pb-0 border-t border-border">
+            <p className="text-[13px] text-muted-foreground whitespace-nowrap">
               {pagination.total} results
             </p>
 
@@ -555,7 +555,7 @@ export default function DataTable<T extends DataTableData>({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 rounded-lg border-[#e5e7eb] text-[#6b7280]"
+                className="h-8 w-8 rounded-lg border-border text-muted-foreground"
                 disabled={pagination.page === 1}
                 onClick={() => onPageChange?.(pagination.page - 1)}
               >
@@ -569,7 +569,7 @@ export default function DataTable<T extends DataTableData>({
                 p === '...' ? (
                   <span
                     key={`ellipsis-${i}`}
-                    className="px-2 text-[#9ca3af]"
+                    className="px-2 text-muted-foreground"
                   >
                     ...
                   </span>
@@ -586,7 +586,7 @@ export default function DataTable<T extends DataTableData>({
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 rounded-lg border-[#e5e7eb] text-[#6b7280]"
+                className="h-8 w-8 rounded-lg border-border text-muted-foreground"
                 disabled={pagination.page === pagination.totalPages}
                 onClick={() => onPageChange?.(pagination.page + 1)}
               >

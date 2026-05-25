@@ -30,7 +30,7 @@ function Caption({ displayMonth }: { displayMonth: Date }) {
         type="button"
         onClick={() => previousMonth && goToMonth(previousMonth)}
         disabled={!previousMonth}
-        className="h-7 w-7 flex items-center justify-center rounded-xl border border-[#e5e5e5] bg-transparent p-0 opacity-50 hover:opacity-100 disabled:opacity-20 transition-opacity"
+        className="h-7 w-7 flex items-center justify-center rounded-xl border border-border bg-transparent p-0 opacity-50 hover:opacity-100 disabled:opacity-20 transition-opacity"
       >
         <ChevronLeft className="h-4 w-4" />
       </button>
@@ -79,7 +79,7 @@ function Caption({ displayMonth }: { displayMonth: Date }) {
         type="button"
         onClick={() => nextMonth && goToMonth(nextMonth)}
         disabled={!nextMonth}
-        className="h-7 w-7 flex items-center justify-center rounded-xl border border-[#e5e5e5] bg-transparent p-0 opacity-50 hover:opacity-100 disabled:opacity-20 transition-opacity"
+        className="h-7 w-7 flex items-center justify-center rounded-xl border border-border bg-transparent p-0 opacity-50 hover:opacity-100 disabled:opacity-20 transition-opacity"
       >
         <ChevronRight className="h-4 w-4" />
       </button>
@@ -118,20 +118,20 @@ function Calendar({
         head_cell:
           "text-muted-foreground rounded-md w-9 font-normal text-[0.8rem]",
         row: "flex w-full mt-2",
-        cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-green-50/50 [&:has([aria-selected])]:bg-green-50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+        cell: "h-9 w-9 text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-primary/5 [&:has([aria-selected])]:bg-primary/10 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
         day: cn(
           buttonVariants({ variant: "ghost" }),
           "h-9 w-9 p-0 font-normal aria-selected:opacity-100"
         ),
         day_range_end: "day-range-end",
         day_selected:
-          "bg-[#16610E] text-white hover:bg-[#16610E] hover:text-white focus:bg-[#16610E] focus:text-white",
-        day_today: "bg-green-50 text-green-700 font-semibold",
+          "bg-primary text-white hover:bg-primary hover:text-white focus:bg-primary focus:text-white",
+        day_today: "bg-primary/10 text-primary font-semibold",
         day_outside:
-          "day-outside text-muted-foreground opacity-50 aria-selected:bg-green-50/50 aria-selected:text-muted-foreground",
+          "day-outside text-muted-foreground opacity-50 aria-selected:bg-primary/5 aria-selected:text-muted-foreground",
         day_disabled: "text-muted-foreground opacity-50",
         day_range_middle:
-          "aria-selected:bg-green-50 aria-selected:text-green-700",
+          "aria-selected:bg-primary/10 aria-selected:text-primary",
         day_hidden: "invisible",
         ...classNames,
       }}

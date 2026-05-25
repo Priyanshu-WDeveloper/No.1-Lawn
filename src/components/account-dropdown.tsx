@@ -101,16 +101,16 @@ export default function AccountDropdown({
           </div>
 
           {/* Subscription Badge */}
-          <div className="flex items-center justify-between rounded-xl bg-green-50 px-4 py-3">
+          <div className="flex items-center justify-between rounded-xl bg-primary/10 px-4 py-3">
             <div className="flex items-center gap-2">
-              <CircleDot className="h-4 w-4 fill-green-500 text-green-500" />
+              <CircleDot className="h-4 w-4 fill-primary text-primary" />
 
-              <span className="text-sm font-medium text-green-600">
+              <span className="text-sm font-medium text-primary">
                 Valid till 01 Jul 2026
               </span>
             </div>
 
-            <span className="text-sm font-medium text-green-500">
+            <span className="text-sm font-medium text-primary">
               48d left
             </span>
           </div>
@@ -126,7 +126,10 @@ export default function AccountDropdown({
             Profile
           </DropdownMenuItem>
 
-          <DropdownMenuItem className="flex cursor-pointer items-center gap-3 px-4 py-3 text-sm">
+          <DropdownMenuItem
+            onClick={() => navigate(superAccess ? ROUTES.SUPER_ADMIN_CHANGE_PASSWORD : ROUTES.CHANGE_PASSWORD)}
+            className="flex cursor-pointer items-center gap-3 px-4 py-3 text-sm"
+          >
             <CreditCard className="h-4 w-4 text-slate-700" />
             Change Password
           </DropdownMenuItem>

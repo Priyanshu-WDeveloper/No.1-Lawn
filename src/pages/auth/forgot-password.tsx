@@ -70,7 +70,7 @@ const ForgotPassword = () => {
                 <div className="relative z-10 flex flex-col h-full p-10 lg:p-14">
                   {/* Logo */}
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-green-600 shrink-0 flex items-center justify-center p-[2px]">
+                    <div className="w-12 h-12 rounded-full bg-primary shrink-0 flex items-center justify-center p-[2px]">
                       <img
                         src="/image.png"
                         alt="Logo"
@@ -78,13 +78,13 @@ const ForgotPassword = () => {
                       />
                     </div>
 
-                    <h1 className="text-3xl font-bold text-green-800">
+                    <h1 className="text-3xl font-bold text-primary">
                       No. 1 Lawns
                     </h1>
                   </div>
 
                   <div className="mt-20">
-                    <h2 className="text-5xl font-bold text-green-900 leading-tight">
+                    <h2 className="text-5xl font-bold text-primary leading-tight">
                       Reset Password
                     </h2>
 
@@ -95,17 +95,17 @@ const ForgotPassword = () => {
 
                     {/* Divider */}
                     <div className="flex items-center gap-4 mt-8">
-                      <div className="h-[1px] w-20 bg-green-300" />
+                      <div className="h-[1px] w-20 bg-primary/30" />
 
-                      <Leaf className="w-5 h-5 text-green-600" />
+                      <Leaf className="w-5 h-5 text-primary" />
 
-                      <div className="h-[1px] w-20 bg-green-300" />
+                      <div className="h-[1px] w-20 bg-primary/30" />
                     </div>
 
                     {/* Quote Card */}
                     <div className="mt-10 bg-white/70 backdrop-blur-md border border-white/40 shadow-lg rounded-2xl p-5 max-w-sm">
                       <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 rounded-full bg-green-600 overflow-hidden shrink-0 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full bg-primary overflow-hidden shrink-0 flex items-center justify-center">
                           <Lock className="text-white w-6 h-6" />
                         </div>
 
@@ -127,7 +127,7 @@ const ForgotPassword = () => {
                   <div className="w-full max-w-2xl bg-white rounded-[28px] shadow-lg border border-gray-100 p-8">
                     <button
                       onClick={() => navigate(ROUTES.LOGIN)}
-                      className="flex items-center gap-2 text-green-700 hover:text-green-800 mb-6 transition-colors"
+                      className="flex items-center gap-2 text-primary hover:text-primary mb-6 transition-colors"
                     >
                       <ArrowLeft className="h-5 w-5" />
                       <span className="font-medium">
@@ -136,7 +136,7 @@ const ForgotPassword = () => {
                     </button>
 
                     <div className="text-center">
-                      <h2 className="text-4xl font-bold text-green-900">
+                      <h2 className="text-4xl font-bold text-primary">
                         Forgot Password
                       </h2>
 
@@ -185,8 +185,8 @@ const ForgotPassword = () => {
                   <div className="border-t border-gray-200 px-1 pt-8 pb-4 flex lg:flex-row items-center justify-between gap-6">
                     <div className="flex flex-wrap items-center justify-center gap-8">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                          <Leaf className="w-5 h-5 text-green-700" />
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Leaf className="w-5 h-5 text-primary" />
                         </div>
 
                         <div>
@@ -200,8 +200,8 @@ const ForgotPassword = () => {
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                          <Leaf className="w-5 h-5 text-green-700" />
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Leaf className="w-5 h-5 text-primary" />
                         </div>
 
                         <div>
@@ -215,8 +215,8 @@ const ForgotPassword = () => {
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                          <Leaf className="w-5 h-5 text-green-700" />
+                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Leaf className="w-5 h-5 text-primary" />
                         </div>
 
                         <div>
@@ -243,13 +243,13 @@ const ForgotPassword = () => {
 
           <span className="text-[#bdbdbd]">|</span>
 
-          <button className="hover:text-green-700 transition">
+          <button className="hover:text-primary transition">
             Privacy Policy
           </button>
 
           <span className="text-[#bdbdbd]">|</span>
 
-          <button className="hover:text-green-700 transition">
+          <button className="hover:text-primary transition">
             Terms of Service
           </button>
         </div>

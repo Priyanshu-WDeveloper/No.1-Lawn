@@ -43,19 +43,19 @@ export function AdminFormStep({
     return (
       <div className="space-y-6">
         <div>
-          <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
+          <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
             Basic Information
           </h4>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[#151515]">
+              <label className="text-sm font-medium text-foreground">
                 First Name
-                <span className="text-[#16610E]"> *</span>
+                <span className="text-primary"> *</span>
               </label>
               <Input
                 placeholder="Enter first name"
                 {...register('firstName')}
-                className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                className="h-12 rounded-xl border-border bg-background"
               />
               {errors.firstName && (
                 <p className="text-sm text-red-500">
@@ -65,14 +65,14 @@ export function AdminFormStep({
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[#151515]">
+              <label className="text-sm font-medium text-foreground">
                 Last Name
-                <span className="text-[#16610E]"> *</span>
+                <span className="text-primary"> *</span>
               </label>
               <Input
                 placeholder="Enter last name"
                 {...register('lastName')}
-                className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                className="h-12 rounded-xl border-border bg-background"
               />
               {errors.lastName && (
                 <p className="text-sm text-red-500">
@@ -82,15 +82,15 @@ export function AdminFormStep({
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[#151515]">
+              <label className="text-sm font-medium text-foreground">
                 Email Address
-                <span className="text-[#16610E]"> *</span>
+                <span className="text-primary"> *</span>
               </label>
               <Input
                 type="email"
                 placeholder="Enter email address"
                 {...register('email')}
-                className="h-12 rounded-xl border-[#e5e5e5] bg-[#fafaf8]"
+                className="h-12 rounded-xl border-border bg-background"
               />
               {errors.email && (
                 <p className="text-sm text-red-500">
@@ -100,9 +100,9 @@ export function AdminFormStep({
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[#151515]">
+              <label className="text-sm font-medium text-foreground">
                 Phone Number
-                <span className="text-[#16610E]"> *</span>
+                <span className="text-primary"> *</span>
               </label>
               <PhoneInput
                 value={formValues.phoneNumber}
@@ -155,7 +155,7 @@ export function AdminFormStep({
     return (
       <div className="space-y-6">
         <div>
-          <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-[#777]">
+          <h4 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
             Address Information
           </h4>
           <div className="space-y-5">
@@ -179,14 +179,14 @@ export function AdminFormStep({
             )}
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-[#151515]">
+              <label className="text-sm font-medium text-foreground">
                 Address
-                <span className="text-[#16610E]"> *</span>
+                <span className="text-primary"> *</span>
               </label>
               <Textarea
                 placeholder="Enter address"
                 {...register('address')}
-                className="min-h-[80px] rounded-xl border-[#e5e5e5] bg-[#fafaf8] p-4"
+                className="min-h-[80px] rounded-xl border-border bg-background p-4"
               />
               {errors.address && (
                 <p className="text-sm text-red-500">

@@ -26,7 +26,7 @@ export default function ProfileHero({
 
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#16610E] via-[#1d7a14] to-[#2a9d1e] pb-10 shadow-lg">
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 pb-10 shadow-lg">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.12)_0%,transparent_60%)]" />
       <div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-white/5 blur-3xl" />
 

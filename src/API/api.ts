@@ -528,6 +528,28 @@ export const api = createApi({
       providesTags: ['Admins'],
     }),
 
+    // Auth - Change Password
+    changePassword: builder.mutation<
+      { message: string },
+      { oldPassword: string; newPassword: string }
+    >({
+      query: (body) => ({
+        url: API_ROUTES.ADMINS.CHANGE_PASSWORD,
+        method: 'PATCH',
+        body,
+      }),
+    }),
+    superAdminChangePassword: builder.mutation<
+      { message: string },
+      { oldPassword: string; newPassword: string }
+    >({
+      query: (body) => ({
+        url: API_ROUTES.SUPER_ADMINS.CHANGE_PASSWORD,
+        method: 'PATCH',
+        body,
+      }),
+    }),
+
     // Super Admin - Billing endpoints
     getBillingStats: builder.query<Record<string, unknown>, void>({
       query: () => API_ROUTES.SUPER_ADMINS.BILLING.STATS,
@@ -593,6 +615,9 @@ export const {
   useDeleteAdminValidityMutation,
 
   useGetAdminDetailsQuery,
+
+  useChangePasswordMutation,
+  useSuperAdminChangePasswordMutation,
 
   useGetBillingStatsQuery,
   useGetBillingInvoicesQuery,

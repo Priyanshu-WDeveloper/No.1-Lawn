@@ -50,16 +50,16 @@ export function AdminFormStepper({
 
   return (
     <div className="rounded-2xl border border-[#ececec] bg-white shadow-sm">
-        <div className="border-b border-[#ececec] bg-[#fafaf8] px-8 py-6">
+        <div className="border-b border-[#ececec] bg-background px-8 py-6">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#edf8e7]">
-              <Shield className="h-6 w-6 text-[#16610E]" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
+              <Shield className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <p className="text-sm text-[#777]">
+              <p className="text-sm text-muted-foreground">
                 Step {currentStep} of {steps.length}
               </p>
-              <h3 className="text-xl font-semibold text-[#151515]">
+              <h3 className="text-xl font-semibold text-foreground">
                 {steps[currentStep - 1].title}
               </h3>
             </div>
@@ -68,12 +68,12 @@ export function AdminFormStepper({
 
         <div className="p-8">{children}</div>
 
-        <div className="flex items-center justify-between border-t border-[#ececec] bg-[#fafaf8] px-8 py-6">
+        <div className="flex items-center justify-between border-t border-[#ececec] bg-background px-8 py-6">
           <button
             type="button"
             onClick={onPrevious}
             disabled={isFirstStep}
-            className="h-12 rounded-xl border border-[#e5e5e5] px-6 text-[#777] transition-all hover:border-[#16610E] hover:bg-[#edf8e7] hover:text-[#16610E] disabled:pointer-events-none disabled:opacity-50"
+            className="h-12 rounded-xl border border-border px-6 text-muted-foreground transition-all hover:border-primary hover:bg-primary/10 hover:text-primary disabled:pointer-events-none disabled:opacity-50"
           >
             Previous
           </button>
@@ -82,7 +82,7 @@ export function AdminFormStepper({
             <button
               type="button"
               onClick={onNext}
-              className="h-12 rounded-xl bg-[#16610E] px-8 text-white transition-all hover:bg-[#1a7a12]"
+              className="h-12 rounded-xl bg-[var(--sidebar-bg-from)] px-8 text-white transition-all hover:bg-[var(--sidebar-bg-to)]"
             >
               Continue
             </button>
@@ -91,7 +91,7 @@ export function AdminFormStepper({
               type="button"
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="h-12 rounded-xl bg-[#16610E] px-8 text-white transition-all hover:bg-[#1a7a12] disabled:pointer-events-none disabled:opacity-50"
+              className="h-12 rounded-xl bg-[var(--sidebar-bg-from)] px-8 text-white transition-all hover:bg-[var(--sidebar-bg-to)] disabled:pointer-events-none disabled:opacity-50"
             >
               {isSubmitting ? submittingLabel : (submitLabel || 'Submit')}
             </button>

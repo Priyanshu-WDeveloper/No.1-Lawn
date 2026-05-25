@@ -58,9 +58,9 @@ export function Combobox({
           aria-expanded={open}
           disabled={disabled}
           className={cn(
-            'h-12 w-full justify-between rounded-xl border bg-[#fafaf8] px-3 text-sm font-normal hover:bg-[#fafaf8]',
-            error ? 'border-red-500' : 'border-[#e5e5e5]',
-            !selectedOption && 'text-[#9ca3af]',
+            'h-12 w-full justify-between rounded-xl border bg-background px-3 text-sm font-normal hover:bg-background',
+            error ? 'border-red-500' : 'border-border',
+            !selectedOption && 'text-muted-foreground',
             className,
           )}
         >
@@ -72,7 +72,7 @@ export function Combobox({
           ) : (
             placeholder
           )}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-[#9ca3af]" />
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 text-muted-foreground" />
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -102,7 +102,7 @@ export function Combobox({
                     className={cn(
                       'ml-auto h-4 w-4',
                       value === option.value
-                        ? 'text-[#16610E] opacity-100'
+                        ? 'text-primary opacity-100'
                         : 'opacity-0',
                     )}
                   />

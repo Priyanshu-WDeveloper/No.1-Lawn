@@ -107,7 +107,7 @@ export default function InvoiceViewPage() {
 
             <div className="space-y-6">
               <SectionCard
-                icon={<User className="h-4 w-4 text-[#16610E]" />}
+                icon={<User className="h-4 w-4 text-primary" />}
                 title="Customer & Job"
               >
                 <DetailRow
@@ -125,7 +125,7 @@ export default function InvoiceViewPage() {
 
               <SectionCard
                 icon={
-                  <DollarSign className="h-4 w-4 text-[#16610E]" />
+                  <DollarSign className="h-4 w-4 text-primary" />
                 }
                 title="Payment Summary"
               >
@@ -138,13 +138,13 @@ export default function InvoiceViewPage() {
                   icon={<DollarSign className="h-4 w-4" />}
                   label="Received"
                   value={`$${(invoice.receivedAmount ?? 0).toFixed(2)}`}
-                  valueClassName="text-sm font-medium text-green-600"
+                  valueClassName="text-sm font-medium text-primary"
                 />
                 <DetailRow
                   icon={<DollarSign className="h-4 w-4" />}
                   label="Balance"
                   value={`$${(invoice.balance ?? invoice.totalAmount ?? 0).toFixed(2)}`}
-                  valueClassName={`text-sm font-medium ${(invoice.balance ?? invoice.totalAmount ?? 0) > 0 ? 'text-red-500' : 'text-green-600'}`}
+                  valueClassName={`text-sm font-medium ${(invoice.balance ?? invoice.totalAmount ?? 0) > 0 ? 'text-red-500' : 'text-primary'}`}
                 />
                 <DetailRow
                   icon={<DollarSign className="h-4 w-4" />}
@@ -155,7 +155,7 @@ export default function InvoiceViewPage() {
               </SectionCard>
 
               <SectionCard
-                icon={<Calendar className="h-4 w-4 text-[#16610E]" />}
+                icon={<Calendar className="h-4 w-4 text-primary" />}
                 title="Details & Notes"
               >
                 <DetailRow
@@ -172,7 +172,7 @@ export default function InvoiceViewPage() {
               </SectionCard>
 
               <SectionCard
-                icon={<Calendar className="h-4 w-4 text-[#16610E]" />}
+                icon={<Calendar className="h-4 w-4 text-primary" />}
                 title="Timestamps"
               >
                 <DetailRow

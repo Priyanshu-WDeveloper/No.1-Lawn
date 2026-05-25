@@ -49,7 +49,7 @@ export function StaticMap({
         href={googleMapsUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-[#edf8e7] hover:bg-[#dff0d4] border border-[#c7e8b9] rounded-xl text-[#16610E] font-medium transition-colors"
+        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-primary/10 hover:bg-primary/20 border-primary/20 text-primary font-medium transition-colors"
       >
         <MapPin className="h-4 w-4" />
         View on Google Maps
@@ -72,7 +72,7 @@ export function StaticMap({
   return (
     <div className="space-y-3">
       <div
-        className="overflow-hidden rounded-xl border border-[#ececec]"
+        className="overflow-hidden rounded-xl border border-border"
         style={{ height }}
       >
         <GoogleMap
@@ -94,7 +94,7 @@ export function StaticMap({
         href={googleMapsUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-[#edf8e7] hover:bg-[#dff0d4] border border-[#c7e8b9] rounded-xl text-[#16610E] font-medium transition-colors"
+        className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-primary/10 hover:bg-primary/20 border-primary/20 text-primary font-medium transition-colors"
       >
         <MapPin className="h-4 w-4" />
         View on Google Maps

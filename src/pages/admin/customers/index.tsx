@@ -118,7 +118,7 @@ export default function CustomerManagementPage() {
       cell: (row: ICustomer) => (
         <span
           className={
-            row.balance < 0 ? 'text-red-500' : 'text-green-600'
+            row.balance < 0 ? 'text-red-500' : 'text-primary'
           }
         >
           ${row.balance.toFixed(2)}
@@ -174,12 +174,12 @@ export default function CustomerManagementPage() {
                 </DropdownMenuItem>
               ) : (
                 <DropdownMenuItem
-                  className="text-green-600 focus:text-green-600"
+                  className="text-primary focus:text-primary"
                   onClick={() =>
                     handleStatusChange(row._id, 'active')
                   }
                 >
-                  <Power className="mr-2 h-4 w-4 text-green-600 focus:text-green-600" />
+                  <Power className="mr-2 h-4 w-4 text-primary focus:text-primary" />
                   Set Active
                 </DropdownMenuItem>
               )}

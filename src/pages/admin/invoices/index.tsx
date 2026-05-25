@@ -79,7 +79,7 @@ export default function InvoiceManagementPage() {
           className={
             (row.receivedAmount ?? 0) < (row.totalAmount ?? 0)
               ? 'text-red-500'
-              : 'text-green-600'
+              : 'text-primary'
           }
         >
           ${(row.receivedAmount ?? 0).toFixed(2)}

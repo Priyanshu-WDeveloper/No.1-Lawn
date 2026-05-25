@@ -97,9 +97,9 @@ export function AddressInputs({
   return (
     <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
       <div className="space-y-2">
-        <label className="text-sm font-medium text-[#151515]">
+        <label className="text-sm font-medium text-foreground">
           Country
-          <span className="text-[#16610E]"> *</span>
+          <span className="text-primary"> *</span>
         </label>
         <Combobox
           options={countries.map((c) => ({
@@ -116,9 +116,9 @@ export function AddressInputs({
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-[#151515]">
+        <label className="text-sm font-medium text-foreground">
           State
-          <span className="text-[#16610E]"> *</span>
+          <span className="text-primary"> *</span>
         </label>
         <Select
           value={selectedStateIso}
@@ -126,8 +126,8 @@ export function AddressInputs({
           disabled={!countryIso}
         >
           <SelectTrigger
-            className={`h-12 rounded-xl border bg-[#fafaf8] px-3 text-sm ${
-              errors.state ? 'border-red-500' : 'border-[#e5e5e5]'
+            className={`h-12 rounded-xl border bg-background px-3 text-sm ${
+              errors.state ? 'border-red-500' : 'border-border'
             }`}
           >
             <SelectValue
@@ -154,15 +154,15 @@ export function AddressInputs({
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-[#151515]">
+        <label className="text-sm font-medium text-foreground">
           City
-          <span className="text-[#16610E]"> *</span>
+          <span className="text-primary"> *</span>
         </label>
         {cities.length > 0 ? (
           <Select value={city} onValueChange={handleCityChange}>
             <SelectTrigger
-              className={`h-12 rounded-xl border bg-[#fafaf8] px-3 text-sm ${
-                errors.city ? 'border-red-500' : 'border-[#e5e5e5]'
+              className={`h-12 rounded-xl border bg-background px-3 text-sm ${
+                errors.city ? 'border-red-500' : 'border-border'
               }`}
             >
               <SelectValue
@@ -187,8 +187,8 @@ export function AddressInputs({
             value={city}
             onChange={(e) => onCityChange(e.target.value)}
             disabled={!selectedStateIso}
-            className={`h-12 rounded-xl border bg-[#fafaf8] text-sm ${
-              errors.city ? 'border-red-500' : 'border-[#e5e5e5]'
+            className={`h-12 rounded-xl border bg-background text-sm ${
+              errors.city ? 'border-red-500' : 'border-border'
             }`}
           />
         )}
@@ -198,16 +198,16 @@ export function AddressInputs({
       </div>
 
       <div className="space-y-2">
-        <label className="text-sm font-medium text-[#151515]">
+        <label className="text-sm font-medium text-foreground">
           Postal Code
-          <span className="text-[#16610E]"> *</span>
+          <span className="text-primary"> *</span>
         </label>
         <Input
           placeholder={`Enter postal code${postalExample ? ` ${postalExample}` : ''}`}
           value={postalCode}
           onChange={(e) => onPostalCodeChange(e.target.value)}
-          className={`h-12 rounded-xl border bg-[#fafaf8] text-sm ${
-            errors.postalCode ? 'border-red-500' : 'border-[#e5e5e5]'
+          className={`h-12 rounded-xl border bg-background text-sm ${
+            errors.postalCode ? 'border-red-500' : 'border-border'
           }`}
         />
         {errors.postalCode && (

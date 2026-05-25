@@ -208,7 +208,7 @@ export default function JobViewPage() {
             <Button
               variant="ghost"
               onClick={() => navigate(ROUTES.JOBS)}
-              className="mb-4 text-[#777] hover:text-[#16610E] hover:bg-[#edf8e7]"
+              className="mb-4 text-muted-foreground hover:text-primary hover:bg-primary/10"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Jobs
@@ -218,11 +218,11 @@ export default function JobViewPage() {
             <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] mb-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="h-14 w-14 rounded-xl bg-[#16610E]/10 flex items-center justify-center">
-                    <RefreshCw className="h-6 w-6 text-[#16610E]" />
+                  <div className="h-14 w-14 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <RefreshCw className="h-6 w-6 text-primary" />
                   </div>
                   <div className="flex items-center gap-3">
-                    <h1 className="text-2xl font-bold text-[#151515]">
+                    <h1 className="text-2xl font-bold text-foreground">
                       Job
                     </h1>
 
@@ -235,13 +235,13 @@ export default function JobViewPage() {
                 <div className="flex items-start gap-3">
                   <div className="text-right">
                     <div className="mt-2">
-                      <span className="text-lg font-semibold text-[#16610E]">
+                      <span className="text-lg font-semibold text-primary">
                         {resolvedJob.price != null &&
                         resolvedJob.price > 0
                           ? `$${resolvedJob.price}`
                           : 'No Charge'}
                       </span>
-                      <p className="text-xs text-[#777]">Price</p>
+                      <p className="text-xs text-muted-foreground">Price</p>
                     </div>
                   </div>
 
@@ -280,7 +280,7 @@ export default function JobViewPage() {
                             onClick={() =>
                               setCompleteDialogOpen(true)
                             }
-                            className="cursor-pointer text-green-600 focus:text-green-600"
+                            className="cursor-pointer text-primary focus:text-primary"
                           >
                             <Check className="mr-2 h-4 w-4" />
                             Complete
@@ -305,7 +305,7 @@ export default function JobViewPage() {
                   <>
                     <Button
                       size="sm"
-                      className="bg-green-600 hover:bg-green-700 text-white rounded-xl h-9"
+                      className="bg-[var(--sidebar-bg-from)] hover:bg-[var(--sidebar-bg-to)] text-white rounded-xl h-9"
                       onClick={() => setCompleteDialogOpen(true)}
                     >
                       <Check className="h-4 w-4 mr-1" />
@@ -351,37 +351,37 @@ export default function JobViewPage() {
               {/* Customer Details Card */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec]">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                    <User className="h-4 w-4 text-[#16610E]" />
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <User className="h-4 w-4 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">
+                  <h3 className="text-lg font-semibold text-foreground">
                     Customer Details
                   </h3>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <User className="h-4 w-4 text-[#777] shrink-0" />
+                    <User className="h-4 w-4 text-muted-foreground shrink-0" />
                     <div>
-                      <p className="text-sm text-[#777]">Name</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Name</p>
+                      <p className="text-foreground font-medium">
                         {getCustomerName(resolvedJob.customerId)}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Mail className="h-4 w-4 text-[#777]" />
+                    <Mail className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm text-[#777]">Email</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Email</p>
+                      <p className="text-foreground font-medium">
                         {getCustomerEmail(resolvedJob.customerId)}
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Phone className="h-4 w-4 text-[#777]" />
+                    <Phone className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm text-[#777]">Phone</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Phone</p>
+                      <p className="text-foreground font-medium">
                         {getCustomerPhone(resolvedJob.customerId)}
                       </p>
                     </div>
@@ -392,10 +392,10 @@ export default function JobViewPage() {
               {/* Assigned Employee Card */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec]">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                    <User className="h-4 w-4 text-[#16610E]" />
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <User className="h-4 w-4 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">
+                  <h3 className="text-lg font-semibold text-foreground">
                     Assigned Employee
                   </h3>
                 </div>
@@ -403,9 +403,9 @@ export default function JobViewPage() {
                 resolvedJob.employeeId ? (
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <User className="h-4 w-4 text-[#777] shrink-0" />
+                      <User className="h-4 w-4 text-muted-foreground shrink-0" />
                       <div>
-                        <p className="text-[#151515] font-medium">
+                        <p className="text-foreground font-medium">
                           {getEmployeeName(resolvedJob.employeeId)}
                         </p>
                         <p className="text-xs text-[#6b7280]">
@@ -414,19 +414,19 @@ export default function JobViewPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Mail className="h-4 w-4 text-[#777]" />
+                      <Mail className="h-4 w-4 text-muted-foreground" />
                       <div>
-                        <p className="text-sm text-[#777]">Email</p>
-                        <p className="text-[#151515] font-medium">
+                        <p className="text-sm text-muted-foreground">Email</p>
+                        <p className="text-foreground font-medium">
                           {getEmployeeEmail(resolvedJob.employeeId)}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Phone className="h-4 w-4 text-[#777]" />
+                      <Phone className="h-4 w-4 text-muted-foreground" />
                       <div>
-                        <p className="text-sm text-[#777]">Phone</p>
-                        <p className="text-[#151515] font-medium">
+                        <p className="text-sm text-muted-foreground">Phone</p>
+                        <p className="text-foreground font-medium">
                           {getEmployeePhone(resolvedJob.employeeId)}
                         </p>
                       </div>
@@ -434,7 +434,7 @@ export default function JobViewPage() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <p className="text-sm text-[#777]">
+                    <p className="text-sm text-muted-foreground">
                       No employee assigned yet.
                     </p>
                     <Dialog
@@ -442,7 +442,7 @@ export default function JobViewPage() {
                       onOpenChange={setAssignDialogOpen}
                     >
                       <DialogTrigger asChild>
-                        <Button className="bg-[#16610E] hover:bg-[#16610E]/90 text-white rounded-xl">
+                        <Button className="bg-[var(--sidebar-bg-from)] hover:bg-[var(--sidebar-bg-to)] text-white rounded-xl">
                           <User className="h-4 w-4 mr-1" />
                           Assign Employee
                         </Button>
@@ -461,7 +461,7 @@ export default function JobViewPage() {
                             loading={!employeesData}
                           />
                           <Button
-                            className="w-full bg-[#16610E] hover:bg-[#16610E]/90 text-white rounded-xl"
+                            className="w-full bg-[var(--sidebar-bg-from)] hover:bg-[var(--sidebar-bg-to)] text-white rounded-xl"
                             disabled={!selectedEmployee}
                             onClick={handleAssignEmployee}
                           >
@@ -477,19 +477,19 @@ export default function JobViewPage() {
               {/* Schedule Card */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec]">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                    <Calendar className="h-4 w-4 text-[#16610E]" />
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Calendar className="h-4 w-4 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">
+                  <h3 className="text-lg font-semibold text-foreground">
                     Schedule
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                   <div className="flex items-center gap-3">
-                    <RefreshCw className="h-4 w-4 text-[#777] shrink-0" />
+                    <RefreshCw className="h-4 w-4 text-muted-foreground shrink-0" />
                     <div>
-                      <p className="text-sm text-[#777]">Job Type</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Job Type</p>
+                      <p className="text-foreground font-medium">
                         {resolvedJob.jobType
                           ? resolvedJob.jobType
                               .replace(/_/g, ' ')
@@ -501,10 +501,10 @@ export default function JobViewPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Calendar className="h-4 w-4 text-[#777] shrink-0" />
+                    <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
                     <div>
-                      <p className="text-sm text-[#777]">Job Date</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Job Date</p>
+                      <p className="text-foreground font-medium">
                         {resolvedJob.jobDate
                           ? formatDate(resolvedJob.jobDate)
                           : resolvedJob.date
@@ -519,19 +519,19 @@ export default function JobViewPage() {
               {/* Payment Card */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec]">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                    <DollarSign className="h-4 w-4 text-[#16610E]" />
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <DollarSign className="h-4 w-4 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">
+                  <h3 className="text-lg font-semibold text-foreground">
                     Payment
                   </h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                   <div className="flex items-center gap-3">
-                    <DollarSign className="h-4 w-4 text-[#777] shrink-0" />
+                    <DollarSign className="h-4 w-4 text-muted-foreground shrink-0" />
                     <div>
-                      <p className="text-sm text-[#777]">Price</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Price</p>
+                      <p className="text-foreground font-medium">
                         {resolvedJob.price != null &&
                         resolvedJob.price > 0
                           ? `$${resolvedJob.price}`
@@ -540,12 +540,12 @@ export default function JobViewPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <CreditCard className="h-4 w-4 text-[#777] shrink-0" />
+                    <CreditCard className="h-4 w-4 text-muted-foreground shrink-0" />
                     <div>
-                      <p className="text-sm text-[#777]">
+                      <p className="text-sm text-muted-foreground">
                         Payment Type
                       </p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-foreground font-medium">
                         {resolvedJob.paymentType
                           ? resolvedJob.paymentType
                               .replace(/_/g, ' ')
@@ -563,20 +563,20 @@ export default function JobViewPage() {
               {resolvedJob.description && (
                 <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] md:col-span-2">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                      <FileText className="h-4 w-4 text-[#16610E]" />
+                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <FileText className="h-4 w-4 text-primary" />
                     </div>
-                    <h3 className="text-lg font-semibold text-[#151515]">
+                    <h3 className="text-lg font-semibold text-foreground">
                       Description
                     </h3>
                   </div>
                   <div className="flex items-start gap-3">
-                    <FileText className="h-4 w-4 text-[#777] shrink-0 mt-0.5" />
+                    <FileText className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-sm text-[#777]">
+                      <p className="text-sm text-muted-foreground">
                         Description
                       </p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-foreground font-medium">
                         {resolvedJob.description}
                       </p>
                     </div>
@@ -588,18 +588,18 @@ export default function JobViewPage() {
               {resolvedJob.notes && (
                 <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] md:col-span-2">
                   <div className="flex items-center gap-2 mb-4">
-                    <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                      <FileText className="h-4 w-4 text-[#16610E]" />
+                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <FileText className="h-4 w-4 text-primary" />
                     </div>
-                    <h3 className="text-lg font-semibold text-[#151515]">
+                    <h3 className="text-lg font-semibold text-foreground">
                       Notes
                     </h3>
                   </div>
                   <div className="flex items-start gap-3">
-                    <FileText className="h-4 w-4 text-[#777] shrink-0 mt-0.5" />
+                    <FileText className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
                     <div>
-                      <p className="text-sm text-[#777]">Notes</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Notes</p>
+                      <p className="text-foreground font-medium">
                         {resolvedJob.notes}
                       </p>
                     </div>
@@ -610,47 +610,47 @@ export default function JobViewPage() {
               {/* Job Location Card (spans 2 cols) */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] md:col-span-2">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-[#edf8e7] flex items-center justify-center">
-                    <MapPin className="h-4 w-4 text-[#16610E]" />
+                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <MapPin className="h-4 w-4 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold text-[#151515]">
+                  <h3 className="text-lg font-semibold text-foreground">
                     Job Location
                   </h3>
                 </div>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <MapPin className="h-4 w-4 text-[#777] mt-0.5" />
+                    <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
                     <div className="flex-1">
-                      <p className="text-sm text-[#777]">Address</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Address</p>
+                      <p className="text-foreground font-medium">
                         {resolvedJob.address || '-'}
                       </p>
                     </div>
                   </div>
                   <div className="grid grid-cols-4 gap-4">
                     <div>
-                      <p className="text-sm text-[#777]">City</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">City</p>
+                      <p className="text-foreground font-medium">
                         {resolvedJob.city || '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-[#777]">State</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">State</p>
+                      <p className="text-foreground font-medium">
                         {resolvedJob.state || '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-[#777]">
+                      <p className="text-sm text-muted-foreground">
                         Postal Code
                       </p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-foreground font-medium">
                         {resolvedJob.postalCode || '-'}
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-[#777]">Country</p>
-                      <p className="text-[#151515] font-medium">
+                      <p className="text-sm text-muted-foreground">Country</p>
+                      <p className="text-foreground font-medium">
                         {resolvedJob.country || '-'}
                       </p>
                     </div>
@@ -658,12 +658,12 @@ export default function JobViewPage() {
                   {resolvedJob.location?.coordinates && (
                     <>
                       <div className="flex items-center gap-3">
-                        <MapPin className="h-4 w-4 text-[#777]" />
+                        <MapPin className="h-4 w-4 text-muted-foreground" />
                         <div>
-                          <p className="text-sm text-[#777]">
+                          <p className="text-sm text-muted-foreground">
                             Coordinates
                           </p>
-                          <p className="text-[#151515] font-medium">
+                          <p className="text-foreground font-medium">
                             {resolvedJob.location.coordinates[1]},{' '}
                             {resolvedJob.location.coordinates[0]}
                           </p>
@@ -705,7 +705,7 @@ export default function JobViewPage() {
             <DialogTitle>Cancel Job</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-2">
-            <p className="text-sm text-[#777]">
+            <p className="text-sm text-muted-foreground">
               Are you sure you want to cancel this job? This action
               cannot be undone.
             </p>

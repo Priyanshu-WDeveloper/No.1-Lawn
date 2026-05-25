@@ -141,16 +141,16 @@ export function AddressPicker({
 
   return (
     <div className="space-y-3">
-      <label className="text-sm font-medium text-[#151515] flex items-center gap-2">
-        <MapPin className="h-4 w-4 text-[#16610E]" />
+      <label className="text-sm font-medium text-foreground flex items-center gap-2">
+        <MapPin className="h-4 w-4 text-primary" />
         {label}
-        {required && <span className="text-[#16610E]">*</span>}
+        {required && <span className="text-primary">*</span>}
       </label>
 
       {/* Search Input Container */}
       <div ref={dropdownRef} className="relative">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#777] z-10" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
           <Input
             type="text"
             placeholder="Search for an address..."
@@ -159,16 +159,16 @@ export function AddressPicker({
             onFocus={() =>
               searchQuery.length >= 2 && setShowPredictions(true)
             }
-            className="h-12 pl-11 pr-10 border-[#e5e5e5] rounded-xl bg-[#fafaf8] focus:bg-white focus:border-[#16610E] focus:ring-[#16610E] transition-all placeholder:text-[#999]"
+            className="h-12 pl-11 pr-10 border-border rounded-xl bg-background focus:bg-white focus:border-primary focus:ring-ring transition-all placeholder:text-muted-foreground"
           />
           {isLoading && (
-            <Loader2 className="absolute right-10 top-1/2 -translate-y-1/2 h-4 w-4 text-[#16610E] animate-spin" />
+            <Loader2 className="absolute right-10 top-1/2 -translate-y-1/2 h-4 w-4 text-primary animate-spin" />
           )}
           {selectedAddress && !isLoading && (
             <button
               type="button"
               onClick={handleClear}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#777] hover:text-[#151515] p-1"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1"
             >
               <X className="h-4 w-4" />
             </button>
@@ -177,23 +177,23 @@ export function AddressPicker({
 
         {/* Predictions Dropdown - Fixed z-index and positioning */}
         {showPredictions && predictions.length > 0 && (
-          <div className="absolute z-[9999] w-full mt-2 bg-white rounded-xl border border-[#e5e5e5] shadow-xl overflow-hidden max-h-[280px] overflow-y-auto">
+          <div className="absolute z-[9999] w-full mt-2 bg-white rounded-xl border border-border shadow-xl overflow-hidden max-h-[280px] overflow-y-auto">
             {predictions.map((prediction, index) => (
               <button
                 key={prediction.place_id || index}
                 type="button"
                 onClick={() => handleSelectPrediction(prediction)}
-                className="w-full px-4 py-3 text-left hover:bg-[#edf8e7] transition-colors flex items-start gap-3 border-b border-[#f0f0f0] last:border-b-0"
+                className="w-full px-4 py-3 text-left hover:bg-primary/10 transition-colors flex items-start gap-3 border-b border-muted last:border-b-0"
               >
-                <MapPin className="h-4 w-4 text-[#16610E] mt-0.5 shrink-0" />
+                <MapPin className="h-4 w-4 text-primary mt-0.5 shrink-0" />
                 <div>
-                  <span className="text-sm text-[#151515] block">
+                  <span className="text-sm text-foreground block">
                     {prediction.structured_formatting?.main_text ||
                       prediction.description}
                   </span>
                   {prediction.structured_formatting
                     ?.secondary_text && (
-                    <span className="text-xs text-[#777]">
+                    <span className="text-xs text-muted-foreground">
                       {
                         prediction.structured_formatting
                           .secondary_text
@@ -209,16 +209,16 @@ export function AddressPicker({
 
       {/* Selected Address Display */}
       {selectedAddress && (
-        <div className="p-4 bg-[#edf8e7] rounded-xl border border-[#c7e8b9]">
+        <div className="p-4 bg-primary/10 rounded-xl border border-primary/20">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-[#16610E] text-white flex items-center justify-center shrink-0">
+            <div className="h-8 w-8 rounded-lg bg-primary text-white flex items-center justify-center shrink-0">
               <Navigation className="h-4 w-4" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-[#16610E] font-medium">
+              <p className="text-xs text-primary font-medium">
                 Selected Address
               </p>
-              <p className="text-sm text-[#151515] truncate">
+              <p className="text-sm text-foreground truncate">
                 {selectedAddress}
               </p>
             </div>
@@ -227,11 +227,11 @@ export function AddressPicker({
       )}
 
       {/* Map Placeholder */}
-      <div className="relative h-40 rounded-xl overflow-hidden bg-[#f5f5f5] border border-[#e5e5e5]">
+      <div className="relative h-40 rounded-xl overflow-hidden bg-[#f5f5f5] border border-border">
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center px-4">
             <MapPin className="h-8 w-8 text-[#ccc] mx-auto mb-2" />
-            <p className="text-sm text-[#999]">Map preview</p>
+            <p className="text-sm text-muted-foreground">Map preview</p>
             <p className="text-xs text-[#bbb] mt-1">
               {apiKey
                 ? 'Google Maps connected'
@@ -240,11 +240,11 @@ export function AddressPicker({
           </div>
         </div>
         {selectedAddress && (
-          <div className="absolute inset-0 bg-[#edf8e7]/30" />
+          <div className="absolute inset-0 bg-primary/30" />
         )}
       </div>
 
-      <p className="text-xs text-[#777] flex items-center gap-1">
+      <p className="text-xs text-muted-foreground flex items-center gap-1">
         <MapPin className="h-3 w-3" />
         Search and select an address from the suggestions
       </p>

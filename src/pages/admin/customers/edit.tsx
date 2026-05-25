@@ -110,7 +110,7 @@ export default function CustomerEditPage() {
   //   return (
   //     <AppLayout>
   //       <div className="flex h-full items-center justify-center">
-  //         <p className="text-[#777]">Invalid customer ID</p>
+  //         <p className="text-muted-foreground">Invalid customer ID</p>
   //       </div>
   //     </AppLayout>
   //   );
@@ -252,7 +252,7 @@ export default function CustomerEditPage() {
     return (
       <AppLayout>
         <div className="flex h-full items-center justify-center">
-          <p className="text-[#777]">Customer not found</p>
+          <p className="text-muted-foreground">Customer not found</p>
         </div>
       </AppLayout>
     );
@@ -299,7 +299,7 @@ export default function CustomerEditPage() {
           <Button
             variant="ghost"
             onClick={() => navigate(ROUTES.CUSTOMERS)}
-            className="mb-4 text-[#777] hover:text-[#16610E] hover:bg-[#edf8e7]"
+            className="mb-4 text-muted-foreground hover:text-primary hover:bg-primary/10"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Customers

@@ -159,17 +159,17 @@ export function DynamicForm({
           />
         );
       })}
-      <div className="flex justify-end gap-3 pt-6 border-t border-[#ececec]">
+      <div className="flex justify-end gap-3 pt-6 border-t border-border">
         <Button
           type="button"
           variant="outline"
-          className="h-12 px-6 rounded-xl border-[#e5e5e5] text-[#777] hover:text-[#16610E] hover:border-[#16610E] hover:bg-[#edf8e7] transition-all"
+          className="h-12 px-6 rounded-xl border-border text-muted-foreground hover:text-primary hover:border-primary hover:bg-primary/10 transition-all"
         >
           Cancel
         </Button>
         <Button
           type="submit"
-          className="h-12 px-8 rounded-xl bg-[#16610E] hover:bg-[#1a7a12] text-white font-medium shadow-md hover:shadow-lg transition-all"
+          className="h-12 px-8 rounded-xl bg-[var(--sidebar-bg-from)] hover:bg-[var(--sidebar-bg-to)] text-white font-medium shadow-md hover:shadow-lg transition-all"
         >
           Save Details
         </Button>

@@ -8,12 +8,12 @@ interface SectionCardProps {
 
 export function SectionCard({ icon, title, children }: SectionCardProps) {
   return (
-    <div className="rounded-2xl border border-[#ececec] bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-border bg-white p-6 shadow-sm">
       <div className="mb-4 flex items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#edf8e7]">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
           {icon}
         </div>
-        <h3 className="text-sm font-medium uppercase tracking-wide text-[#777]">
+        <h3 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
           {title}
         </h3>
       </div>

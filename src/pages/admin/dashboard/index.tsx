@@ -112,8 +112,8 @@ export default function DashboardPage() {
                   className="rounded-[20px] border border-[#ececec] py-4 shadow-sm"
                 >
                   <CardContent className="flex flex-col items-center text-center">
-                    <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-[#edf8e7]">
-                      <Icon className="h-6 w-6 text-[#16610E]" />
+                    <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                      <Icon className="h-6 w-6 text-primary" />
                     </div>
 
                     <h3 className="text-[30px] font-bold leading-none">
@@ -125,7 +125,7 @@ export default function DashboardPage() {
                     </p>
 
                     <button
-                      className="mt-2 text-[12px] font-medium text-[#1d7a16]"
+                      className="mt-2 text-[12px] font-medium text-primary"
                       onClick={() => item.url && navigate(item.url)}
                     >
                       View all →
@@ -153,8 +153,8 @@ export default function DashboardPage() {
                       key={index}
                       className="flex items-start gap-4 p-1.5"
                     >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#edf8e7]">
-                        <Icon className="h-3.5 w-3.5 text-[#16610E]" />
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                        <Icon className="h-3.5 w-3.5 text-primary" />
                       </div>
 
                       <div>
@@ -202,13 +202,13 @@ export default function DashboardPage() {
                         >
                           <stop
                             offset="5%"
-                            stopColor="#4CAF50"
+                            stopColor="var(--primary)"
                             stopOpacity={0.35}
                           />
 
                           <stop
                             offset="95%"
-                            stopColor="#4CAF50"
+                            stopColor="var(--primary)"
                             stopOpacity={0}
                           />
                         </linearGradient>
@@ -232,7 +232,7 @@ export default function DashboardPage() {
                       <RechartsArea
                         type="monotone"
                         dataKey="value"
-                        stroke="#3FAE2A"
+                        stroke="var(--primary)"
                         fill="url(#green)"
                         strokeWidth={2}
                       />
@@ -245,8 +245,8 @@ export default function DashboardPage() {
               <Card className="rounded-[20px] border border-[#ececec] shadow-sm">
                 <CardContent className="flex items-center justify-between px-5">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#edf8e7]">
-                      <CalendarDays className="h-5 w-5 text-[#16610E]" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                      <CalendarDays className="h-5 w-5 text-primary" />
                     </div>
 
                     <div>
