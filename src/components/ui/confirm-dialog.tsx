@@ -25,18 +25,24 @@ export function ConfirmDialog({
   confirmText?: string;
   cancelText?: string;
   onConfirm: () => void;
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  variant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'link';
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-2xl">
+      <DialogContent className="rounded-3xl sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="text-xl">{title}</DialogTitle>
           <DialogDescription className="text-base">
             {description}
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter className="sm:justify-between gap-3">
+        <DialogFooter className="gap-3">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}

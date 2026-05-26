@@ -38,6 +38,7 @@ import { useState } from 'react';
 import { EmployeeValidityDialog } from '@/components/admin/employee-validity-dialog';
 
 import { getErrorMessage } from '@/lib/get-error-message';
+import { formatDate } from '@/lib/format-date';
 
 export default function EmployeeManagementPage() {
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ export default function EmployeeManagementPage() {
   const employeeColumns: ColumnDef<IEmployee>[] = [
     {
       accessorKey: 'employeeId',
-      header: 'EmployeeId',
+      header: 'Employee Id',
       cell: (row: IEmployee) => (
         <span className="text-[#6b7280]">{row.employeeId}</span>
       ),
@@ -114,6 +115,14 @@ export default function EmployeeManagementPage() {
         </span>
       ),
     },
+    {
+      accessorKey: 'city',
+      header: 'City',
+      sortable: true,
+      cell: (row: IEmployee) => (
+        <span className="text-[#6b7280]">{row.city || '-'}</span>
+      ),
+    },
 
     // {
     //   accessorKey: 'balance',
@@ -136,6 +145,16 @@ export default function EmployeeManagementPage() {
           status={row.status}
           config={STATUS_CONFIG.employee}
         />
+      ),
+    },
+    {
+      accessorKey: 'createdAt',
+      header: 'Joined',
+      sortable: true,
+      cell: (row: IEmployee) => (
+        <span className="text-[#6b7280]">
+          {formatDate(row.createdAt)}
+        </span>
       ),
     },
     // {

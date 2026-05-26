@@ -203,7 +203,7 @@ export default function JobViewPage() {
   return (
     <AppLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto pl-10 p-5">
+        <div className="flex-1 w-full overflow-y-auto p-5 md:pl-10">
           <div className="mx-auto">
             <Button
               variant="ghost"
@@ -447,7 +447,7 @@ export default function JobViewPage() {
                           Assign Employee
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="rounded-2xl">
+                      <DialogContent className="rounded-2xl sm:max-w-md">
                         <DialogHeader>
                           <DialogTitle>Assign Employee</DialogTitle>
                         </DialogHeader>

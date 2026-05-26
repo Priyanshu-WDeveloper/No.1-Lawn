@@ -24,10 +24,16 @@ export class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error);
-    console.error('Component stack:', errorInfo.componentStack);
-    // TODO: Integrate with error tracking service (e.g., Sentry)
-    // Sentry.captureException(error, { contexts: { react: errorInfo } });
+    try {
+      console.error('ErrorBoundary caught an error:', error);
+    } catch {
+      console.error('ErrorBoundary caught an error (details unavailable)');
+    }
+    try {
+      console.error('Component stack:', errorInfo.componentStack);
+    } catch {
+      console.error('Component stack (unavailable)');
+    }
   }
 
   handleReset = () => {

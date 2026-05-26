@@ -1,4 +1,4 @@
-import type { ICustomer, IJob, IInvoice, IEmployee } from '.';
+import type { ICustomer, IJob, IInvoice, IEmployee, IParentJob } from '.';
 import type { IAdmins } from './admins.types';
 
 export type GetAdminsParams = {
@@ -48,6 +48,23 @@ export interface JobsResponse {
   page: number;
   limit: number;
   totalPages: number;
+}
+
+export interface ParentJobsResponse {
+  message?: string;
+  jobs: IParentJob[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface ChildJobsResponse {
+  jobs: IJob[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages?: number;
 }
 
 export interface JobMutationResponse {

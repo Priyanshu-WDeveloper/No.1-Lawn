@@ -27,8 +27,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { LocationModeToggle } from '@/components/forms/location-mode-toggle';
-import { MockMapPicker } from '@/components/forms/mock-map-picker';
 import { ManualCoordinates } from '@/components/forms/manual-coordinates';
+import { GoogleMapPicker } from '@/components/google-maps/picker';
 import { SearchableSelect } from '@/components/ui/searchable-select';
 import { DatePicker } from '@/components/ui/date-picker';
 import {
@@ -259,31 +259,6 @@ export default function CreateJobPage() {
               Job Location
             </h4>
             <div className="space-y-5">
-              <LocationModeToggle
-                value={formValues.locationMode || 'map'}
-                onChange={(mode) => setValue('locationMode', mode)}
-              />
-
-              {formValues.locationMode === 'map' ? (
-                <MockMapPicker
-                  latitude={formValues.latitude || 0}
-                  longitude={formValues.longitude || 0}
-                  onPick={(lat, lng) => {
-                    setValue('latitude', lat);
-                    setValue('longitude', lng);
-                  }}
-                />
-              ) : (
-                <ManualCoordinates
-                  latitude={formValues.latitude || 0}
-                  longitude={formValues.longitude || 0}
-                  onChange={(lat, lng) => {
-                    setValue('latitude', lat);
-                    setValue('longitude', lng);
-                  }}
-                />
-              )}
-
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">
                   Job Address
@@ -334,6 +309,31 @@ export default function CreateJobPage() {
                   postalCode: errors.postalCode?.message,
                 }}
               />
+
+              <LocationModeToggle
+                value={formValues.locationMode || 'map'}
+                onChange={(mode) => setValue('locationMode', mode)}
+              />
+
+              {formValues.locationMode === 'map' ? (
+                <GoogleMapPicker
+                  latitude={formValues.latitude || 0}
+                  longitude={formValues.longitude || 0}
+                  onPick={(lat, lng) => {
+                    setValue('latitude', lat);
+                    setValue('longitude', lng);
+                  }}
+                />
+              ) : (
+                <ManualCoordinates
+                  latitude={formValues.latitude || 0}
+                  longitude={formValues.longitude || 0}
+                  onChange={(lat, lng) => {
+                    setValue('latitude', lat);
+                    setValue('longitude', lng);
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -549,11 +549,11 @@ export default function CreateJobPage() {
   return (
     <AppLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto pl-10 p-5">
+        <div className="flex-1 w-full overflow-y-auto p-5 md:pl-10">
           <div className="flex w-full flex-col">
             <Navbar
               title="Create Job"
-              subtitle="Schedule a new job and assign customer & employee."
+              subtitle="Add a new job and assign customer & employee."
               showWelcome={false}
             />
 

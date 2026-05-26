@@ -4,6 +4,7 @@ interface AuthUser {
   fullName: string;
   email: string;
   role: number;
+  validity: Date;
 }
 
 interface AuthState {

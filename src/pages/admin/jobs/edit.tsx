@@ -799,7 +799,7 @@ export default function EditJobPage() {
   return (
     <AppLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto pl-10 p-5">
+        <div className="flex-1 w-full overflow-y-auto p-5 md:pl-10">
           <div className="flex w-full flex-col">
             <Navbar
               title="Edit Job"

@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { DashboardSidebar } from './sidebar';
 
 interface AppLayoutProps {
@@ -16,11 +13,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           <DashboardSidebar />
 
           {/* Main Content */}
-          <main className="flex-1 overflow-hidden md:ml-12 flex flex-col">
-            {/* Mobile menu toggle */}
-            <div className="md:hidden pt-4 shrink-0">
-              <SidebarTrigger className="h-10 w-10 rounded-lg bg-white border border-[#ececec] shadow-sm" />
-            </div>
+          <main className="flex-1 overflow-y-auto md:ml-12 flex flex-col">
             <div className="flex-1 min-h-0 flex flex-col">{children}</div>
           </main>
         </div>

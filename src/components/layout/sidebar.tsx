@@ -4,7 +4,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   KeyRound,
   LogOutIcon,
-  // ShieldCheck
 } from 'lucide-react';
 
 import Dashboard from '@/assets/dashboard.png';
@@ -51,9 +50,14 @@ const items = [
     url: ROUTES.EMPLOYEES,
   },
   {
-    title: 'Job Management',
+    title: 'Manage Job',
     icon: Job,
-    url: ROUTES.JOBS,
+    url: ROUTES.MANAGE_JOBS,
+  },
+  {
+    title: 'Scheduled Job',
+    icon: Job,
+    url: ROUTES.SCHEDULED_JOBS,
   },
   {
     title: 'Invoice',

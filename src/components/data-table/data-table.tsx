@@ -422,8 +422,8 @@ export default function DataTable<T extends DataTableData>({
     <Card className="rounded-2xl w-full bg-white shadow-sm flex flex-col flex-1">
       <CardContent className="px-6 flex-1 flex flex-col  ">
         {/* Filter Row */}
-        <div className="flex items-center justify-between gap-3 mb-3">
-          <div className="relative flex-1 max-w-md">
+        <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
+          <div className="relative flex-1 max-w-md min-w-[200px]">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={searchPlaceholder}
@@ -448,7 +448,7 @@ export default function DataTable<T extends DataTableData>({
                 value={filterValue}
                 onValueChange={handleFilterChange}
               >
-                <SelectTrigger className="w-[140px] rounded-xl h-10 border-border">
+                <SelectTrigger className="w-[120px] sm:w-[140px] rounded-xl h-10 border-border">
                   <SelectValue placeholder={`All ${filterField}`} />
                 </SelectTrigger>
                 <SelectContent>
@@ -467,11 +467,11 @@ export default function DataTable<T extends DataTableData>({
 
             {addButtonLabel && onAddClick && (
               <Button
-                className="h-10 rounded-xl bg-green-600 text-white hover:bg-green-700 px-5"
+                className="h-10 rounded-xl bg-green-600 text-white hover:bg-green-700 px-3 sm:px-5"
                 onClick={onAddClick}
               >
-                <Plus className="h-4 w-4 mr-2" />
-                {addButtonLabel}
+                <Plus className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">{addButtonLabel}</span>
               </Button>
             )}
           </div>
@@ -545,8 +545,8 @@ export default function DataTable<T extends DataTableData>({
         </div>
 
         {/* Pagination */}
-        {pagination && pagination.total > 8 && (
-          <div className="flex items-center justify-end gap-3 px-6 pt-2 pb-0 border-t border-border">
+        {pagination && pagination.totalPages > 1 && (
+          <div className="flex items-center justify-end gap-3 px-6 pt-2 pb-0  border-border">
             <p className="text-[13px] text-muted-foreground whitespace-nowrap">
               {pagination.total} results
             </p>

@@ -40,8 +40,6 @@ import { useDataTableQueryParams } from '@/hooks/use-data-table-query-params';
 import type { IJob } from '@/types';
 import type { ListQueryParams } from '@/types/api.types';
 
-
-
 export default function JobManagementPage() {
   const navigate = useNavigate();
 
@@ -197,6 +195,13 @@ export default function JobManagementPage() {
     //   },
     // },
     {
+      accessorKey: 'jobId',
+      header: 'JobId',
+      cell: (row: IJob) => (
+        <span className="text-[#6b7280]">{row.jobId}</span>
+      ),
+    },
+    {
       accessorKey: 'address',
       header: 'Address',
       cell: (row: IJob) => (
@@ -284,60 +289,62 @@ export default function JobManagementPage() {
               Complete
             </button>
           )}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                type="button"
-                className="inline-flex items-center justify-center h-8 w-8 rounded-md text-[#6b7280] hover:bg-[#f5f5f5] transition-colors"
-              >
-                <Ellipsis className="h-4 w-4" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() =>
-                  navigate(
-                    ROUTES.JOBS_EDIT.replace(':id', row._id ?? ''),
-                  )
-                }
-              >
-                <Pencil className="mr-2 h-4 w-4" />
-                <span>Edit</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() =>
-                  toast.success('Reschedule coming soon')
-                }
-              >
-                <Calendar className="mr-2 h-4 w-4" />
-                <span>Reschedule</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() =>
-                  toast.success('Assign employee coming soon')
-                }
-              >
-                <User className="mr-2 h-4 w-4" />
-                <span>Assign Employee</span>
-              </DropdownMenuItem>
-              {row.status === 'pending' && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() =>
-                      setConfirmAction({
-                        type: 'cancel',
-                        jobId: row._id ?? '',
-                      })
-                    }
-                  >
-                    <Ban className="mr-2 h-4 w-4 text-red-500" />
-                    <span>Cancel Job</span>
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {row.status !== 'completed' && row.status !== 'cancelled' && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center h-8 w-8 rounded-md text-[#6b7280] hover:bg-[#f5f5f5] transition-colors"
+                >
+                  <Ellipsis className="h-4 w-4" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onClick={() =>
+                    navigate(
+                      ROUTES.JOBS_EDIT.replace(':id', row._id ?? ''),
+                    )
+                  }
+                >
+                  <Pencil className="mr-2 h-4 w-4" />
+                  <span>Edit</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    toast.success('Reschedule coming soon')
+                  }
+                >
+                  <Calendar className="mr-2 h-4 w-4" />
+                  <span>Reschedule</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    toast.success('Assign employee coming soon')
+                  }
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Assign Employee</span>
+                </DropdownMenuItem>
+          {row.status === 'pending' && row.jobType === 'one_time' && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() =>
+                        setConfirmAction({
+                          type: 'cancel',
+                          jobId: row._id ?? '',
+                        })
+                      }
+                    >
+                      <Ban className="mr-2 h-4 w-4 text-red-500" />
+                      <span>Cancel Job</span>
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       ),
     },

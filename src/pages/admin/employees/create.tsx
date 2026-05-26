@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -43,7 +43,11 @@ import { ManualCoordinates } from '@/components/forms/manual-coordinates';
 import { PhoneInput } from '@/components/forms/phone-input';
 import { AddressInputs } from '@/components/forms/address-inputs';
 import { validatePhone } from '@/lib/phone-validation';
-import { validateAddress, getCountryIsoFromPhoneCode } from '@/lib/address-validation';
+import { Country } from 'country-state-city';
+import {
+  validateAddress,
+  getCountryIsoFromPhoneCode,
+} from '@/lib/address-validation';
 
 const createEmployeeSchema = z
   .object({
@@ -69,13 +73,16 @@ const createEmployeeSchema = z
       .regex(/^\d+$/, 'Invalid postal code'),
     country: z.string().min(1, 'Country is required'),
     countryIso: z.string(),
-    profileImage: z.string().min(1, 'Profile image is required'),
+    profileImage: z.string(),
     latitude: z.number(),
     longitude: z.number(),
     locationMode: z.enum(['map', 'manual']),
   })
   .superRefine((data, ctx) => {
-    const phoneResult = validatePhone(data.phoneNumber, data.countryCode);
+    const phoneResult = validatePhone(
+      data.phoneNumber,
+      data.countryCode,
+    );
     if (!phoneResult.valid && phoneResult.error) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -84,9 +91,17 @@ const createEmployeeSchema = z
       });
     }
 
-    const iso = data.countryIso || getCountryIsoFromPhoneCode(data.countryCode) || '';
+    const iso =
+      data.countryIso ||
+      getCountryIsoFromPhoneCode(data.countryCode) ||
+      '';
     if (iso && data.country) {
-      const addrResult = validateAddress(iso, data.state, data.city, data.postalCode);
+      const addrResult = validateAddress(
+        iso,
+        data.state,
+        data.city,
+        data.postalCode,
+      );
       if (!addrResult.valid && addrResult.error && addrResult.path) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -99,6 +114,23 @@ const createEmployeeSchema = z
 
 type CreateEmployeeFormData = z.infer<typeof createEmployeeSchema>;
 
+const initialFormData: CreateEmployeeFormData = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phoneNumber: '',
+  countryCode: '+64',
+  address: '',
+  city: '',
+  state: '',
+  postalCode: '',
+  country: '',
+  countryIso: 'NZ',
+  profileImage: '',
+  latitude: 5.8485,
+  longitude: 14.7633,
+  locationMode: 'map',
+};
 const steps = [
   {
     id: 1,
@@ -147,26 +179,30 @@ export default function CreateEmployeePage() {
   } = useForm<CreateEmployeeFormData>({
     mode: 'all',
     resolver: zodResolver(createEmployeeSchema),
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phoneNumber: '',
-    countryCode: '+64',
-    countryIso: 'NZ',
-    address: '',
-    city: '',
-      state: '',
-      postalCode: '',
-      country: '',
-      profileImage: '',
-      latitude: 5.8485,
-      longitude: 14.7633,
-      locationMode: 'map',
-    },
+    defaultValues: initialFormData,
   });
 
   const formValues = watch();
+
+  useEffect(() => {
+    if (formValues.country && !formValues.countryIso) {
+      const match = Country.getAllCountries().find(
+        (c) =>
+          c.name.toLowerCase() === formValues.country.toLowerCase(),
+      );
+      if (match) {
+        setValue('countryIso', match.isoCode);
+      }
+    }
+    if (formValues.countryIso && !formValues.country) {
+      const match = Country.getAllCountries().find(
+        (c) => c.isoCode === formValues.countryIso,
+      );
+      if (match) {
+        setValue('country', match.name);
+      }
+    }
+  }, [formValues.country, formValues.countryIso, setValue]);
 
   const handleProfileImageChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -198,8 +234,8 @@ export default function CreateEmployeePage() {
         'lastName',
         'email',
         'phoneNumber',
-        'countryCode',
-        'profileImage',
+        // 'countryCode',
+        // 'profileImage',
       ];
     }
 
@@ -210,7 +246,7 @@ export default function CreateEmployeePage() {
         'state',
         'postalCode',
         'country',
-        'countryIso',
+        // 'countryIso',
       ];
     }
 
@@ -230,7 +266,9 @@ export default function CreateEmployeePage() {
   const onSubmit = async (data: CreateEmployeeFormData) => {
     try {
       let profileImageUrl = data.profileImage;
-      let attachments: Array<{ key: string; value: string }> | undefined;
+      let attachments:
+        | Array<{ key: string; value: string }>
+        | undefined;
 
       const uploads: Promise<any>[] = [];
 
@@ -261,7 +299,11 @@ export default function CreateEmployeePage() {
               }),
           );
         }
-        uploads.push(Promise.resolve().then(() => { attachments = results; }));
+        uploads.push(
+          Promise.resolve().then(() => {
+            attachments = results;
+          }),
+        );
       }
 
       await Promise.all(uploads);
@@ -324,7 +366,7 @@ export default function CreateEmployeePage() {
           <div>
             <h4 className="mb-4 text-sm font-medium uppercase tracking-wide mx-auto text-muted-foreground">
               Profile Image
-              <span className="text-primary"> *</span>
+              {/* <span className="text-primary"> *</span> */}
             </h4>
             <div className="flex items-center gap-4">
               <div className="relative">
@@ -484,25 +526,6 @@ export default function CreateEmployeePage() {
               Address Information
             </h4>
             <div className="space-y-5">
-              <LocationModeToggle
-                value={locationMode}
-                onChange={(mode) => setValue('locationMode', mode)}
-              />
-
-              {locationMode === 'map' ? (
-                <GoogleMapPicker
-                  latitude={latitude}
-                  longitude={longitude}
-                  onPick={handleCoordinatePick}
-                />
-              ) : (
-                <ManualCoordinates
-                  latitude={latitude}
-                  longitude={longitude}
-                  onChange={handleCoordinatePick}
-                />
-              )}
-
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground">
                   Address
@@ -528,7 +551,9 @@ export default function CreateEmployeePage() {
                 postalCode={formValues.postalCode}
                 onCountryChange={(name, iso) => {
                   setValue('country', name, { shouldValidate: true });
-                  setValue('countryIso', iso, { shouldValidate: true });
+                  setValue('countryIso', iso, {
+                    shouldValidate: true,
+                  });
                   setValue('state', '', { shouldValidate: true });
                   setValue('city', '', { shouldValidate: true });
                 }}
@@ -540,7 +565,9 @@ export default function CreateEmployeePage() {
                   setValue('city', name, { shouldValidate: true })
                 }
                 onPostalCodeChange={(val) =>
-                  setValue('postalCode', val, { shouldValidate: true })
+                  setValue('postalCode', val, {
+                    shouldValidate: true,
+                  })
                 }
                 errors={{
                   country: errors.country?.message,
@@ -549,6 +576,25 @@ export default function CreateEmployeePage() {
                   postalCode: errors.postalCode?.message,
                 }}
               />
+
+              <LocationModeToggle
+                value={locationMode}
+                onChange={(mode) => setValue('locationMode', mode)}
+              />
+
+              {locationMode === 'map' ? (
+                <GoogleMapPicker
+                  latitude={latitude}
+                  longitude={longitude}
+                  onPick={handleCoordinatePick}
+                />
+              ) : (
+                <ManualCoordinates
+                  latitude={latitude}
+                  longitude={longitude}
+                  onChange={handleCoordinatePick}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -570,35 +616,94 @@ export default function CreateEmployeePage() {
     }
 
     return (
-      <form ref={formRef} onSubmit={handleSubmit(onSubmit, onFormError)}>
-        <ReviewCard sections={[
-          {
-            icon: <User className="h-5 w-5 text-white" />,
-            title: 'Employee Information',
-            subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
-            image: formValues.profileImage
-              ? { src: formValues.profileImage, alt: `${formValues.firstName} ${formValues.lastName}` }
-              : undefined,
-            fields: [
-              { icon: <User className="h-3 w-3" />, label: 'First Name', value: formValues.firstName },
-              { icon: <User className="h-3 w-3" />, label: 'Last Name', value: formValues.lastName },
-              { icon: <Mail className="h-3 w-3" />, label: 'Email', value: formValues.email },
-              { icon: <Phone className="h-3 w-3" />, label: 'Phone Number', value: `${formValues.countryCode} ${formValues.phoneNumber}` },
-              { icon: <MapPin className="h-3 w-3" />, label: 'Address', value: formValues.address },
-              { icon: <Building2 className="h-3 w-3" />, label: 'City', value: formValues.city },
-              { icon: <Map className="h-3 w-3" />, label: 'State', value: formValues.state },
-              { icon: <Hash className="h-3 w-3" />, label: 'Postal Code', value: formValues.postalCode },
-              { icon: <Globe className="h-3 w-3" />, label: 'Country', value: formValues.country },
-              ...(formValues.latitude != null && formValues.longitude != null
-                ? [
-                    { icon: <Map className="h-3 w-3" />, label: 'Latitude', value: String(formValues.latitude) },
-                    { icon: <Map className="h-3 w-3" />, label: 'Longitude', value: String(formValues.longitude) },
-                  ]
-                : [{ icon: <Map className="h-3 w-3" />, label: 'Coordinates', value: 'Not provided' }]),
-            ],
-            documents,
-          },
-        ]} />
+      <form
+        ref={formRef}
+        onSubmit={handleSubmit(onSubmit, onFormError)}
+      >
+        <ReviewCard
+          sections={[
+            {
+              icon: <User className="h-5 w-5 text-white" />,
+              title: 'Employee Information',
+              subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+              image: formValues.profileImage
+                ? {
+                    src: formValues.profileImage,
+                    alt: `${formValues.firstName} ${formValues.lastName}`,
+                  }
+                : undefined,
+              fields: [
+                {
+                  icon: <User className="h-3 w-3" />,
+                  label: 'First Name',
+                  value: formValues.firstName,
+                },
+                {
+                  icon: <User className="h-3 w-3" />,
+                  label: 'Last Name',
+                  value: formValues.lastName,
+                },
+                {
+                  icon: <Mail className="h-3 w-3" />,
+                  label: 'Email',
+                  value: formValues.email,
+                },
+                {
+                  icon: <Phone className="h-3 w-3" />,
+                  label: 'Phone Number',
+                  value: `${formValues.countryCode} ${formValues.phoneNumber}`,
+                },
+                {
+                  icon: <MapPin className="h-3 w-3" />,
+                  label: 'Address',
+                  value: formValues.address,
+                },
+                {
+                  icon: <Building2 className="h-3 w-3" />,
+                  label: 'City',
+                  value: formValues.city,
+                },
+                {
+                  icon: <Map className="h-3 w-3" />,
+                  label: 'State',
+                  value: formValues.state,
+                },
+                {
+                  icon: <Hash className="h-3 w-3" />,
+                  label: 'Postal Code',
+                  value: formValues.postalCode,
+                },
+                {
+                  icon: <Globe className="h-3 w-3" />,
+                  label: 'Country',
+                  value: formValues.country,
+                },
+                ...(formValues.latitude != null &&
+                formValues.longitude != null
+                  ? [
+                      {
+                        icon: <Map className="h-3 w-3" />,
+                        label: 'Latitude',
+                        value: String(formValues.latitude),
+                      },
+                      {
+                        icon: <Map className="h-3 w-3" />,
+                        label: 'Longitude',
+                        value: String(formValues.longitude),
+                      },
+                    ]
+                  : [
+                      {
+                        icon: <Map className="h-3 w-3" />,
+                        label: 'Coordinates',
+                        value: 'Not provided',
+                      },
+                    ]),
+              ],
+              documents,
+            },
+          ]}
+        />
       </form>
     );
   };
@@ -606,7 +711,7 @@ export default function CreateEmployeePage() {
   return (
     <AppLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto pl-10 p-5">
+        <div className="flex-1 w-full overflow-y-auto p-5 md:pl-10">
           <Button
             variant="ghost"
             onClick={() => navigate(ROUTES.EMPLOYEES)}
@@ -616,7 +721,7 @@ export default function CreateEmployeePage() {
             Back to Employees
           </Button>
           <Navbar
-            title="Create Employee"
+            title="Add Employee"
             subtitle="Add a new employee account"
             showWelcome={false}
           />

@@ -4,6 +4,7 @@ import AccountDropdown from '@/components/account-dropdown';
 import { ROUTES } from '@/constants';
 import { useSelector } from 'react-redux';
 import type { RootState } from '@/store';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 interface NavbarProps {
   title: string;
@@ -31,26 +32,36 @@ export function Navbar({
     : `Welcome back, ${superAccess ? 'Super Admin' : 'Admin'}`;
 
   return (
-    <div className=" px-5 py-1.5 flex items-start justify-between">
-      <div>
-        <h2 className="text-[22px] font-semibold text-[#151515]">
-          {title}
-        </h2>
-        {showWelcome && (
-          <p className="mt-1 text-[13px] text-[#6b7280]">
-            {welcomeText}
-          </p>
-        )}
-        {!showWelcome && subtitle && (
-          <p className="mt-1 text-[13px] text-[#6b7280]">
-            {subtitle}
-          </p>
-        )}
+    <div className="px-0 sm:px-5 py-4 flex items-center justify-between">
+      <div className="flex items-center gap-2 min-w-0">
+        <SidebarTrigger className="md:hidden h-9 w-9 rounded-lg bg-[#166534] text-white border-0 shadow-xs shrink-0 [&_svg]:text-white [&_svg]:h-[18px] [&_svg]:w-[18px]" />
+        <div className="min-w-0">
+          <div className="flex items-baseline gap-2 sm:block">
+            <h2 className="text-[17px] sm:text-[22px] font-bold sm:font-semibold text-[#151515] truncate">
+              {title}
+            </h2>
+
+            {showWelcome && (
+              <p className="hidden sm:block mt-1 text-[13px] text-[#6b7280]">
+                {welcomeText}
+              </p>
+            )}
+
+            {!showWelcome && subtitle && (
+              <p className="hidden sm:block mt-1 text-[13px] text-[#6b7280]">
+                {subtitle}
+              </p>
+            )}
+            {/* <span className="sm:hidden text-[13px] text-[#6b7280] truncate">
+              {showWelcome ? welcomeText : subtitle}
+            </span> */}
+          </div>
+        </div>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1">
         <button
-          className="relative flex h-10 w-10 items-center justify-center rounded-full border border-[#e5e7eb] bg-white"
+          className="relative mr-2 flex h-9 w-9 items-center justify-center"
           onClick={() =>
             navigate(
               superAccess
@@ -59,13 +70,11 @@ export function Navbar({
             )
           }
         >
-          <Bell className="h-4 w-4" />
-          <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] text-white">
-            3
-          </span>
+          <Bell className="h-[18px] w-[18px]  text-[#6b7280]" />
+          <span className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5 rounded-full bg-[#166534]" />
         </button>
 
-        <AccountDropdown superAccess={superAccess} />
+        <AccountDropdown superAccess={superAccess} variant="navbar" />
       </div>
     </div>
   );

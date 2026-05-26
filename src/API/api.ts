@@ -1,9 +1,12 @@
 import {
   createApi,
   fetchBaseQuery,
+  type BaseQueryFn,
+  type FetchArgs,
+  type FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
 import { getDeviceToken, getDeviceType } from '@/lib/device';
-import { getToken } from '@/lib/auth';
+import { getToken, localLogout } from '@/lib/auth';
 import type {
   CustomersResponse,
   CustomerMutationResponse,
@@ -18,10 +21,12 @@ import type {
   NotificationsResponse,
   ListQueryParams,
   UpdateEmployeePayload,
+  ParentJobsResponse,
+  ChildJobsResponse,
 } from '@/types/api.types';
 import type { CreateEmployeePayload } from '@/types/employees.types';
 import { setAuth, clearAuth } from '@/store/auth-slice';
-import { API_ROUTES } from '@/constants';
+import { API_ROUTES, ROUTES } from '@/constants';
 import type {
   ICustomer,
   IEmployee,
@@ -31,24 +36,47 @@ import type {
   IAdminStats,
 } from '@/types';
 
+const rawBaseQuery = fetchBaseQuery({
+  baseUrl: import.meta.env.VITE_API_URL,
+  prepareHeaders: (headers) => {
+    const token = getToken();
+
+    if (token) {
+      headers.set('authorization', `Bearer ${token}`);
+    }
+
+    return headers;
+  },
+});
+
+const baseQueryWithAuth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  const result = await rawBaseQuery(args, api, extraOptions);
+
+  if (
+    result.error?.status === 401 &&
+    api.endpoint !== 'login' &&
+    api.endpoint !== 'superLogin'
+  ) {
+    localLogout();
+    window.location.href = ROUTES.LOGIN;
+  }
+
+  return result;
+};
+
 export const api = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL,
-    prepareHeaders: (headers) => {
-      const token = getToken();
-
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`);
-      }
-
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: [
     'Customers',
     'Employees',
     'Jobs',
+    'ParentJobs',
+    'ChildJobs',
     'Invoices',
     'Admins',
     'Billing',
@@ -382,6 +410,37 @@ export const api = createApi({
       invalidatesTags: ['Invoices', 'Jobs'],
     }),
 
+    // Parent Job endpoints
+    getParentJobs: builder.query<
+      ParentJobsResponse,
+      ListQueryParams
+    >({
+      query: ({ page = 1, limit = 10, search, status, sort, jobType }) => ({
+        url: API_ROUTES.PARENT_JOBS.LIST,
+        params: { page, limit, search, status, sort, jobType },
+      }),
+      providesTags: ['ParentJobs'],
+    }),
+    cancelParentJob: builder.mutation<void, string>({
+      query: (id) => ({
+        url: API_ROUTES.PARENT_JOBS.CANCEL(id),
+        method: 'PATCH',
+      }),
+      invalidatesTags: ['ParentJobs'],
+    }),
+
+    // Child Job endpoints
+    getChildJobs: builder.query<
+      ChildJobsResponse,
+      ListQueryParams
+    >({
+      query: ({ page = 1, limit = 10, search, status, sort }) => ({
+        url: API_ROUTES.CHILD_JOBS.LIST,
+        params: { page, limit, search, status, sort },
+      }),
+      providesTags: ['ChildJobs'],
+    }),
+
     // Invoice endpoints
     getInvoices: builder.query<InvoicesResponse, ListQueryParams>({
       query: ({ page = 1, limit = 10, search, status, sort }) => ({
@@ -594,6 +653,10 @@ export const {
   useAssignJobEmployeeMutation,
   useGetJobReceiptQuery,
   useCreateJobReceiptMutation,
+
+  useGetParentJobsQuery,
+  useCancelParentJobMutation,
+  useGetChildJobsQuery,
 
   useGetInvoicesQuery,
   useGetInvoiceByJobIdQuery,

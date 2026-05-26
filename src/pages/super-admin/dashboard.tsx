@@ -7,7 +7,7 @@ const SuperAdminDashboardPage = () => {
   return (
     <SuperAdminLayout>
       <main className="flex-1 w-full overflow-y-auto p-10">
-        <div className="min-h-full w-full">
+        <div className="min-h-full w-full mt-[-25px]">
           <Navbar
             title="Super Admin Dashboard"
             subtitle="Overview of system administration"
@@ -138,7 +138,9 @@ const SuperAdminDashboardPage = () => {
                     </p>
                   </div>
                 </div>
-                <span className="text-xs text-muted-foreground">1 day ago</span>
+                <span className="text-xs text-muted-foreground">
+                  1 day ago
+                </span>
               </div>
             </div>
           </div>

@@ -1,29 +1,51 @@
 import { Lock } from 'lucide-react';
 
 import { AppLayout } from '@/components/layout/app-layout';
+import { Navbar } from '@/components/layout/navbar';
 import { Button } from '@/components/ui/button';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/store';
+import { format } from 'date-fns';
 
 export default function SubscriptionExpiredPage() {
+  const user = useSelector((state: RootState) => state.auth.user);
+  const validityMissing = !user?.validity;
+
   return (
     <AppLayout>
-      <div className="flex h-full items-center justify-center p-4">
+      <main className="flex-1 h-full px-4 pt-9">
+        <Navbar
+          title={validityMissing ? 'Validity Not Configured' : 'Subscription Expired'}
+          subtitle={
+            validityMissing
+              ? 'Your subscription validity has not been configured yet.'
+              : 'Your subscription has expired. Please renew to continue using the dashboard.'
+          }
+          showWelcome={false}
+        />
+        <div className="flex items-center justify-center p-4">
         <div className="mx-auto w-full max-w-lg text-center">
           <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-50">
             <Lock className="h-8 w-8 text-red-500" />
           </div>
 
           <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
-            Subscription Expired
+            {validityMissing ? 'Validity Not Configured' : 'Subscription Expired'}
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Your subscription has expired. Renew to regain full access to your
-            dashboard and services.
+            {validityMissing
+              ? 'Your subscription validity has not been configured yet. Please contact support or update your profile.'
+              : 'Your subscription has expired. Renew to regain full access to your dashboard and services.'}
           </p>
 
           <div className="mx-auto mt-8 max-w-sm space-y-2 rounded-xl border border-border bg-muted/30 p-4 text-left text-sm">
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Expired On</span>
-              <span className="font-medium text-foreground">10-05-2026</span>
+              <span className="font-medium text-foreground">
+                {validityMissing
+                  ? 'Not Configured'
+                  : format(new Date(user!.validity), 'MMM dd, yyyy')}
+              </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-muted-foreground">Support</span>
@@ -53,6 +75,7 @@ export default function SubscriptionExpiredPage() {
           </p>
         </div>
       </div>
+    </main>
     </AppLayout>
   );
 }

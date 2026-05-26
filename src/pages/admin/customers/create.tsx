@@ -28,57 +28,73 @@ import { AdminFormStep } from '@/components/admin/admin-form-step';
 import { ReviewCard } from '@/components/admin/review-card';
 import { Button } from '@/components/ui/button';
 import { validatePhone } from '@/lib/phone-validation';
-import { validateAddress, getCountryIsoFromPhoneCode } from '@/lib/address-validation';
+import {
+  validateAddress,
+  getCountryIsoFromPhoneCode,
+} from '@/lib/address-validation';
 
-const createCustomerSchema = z.object({
-  firstName: z.string().min(1, 'First name is required'),
-  lastName: z.string().min(1, 'Last name is required'),
-  email: z
-    .string()
-    .min(1, 'Email is required')
-    .email('Invalid email address'),
-  phoneNumber: z
-    .string()
-    .min(1, 'Phone number is required')
-    .regex(/^\d+$/, 'Phone number must be numeric'),
-  countryCode: z.string().min(1, 'Country code is required'),
-  address: z.string().min(1, 'Address is required'),
-  city: z.string().min(1, 'City is required'),
-  state: z.string().min(1, 'State is required'),
-  postalCode: z
-    .string()
-    .min(1, 'Postal code is required')
-    .min(3)
-    .max(10)
-    .regex(/^\d+$/, 'Invalid postal code'),
-  country: z.string().min(1, 'Country is required'),
-  countryIso: z.string(),
-  location: z.string(),
-  latitude: z.number(),
-  longitude: z.number(),
-  locationMode: z.enum(['map', 'manual']),
-}).superRefine((data, ctx) => {
-  const phoneResult = validatePhone(data.phoneNumber, data.countryCode);
-  if (!phoneResult.valid && phoneResult.error) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: phoneResult.error,
-      path: ['phoneNumber'],
-    });
-  }
-
-  const iso = data.countryIso || getCountryIsoFromPhoneCode(data.countryCode) || '';
-  if (iso && data.country) {
-    const addrResult = validateAddress(iso, data.state, data.city, data.postalCode);
-    if (!addrResult.valid && addrResult.error && addrResult.path) {
+const createCustomerSchema = z
+  .object({
+    firstName: z.string().min(1, 'First name is required'),
+    lastName: z.string().min(1, 'Last name is required'),
+    email: z
+      .string()
+      .min(1, 'Email is required')
+      .email('Invalid email address'),
+    phoneNumber: z
+      .string()
+      .min(1, 'Phone number is required')
+      .regex(/^\d+$/, 'Phone number must be numeric'),
+    countryCode: z.string().min(1, 'Country code is required'),
+    address: z.string().min(1, 'Address is required'),
+    city: z.string().min(1, 'City is required'),
+    state: z.string().min(1, 'State is required'),
+    postalCode: z
+      .string()
+      .min(1, 'Postal code is required')
+      .min(3)
+      .max(10)
+      .regex(/^\d+$/, 'Invalid postal code'),
+    country: z.string().min(1, 'Country is required'),
+    countryIso: z.string(),
+    location: z.string(),
+    latitude: z.number(),
+    longitude: z.number(),
+    locationMode: z.enum(['map', 'manual']),
+  })
+  .superRefine((data, ctx) => {
+    const phoneResult = validatePhone(
+      data.phoneNumber,
+      data.countryCode,
+    );
+    if (!phoneResult.valid && phoneResult.error) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: addrResult.error,
-        path: [addrResult.path as any],
+        message: phoneResult.error,
+        path: ['phoneNumber'],
       });
     }
-  }
-});
+
+    const iso =
+      data.countryIso ||
+      getCountryIsoFromPhoneCode(data.countryCode) ||
+      '';
+    if (iso && data.country) {
+      const addrResult = validateAddress(
+        iso,
+        data.state,
+        data.city,
+        data.postalCode,
+      );
+      if (!addrResult.valid && addrResult.error && addrResult.path) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: addrResult.error,
+          path: [addrResult.path as any],
+        });
+      }
+    }
+  });
 
 type CreateCustomerFormData = z.infer<typeof createCustomerSchema>;
 
@@ -209,30 +225,83 @@ export default function CreateCustomerPage() {
     if (currentStep === 3) {
       return (
         <form ref={formRef} onSubmit={handleSubmit(onSubmit)}>
-          <ReviewCard sections={[
-            {
-              icon: <User className="h-5 w-5 text-white" />,
-              title: 'Customer Information',
-              subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
-              fields: [
-                { icon: <User className="h-3 w-3" />, label: 'First Name', value: formValues.firstName },
-                { icon: <User className="h-3 w-3" />, label: 'Last Name', value: formValues.lastName },
-                { icon: <Mail className="h-3 w-3" />, label: 'Email', value: formValues.email },
-                { icon: <Phone className="h-3 w-3" />, label: 'Phone Number', value: `${formValues.countryCode} ${formValues.phoneNumber}` },
-                { icon: <MapPin className="h-3 w-3" />, label: 'Address', value: formValues.address },
-                { icon: <Building2 className="h-3 w-3" />, label: 'City', value: formValues.city },
-                { icon: <Map className="h-3 w-3" />, label: 'State', value: formValues.state },
-                { icon: <Hash className="h-3 w-3" />, label: 'Postal Code', value: formValues.postalCode },
-                { icon: <Globe className="h-3 w-3" />, label: 'Country', value: formValues.country },
-                ...(formValues.latitude != null && formValues.longitude != null
-                  ? [
-                      { icon: <Map className="h-3 w-3" />, label: 'Latitude', value: String(formValues.latitude) },
-                      { icon: <Map className="h-3 w-3" />, label: 'Longitude', value: String(formValues.longitude) },
-                    ]
-                  : [{ icon: <Map className="h-3 w-3" />, label: 'Coordinates', value: 'Not provided' }]),
-              ],
-            },
-          ]} />
+          <ReviewCard
+            sections={[
+              {
+                icon: <User className="h-5 w-5 text-white" />,
+                title: 'Customer Information',
+                subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+                fields: [
+                  {
+                    icon: <User className="h-3 w-3" />,
+                    label: 'First Name',
+                    value: formValues.firstName,
+                  },
+                  {
+                    icon: <User className="h-3 w-3" />,
+                    label: 'Last Name',
+                    value: formValues.lastName,
+                  },
+                  {
+                    icon: <Mail className="h-3 w-3" />,
+                    label: 'Email',
+                    value: formValues.email,
+                  },
+                  {
+                    icon: <Phone className="h-3 w-3" />,
+                    label: 'Phone Number',
+                    value: `${formValues.countryCode} ${formValues.phoneNumber}`,
+                  },
+                  {
+                    icon: <MapPin className="h-3 w-3" />,
+                    label: 'Address',
+                    value: formValues.address,
+                  },
+                  {
+                    icon: <Building2 className="h-3 w-3" />,
+                    label: 'City',
+                    value: formValues.city,
+                  },
+                  {
+                    icon: <Map className="h-3 w-3" />,
+                    label: 'State',
+                    value: formValues.state,
+                  },
+                  {
+                    icon: <Hash className="h-3 w-3" />,
+                    label: 'Postal Code',
+                    value: formValues.postalCode,
+                  },
+                  {
+                    icon: <Globe className="h-3 w-3" />,
+                    label: 'Country',
+                    value: formValues.country,
+                  },
+                  ...(formValues.latitude != null &&
+                  formValues.longitude != null
+                    ? [
+                        {
+                          icon: <Map className="h-3 w-3" />,
+                          label: 'Latitude',
+                          value: String(formValues.latitude),
+                        },
+                        {
+                          icon: <Map className="h-3 w-3" />,
+                          label: 'Longitude',
+                          value: String(formValues.longitude),
+                        },
+                      ]
+                    : [
+                        {
+                          icon: <Map className="h-3 w-3" />,
+                          label: 'Coordinates',
+                          value: 'Not provided',
+                        },
+                      ]),
+                ],
+              },
+            ]}
+          />
         </form>
       );
     }
@@ -252,7 +321,7 @@ export default function CreateCustomerPage() {
   return (
     <AppLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto pl-10 p-5">
+        <div className="flex-1 w-full overflow-y-auto p-5 md:pl-10">
           <Button
             variant="ghost"
             onClick={() => navigate(ROUTES.CUSTOMERS)}
@@ -262,7 +331,7 @@ export default function CreateCustomerPage() {
             Back to Customers
           </Button>
           <Navbar
-            title="Create Customer"
+            title="Add Customer"
             subtitle="Add a new customer account"
             showWelcome={false}
           />

@@ -107,6 +107,40 @@ export interface IJob {
   endTime?: string;
 }
 
+export interface IParentJob {
+  _id?: string;
+  __v?: number;
+  jobId: string;
+  adminId?:
+    | string
+    | {
+        _id: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        fullName?: string;
+      };
+  jobType: string;
+  frequencyValue?: number;
+  frequencyUnit?: string;
+  paymentType?: string;
+  price?: number;
+  status?: string;
+  active?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+  description?: string;
+  location?: {
+    type: 'Point';
+    coordinates?: [number, number];
+  };
+}
+
 export interface IInvoice {
   _id?: string;
   invoiceNumber?: string;

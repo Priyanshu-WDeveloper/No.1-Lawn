@@ -22,6 +22,8 @@ export const ROUTES = {
   JOBS_CREATE: '/jobs/create',
   JOBS_VIEW: '/jobs/:id',
   JOBS_EDIT: '/jobs/edit/:id',
+  MANAGE_JOBS: '/manage-jobs',
+  SCHEDULED_JOBS: '/scheduled-jobs',
   INVOICES: '/invoices',
   INVOICES_VIEW: '/invoices/:jobId',
   NOTIFICATIONS: '/notifications',
@@ -83,6 +85,13 @@ export const API_ROUTES = {
     COMPLETE: '/jobs/complete',
     ASSIGN_EMPLOYEE: `/jobs/assign-employee`,
     RECEIPT: (id: string) => `/jobs/${id}/receipt`,
+  },
+  PARENT_JOBS: {
+    LIST: '/jobs/parents',
+    CANCEL: (id: string) => `/jobs/parents/${id}/cancel`,
+  },
+  CHILD_JOBS: {
+    LIST: '/jobs',
   },
   INVOICES: {
     LIST: '/invoices',

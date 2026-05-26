@@ -574,7 +574,7 @@ export default function CreateAdminPage() {
   return (
     <SuperAdminLayout>
       <div className="flex h-full flex-col">
-        <div className="flex-1 w-full overflow-y-auto pl-10 p-5">
+        <div className="flex-1 w-full overflow-y-auto p-5 md:pl-10">
           <Button
             variant="ghost"
             onClick={() => navigate(ROUTES.SUPER_ADMIN_ADMINS)}
@@ -584,7 +584,7 @@ export default function CreateAdminPage() {
             Back to Admins
           </Button>
           <Navbar
-            title="Create Admin"
+            title="Add Admin"
             subtitle="Add a new administrator account"
             showWelcome={false}
             superAccess

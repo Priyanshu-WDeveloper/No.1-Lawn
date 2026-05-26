@@ -24,7 +24,7 @@ const AdminProfilePage = React.lazy(
 const SuperAdminProfilePage = React.lazy(
   () => import('../pages/super-admin/profile'),
 );
-// const ChangePasswordPage = React.lazy(() => import('../pages/admin/change-password'));
+const ChangePasswordPage = React.lazy(() => import('../pages/admin/change-password'));
 // const SuperAdminChangePasswordPage = React.lazy(() => import('../pages/super-admin/change-password'));
 const SuperAdminDashboardPage = React.lazy(
   () => import('../pages/super-admin/dashboard'),
@@ -56,9 +56,6 @@ const EmployeeViewPage = React.lazy(
 const EmployeeEditPage = React.lazy(
   () => import('../pages/admin/employees/edit'),
 );
-const JobManagementPage = React.lazy(
-  () => import('../pages/admin/jobs'),
-);
 const CreateJobPage = React.lazy(
   () => import('../pages/admin/jobs/create'),
 );
@@ -67,6 +64,12 @@ const JobViewPage = React.lazy(
 );
 const JobEditPage = React.lazy(
   () => import('../pages/admin/jobs/edit'),
+);
+const ManageJobsPage = React.lazy(
+  () => import('../pages/admin/jobs/manage'),
+);
+const ScheduledJobsPage = React.lazy(
+  () => import('../pages/admin/jobs/scheduled'),
 );
 const NotificationsPage = React.lazy(
   () => import('../pages/notification'),
@@ -141,14 +144,14 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
-        {/* <Route
+        <Route
           path={ROUTES.CHANGE_PASSWORD}
           element={
             <ProtectedRoute>
               <ChangePasswordPage />
             </ProtectedRoute>
           }
-        /> */}
+        />
         <Route
           path={ROUTES.CUSTOMERS}
           element={
@@ -215,9 +218,21 @@ const AppRoutes = () => {
         />
         <Route
           path={ROUTES.JOBS}
+          element={<Navigate to={ROUTES.MANAGE_JOBS} replace />}
+        />
+        <Route
+          path={ROUTES.MANAGE_JOBS}
           element={
             <ProtectedRoute>
-              <JobManagementPage />
+              <ManageJobsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.SCHEDULED_JOBS}
+          element={
+            <ProtectedRoute>
+              <ScheduledJobsPage />
             </ProtectedRoute>
           }
         />

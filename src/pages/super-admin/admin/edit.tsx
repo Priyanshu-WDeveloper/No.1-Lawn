@@ -623,7 +623,7 @@ export default function AdminEditPage() {
     <SuperAdminLayout>
       <div className="flex h-full flex-col">
         <div
-          className="flex-1 w-full overflow-y-auto pl-10 p-5
+          className="flex-1 w-full overflow-y-auto p-5 md:pl-10
 "
         >
           <Button

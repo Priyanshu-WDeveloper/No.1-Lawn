@@ -50,7 +50,7 @@ export function AdminFormStepper({
 
   return (
     <div className="rounded-2xl border border-[#ececec] bg-white shadow-sm">
-        <div className="border-b border-[#ececec] bg-background px-8 py-6">
+        <div className="border-b border-[#ececec] bg-background px-4 sm:px-8 py-6">
           <div className="flex items-center gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10">
               <Shield className="h-6 w-6 text-primary" />
@@ -66,9 +66,9 @@ export function AdminFormStepper({
           </div>
         </div>
 
-        <div className="p-8">{children}</div>
+        <div className="p-4 sm:p-8">{children}</div>
 
-        <div className="flex items-center justify-between border-t border-[#ececec] bg-background px-8 py-6">
+        <div className="flex items-center justify-between border-t border-[#ececec] bg-background px-4 sm:px-8 py-6">
           <button
             type="button"
             onClick={onPrevious}

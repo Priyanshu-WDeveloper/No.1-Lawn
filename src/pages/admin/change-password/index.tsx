@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
 
@@ -29,13 +30,13 @@ const changePasswordSchema = z
 
     newPassword: z
       .string()
-      .min(8, 'Password must be at least 8 characters')
-      .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
-      .regex(/[0-9]/, 'Must contain at least one number')
-      .regex(
-        /[^A-Za-z0-9]/,
-        'Must contain at least one special character',
-      ),
+      .min(8, 'Password must be at least 8 characters'),
+    // .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
+    // .regex(/[0-9]/, 'Must contain at least one number')
+    // .regex(
+    //   /[^A-Za-z0-9]/,
+    //   'Must contain at least one special character',
+    // ),
 
     confirmPassword: z
       .string()
@@ -49,7 +50,7 @@ const changePasswordSchema = z
 interface ChangePasswordDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: (data: {
+  onConfirm?: (data: {
     currentPassword: string;
     newPassword: string;
   }) => Promise<void>;
@@ -175,7 +176,8 @@ export function ChangeAdminPasswordDialog({
     >
       <DialogContent className="max-h-[95vh] overflow-y-auto rounded-[30px] border-0 p-0 sm:max-w-lg">
         {/* Header */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-green-600 to-green-700 px-6 pt-7 pb-20">
+        {/* <div className="relative overflow-hidden bg-gradient-to-br from-green-600 to-green-700 px-6 pt-7 pb-20"> */}
+        <div className="relative bg-gradient-to-br from-green-600 to-green-700 px-4 sm:px-6 pt-7 pb-20">
           {/* Background circles */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-6 right-8 h-28 w-28 rounded-full bg-white" />
@@ -200,7 +202,7 @@ export function ChangeAdminPasswordDialog({
         </div>
 
         {/* Content */}
-        <div className="bg-white px-6 pt-16 pb-6">
+        <div className="bg-white px-4 sm:px-6 pt-16 pb-6">
           <div className="space-y-5">
             {/* Current Password */}
             <div>
@@ -229,7 +231,7 @@ export function ChangeAdminPasswordDialog({
                     }
                   }}
                   disabled={loading}
-                  className={`h-14 rounded-2xl border bg-[#f4fbf4] pl-12 pr-12 focus-visible:ring-green-500 ${
+                  className={`h-14 rounded-2xl border bg-[#f4fbf4] pl-10 sm:pl-12 pr-10 sm:pr-12 focus-visible:ring-green-500 ${
                     submitted && errors.currentPassword
                       ? 'border-red-400 focus-visible:ring-red-400'
                       : 'border-green-200'
@@ -283,7 +285,7 @@ export function ChangeAdminPasswordDialog({
                     }
                   }}
                   disabled={loading}
-                  className={`h-14 rounded-2xl border bg-[#f4fbf4] pl-12 pr-12 focus-visible:ring-green-500 ${
+                  className={`h-14 rounded-2xl border bg-[#f4fbf4] pl-10 sm:pl-12 pr-10 sm:pr-12 focus-visible:ring-green-500 ${
                     submitted && errors.newPassword
                       ? 'border-red-400 focus-visible:ring-red-400'
                       : 'border-green-200'
@@ -337,7 +339,7 @@ export function ChangeAdminPasswordDialog({
                     }
                   }}
                   disabled={loading}
-                  className={`h-14 rounded-2xl border bg-[#f4fbf4] pl-12 pr-12 focus-visible:ring-green-500 ${
+                  className={`h-14 rounded-2xl border bg-[#f4fbf4] pl-10 sm:pl-12 pr-10 sm:pr-12 focus-visible:ring-green-500 ${
                     submitted && errors.confirmPassword
                       ? 'border-red-400 focus-visible:ring-red-400'
                       : 'border-green-200'
@@ -415,5 +417,20 @@ export function ChangeAdminPasswordDialog({
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+export default function ChangePasswordPage() {
+  const [open, setOpen] = useState(true);
+  const navigate = useNavigate();
+
+  return (
+    <ChangeAdminPasswordDialog
+      open={open}
+      onOpenChange={(v) => {
+        setOpen(v);
+        if (!v) navigate(-1);
+      }}
+    />
   );
 }

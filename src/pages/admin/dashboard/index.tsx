@@ -23,6 +23,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { AppLayout } from '@/components/layout/app-layout';
 import { Navbar } from '@/components/layout/navbar';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/store';
+import { format } from 'date-fns';
 import { ROUTES } from '@/constants';
 
 const stats = [
@@ -88,13 +91,45 @@ const chartData = [
 ];
 
 export default function DashboardPage() {
+  const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
+
+  const daysLeft = user?.validity
+    ? Math.ceil(
+        (new Date(user.validity).getTime() - Date.now()) /
+          (1000 * 60 * 60 * 24),
+      )
+    : null;
   return (
     <AppLayout>
       {/* This div contains the main dashboard content */}
       {/* Sidebar is handled by AppLayout */}
-      <main className="flex-1 h-full px-4 pt-9">
+      <main className="flex-1 h-full px-4">
         <div className="min-h-full">
+          {/* Validity Warning */}
+          {daysLeft !== null &&
+            daysLeft <= 7 && (
+              <div
+                className={`rounded-xl mt-1 px-4 sm:px-5 py-4 text-center ${
+                  daysLeft <= 3
+                    ? 'bg-red-50 border border-red-100'
+                    : 'bg-amber-50 border border-amber-100'
+                }`}
+              >
+                <p
+                  className={`text-sm font-medium ${
+                    daysLeft <= 3 ? 'text-red-600' : 'text-amber-600'
+                  }`}
+                >
+                  Your subscription expires on{' '}
+                  {format(new Date(user!.validity), 'MMM dd, yyyy')}
+                  {daysLeft <= 0
+                    ? ' (expired)'
+                    : ` (in ${daysLeft} day${daysLeft > 1 ? 's' : ''})`}
+                </p>
+              </div>
+            )}
+
           {/* Header */}
           <Navbar
             title="Dashboard"

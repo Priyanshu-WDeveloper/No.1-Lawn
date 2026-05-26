@@ -47,7 +47,7 @@ export default function CustomerManagementPage() {
     setSort,
     queryParams,
   } = useDataTableQueryParams<GetCustomersParams>({
-    defaultLimit: 10,
+    defaultLimit: 8,
     mapStatusToApi: (status) =>
       status.toLowerCase() as 'active' | 'inactive' | 'expired',
   });

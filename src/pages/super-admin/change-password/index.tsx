@@ -176,7 +176,7 @@ export function ChangeSuperAdminPasswordDialog({
     >
       <DialogContent className="max-h-[95vh] overflow-y-auto rounded-[30px] border-0 p-0 sm:max-w-lg">
         {/* Header */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-green-600 to-green-700 px-6 pt-7 pb-20">
+        <div className="relative  bg-gradient-to-br from-green-600 to-green-700 px-6 pt-7 pb-20">
           {/* Background circles */}
           <div className="absolute inset-0 opacity-10">
             <div className="absolute top-6 right-8 h-28 w-28 rounded-full bg-white" />

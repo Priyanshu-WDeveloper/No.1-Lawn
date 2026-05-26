@@ -26,16 +26,27 @@ import { localLogout } from '@/lib/auth';
 import { useDispatch } from 'react-redux';
 import { clearAuth } from '@/store/auth-slice';
 import { api } from '@/API/api';
+import { format } from 'date-fns';
+import { ChangeAdminPasswordDialog } from '@/pages/admin/change-password';
 
 export default function AccountDropdown({
   superAccess = false,
+  variant = 'default',
 }: {
   superAccess?: boolean;
+  variant?: 'default' | 'navbar';
 }) {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.user);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
   const dispatch = useDispatch();
+  const daysLeft = user?.validity
+    ? Math.ceil(
+        (new Date(user.validity).getTime() - Date.now()) /
+          (1000 * 60 * 60 * 24),
+      )
+    : null;
 
   const handleLogout = async () => {
     try {
@@ -67,20 +78,60 @@ export default function AccountDropdown({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center gap-3 rounded-xl border bg-white px-5 py-3 transition hover:bg-muted">
-        {/* <DropdownMenuTrigger className="flex items-center gap-3 rounded-xl border bg-white px-3 py-2 transition hover:bg-muted"> */}
-        <Avatar className="h-8 w-8">
-          <AvatarFallback className="text-xs">
-            {user?.fullName ? getInitials(user.fullName) : 'A'}
-          </AvatarFallback>
-        </Avatar>
+      <DropdownMenuTrigger
+        className={
+          variant === 'navbar'
+            ? 'flex items-center rounded-full sm:rounded-xl sm:border sm:bg-white sm:px-5 sm:py-3 sm:gap-3 transition sm:hover:bg-muted hover:opacity-80'
+            : 'flex items-center gap-3 rounded-xl border bg-white px-5 py-3 transition hover:bg-muted'
+        }
+      >
+        {variant === 'navbar' ? (
+          <>
+            <div className="flex sm:hidden items-center gap-2">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="text-xs">
+                  {user?.fullName ? getInitials(user.fullName) : 'A'}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-sm font-medium text-[#6b7280]">
+                {user?.role === 1
+                  ? 'Super Admin'
+                  : user?.role === 2
+                    ? 'Admin'
+                    : superAccess
+                      ? 'Super Admin'
+                      : 'Admin'}
+              </span>
+            </div>
+            <div className="hidden sm:flex items-center gap-3">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="text-xs">
+                  {user?.fullName ? getInitials(user.fullName) : 'A'}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-sm font-semibold">
+                {user?.fullName ||
+                  `${superAccess ? 'Super Admin' : 'Admin'}`}
+              </span>
+              <ChevronDown className="ml-3 h-5 w-5 text-muted-foreground" />
+            </div>
+          </>
+        ) : (
+          <>
+            <Avatar className="h-8 w-8">
+              <AvatarFallback className="text-xs">
+                {user?.fullName ? getInitials(user.fullName) : 'A'}
+              </AvatarFallback>
+            </Avatar>
 
-        <span className="text-sm font-semibold">
-          {user?.fullName ||
-            `${superAccess ? 'Super Admin' : 'Admin'}`}
-        </span>
+            <span className="text-sm font-semibold">
+              {user?.fullName ||
+                `${superAccess ? 'Super Admin' : 'Admin'}`}
+            </span>
 
-        <ChevronDown className="ml-3 h-5 w-5 text-muted-foreground" />
+            <ChevronDown className="ml-3 h-5 w-5 text-muted-foreground" />
+          </>
+        )}
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
@@ -100,26 +151,55 @@ export default function AccountDropdown({
             </p>
           </div>
 
-          {/* Subscription Badge */}
-          <div className="flex items-center justify-between rounded-xl bg-primary/10 px-4 py-3">
-            <div className="flex items-center gap-2">
-              <CircleDot className="h-4 w-4 fill-primary text-primary" />
+          {!superAccess && daysLeft !== null && daysLeft <= 7 && (
+            <div
+              className={`flex items-start justify-between rounded-xl px-4 py-3 ${
+                daysLeft <= 3
+                  ? 'bg-red-50'
+                  : 'bg-amber-50'
+              }`}
+            >
+              <div className="flex items-start gap-2">
+                <CircleDot
+                  className={`mt-0.5 h-4 w-4 fill-current ${
+                    daysLeft <= 3 ? 'text-red-500' : 'text-amber-500'
+                  }`}
+                />
 
-              <span className="text-sm font-medium text-primary">
-                Valid till 01 Jul 2026
-              </span>
+                <div>
+                  <span
+                    className={`text-sm font-medium ${
+                      daysLeft <= 3 ? 'text-red-600' : 'text-amber-600'
+                    }`}
+                  >
+                    {daysLeft <= 0
+                      ? 'Expired'
+                      : `${daysLeft} day${daysLeft > 1 ? 's' : ''} left`}
+                  </span>
+                  <p
+                    className={`text-xs ${
+                      daysLeft <= 3 ? 'text-red-400' : 'text-amber-400'
+                    }`}
+                  >
+                    Expires{' '}
+                    {format(new Date(user!.validity), 'MMM dd, yyyy')}
+                  </p>
+                </div>
+              </div>
             </div>
-
-            <span className="text-sm font-medium text-primary">
-              48d left
-            </span>
-          </div>
+          )}
         </div>
 
         {/* Menu Items */}
         <div className="py-1">
           <DropdownMenuItem
-            onClick={() => navigate(superAccess ? ROUTES.SUPER_ADMIN_PROFILE : ROUTES.PROFILE)}
+            onClick={() =>
+              navigate(
+                superAccess
+                  ? ROUTES.SUPER_ADMIN_PROFILE
+                  : ROUTES.PROFILE,
+              )
+            }
             className="flex cursor-pointer items-center gap-3 px-4 py-3 text-sm"
           >
             <User className="h-4 w-4 text-slate-700" />
@@ -127,7 +207,7 @@ export default function AccountDropdown({
           </DropdownMenuItem>
 
           <DropdownMenuItem
-            onClick={() => navigate(superAccess ? ROUTES.SUPER_ADMIN_CHANGE_PASSWORD : ROUTES.CHANGE_PASSWORD)}
+            onClick={() => setShowChangePassword(true)}
             className="flex cursor-pointer items-center gap-3 px-4 py-3 text-sm"
           >
             <CreditCard className="h-4 w-4 text-slate-700" />
@@ -154,6 +234,13 @@ export default function AccountDropdown({
           description="Are you sure you want to logout? You will need to login again to access your account."
           confirmText="Logout"
           onConfirm={handleLogout}
+        />
+        <ChangeAdminPasswordDialog
+          open={showChangePassword}
+          onOpenChange={setShowChangePassword}
+          onConfirm={async (data) => {
+            console.log(data);
+          }}
         />
       </DropdownMenuContent>
     </DropdownMenu>
