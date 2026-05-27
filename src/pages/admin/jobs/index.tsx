@@ -3,7 +3,6 @@ import {
   Ellipsis,
   Eye,
   Pencil,
-  Check,
   Ban,
   Calendar,
   User,
@@ -26,16 +25,13 @@ import {
 import {
   useGetJobsQuery,
   useCancelJobMutation,
-  useCompleteJobMutation,
   useDeleteJobMutation,
-  useCreateJobReceiptMutation,
 } from '@/API/api';
 import { StatusBadge } from '@/components/data-table/status-badge';
 import { STATUS_CONFIG } from '@/constants/status-config';
 import { formatDate } from '@/lib/format-date';
 import { getErrorMessage } from '@/lib/get-error-message';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
-import { CompleteJobDialog } from '@/components/admin/complete-job-dialog';
 import { useDataTableQueryParams } from '@/hooks/use-data-table-query-params';
 import type { IJob } from '@/types';
 import type { ListQueryParams } from '@/types/api.types';
@@ -55,7 +51,7 @@ export default function JobManagementPage() {
     queryParams,
   } = useDataTableQueryParams<ListQueryParams>({
     defaultLimit: 10,
-    defaultStatus: 'Pending',
+    defaultStatus: 'pending',
     mapStatusToApi: (status) =>
       status.toLowerCase().replace(' ', '-') as
         | 'pending'
@@ -69,11 +65,10 @@ export default function JobManagementPage() {
   });
 
   const [cancelJob] = useCancelJobMutation();
-  const [completeJob] = useCompleteJobMutation();
   const [deleteJob] = useDeleteJobMutation();
 
   const [confirmAction, setConfirmAction] = useState<{
-    type: 'complete' | 'cancel' | 'delete';
+    type: 'cancel' | 'delete';
     jobId: string;
   } | null>(null);
 
@@ -93,22 +88,6 @@ export default function JobManagementPage() {
       toast.success('Job cancelled successfully');
     } catch (err) {
       toast.error(getErrorMessage(err, 'Failed to cancel job'));
-    }
-  };
-
-  const [createJobReceipt] = useCreateJobReceiptMutation();
-
-  const handleComplete = async (
-    id: string,
-    receivePrice?: number,
-  ) => {
-    try {
-      await completeJob({ jobId: id, receivePrice }).unwrap();
-      await createJobReceipt(id).unwrap();
-      toast.success('Job completed successfully');
-      setConfirmAction(null);
-    } catch (err) {
-      toast.error(getErrorMessage(err, 'Failed to complete job'));
     }
   };
 
@@ -267,28 +246,13 @@ export default function JobManagementPage() {
           <button
             type="button"
             onClick={() =>
-              navigate(ROUTES.JOBS_VIEW.replace(':id', row._id ?? ''))
+              navigate(ROUTES.JOBS_VIEW_MANAGE.replace(':id', row._id ?? ''))
             }
             className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md text-sm font-medium bg-[#f5f5f5] text-[#374151] hover:bg-[#e5e5e5] transition-colors"
           >
             <Eye className="h-3.5 w-3.5" />
             View
           </button>
-          {row.status === 'pending' && (
-            <button
-              type="button"
-              onClick={() =>
-                setConfirmAction({
-                  type: 'complete',
-                  jobId: row._id ?? '',
-                })
-              }
-              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
-            >
-              <Check className="h-3.5 w-3.5" />
-              Complete
-            </button>
-          )}
           {row.status !== 'completed' && row.status !== 'cancelled' && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -353,7 +317,7 @@ export default function JobManagementPage() {
   return (
     <AppLayout>
       <div className="flex flex-1 flex-col">
-        <div className="flex-1 w-full px-5 py-4 min-h-0 flex flex-col">
+        <div className="flex-1 w-full px-2 sm:px-5 py-1 sm:py-4 min-h-0 flex flex-col">
           <div className="flex w-full flex-col flex-1">
             <Navbar
               title="Job Management"
@@ -392,16 +356,6 @@ export default function JobManagementPage() {
         </div>
       </div>
 
-      <CompleteJobDialog
-        open={confirmAction?.type === 'complete'}
-        onOpenChange={(open) => {
-          if (!open) setConfirmAction(null);
-        }}
-        onConfirm={async (receivePrice) => {
-          if (confirmAction)
-            await handleComplete(confirmAction.jobId, receivePrice);
-        }}
-      />
       <ConfirmDialog
         open={confirmAction?.type === 'cancel'}
         onOpenChange={(open) => {

@@ -62,6 +62,9 @@ const CreateJobPage = React.lazy(
 const JobViewPage = React.lazy(
   () => import('../pages/admin/jobs/view'),
 );
+const JobManageViewPage = React.lazy(
+  () => import('../pages/admin/jobs/manage-view'),
+);
 const JobEditPage = React.lazy(
   () => import('../pages/admin/jobs/edit'),
 );
@@ -249,6 +252,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <JobViewPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path={ROUTES.JOBS_VIEW_MANAGE}
+          element={
+            <ProtectedRoute>
+              <JobManageViewPage />
             </ProtectedRoute>
           }
         />

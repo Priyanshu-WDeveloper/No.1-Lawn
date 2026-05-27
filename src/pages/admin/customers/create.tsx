@@ -230,7 +230,7 @@ export default function CreateCustomerPage() {
               {
                 icon: <User className="h-5 w-5 text-white" />,
                 title: 'Customer Information',
-                subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+                subtitle: 'Please verify the customer information below',
                 fields: [
                   {
                     icon: <User className="h-3 w-3" />,
@@ -346,7 +346,7 @@ export default function CreateCustomerPage() {
             isSubmitting={isLoading}
             isLastStep={currentStep === steps.length}
             isFirstStep={currentStep === 1}
-            submitLabel="Create Customer"
+            submitLabel="Add Customer"
             formRef={formRef}
           >
             {renderStepContent()}

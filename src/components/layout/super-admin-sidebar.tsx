@@ -61,23 +61,6 @@ export function SuperAdminSidebar() {
     type: 'change-password';
   } | null>(null);
 
-  const handleChangePassword = async (data: {
-    currentPassword: string;
-    newPassword: string;
-  }) => {
-    try {
-      // your api call
-      console.log(data);
-
-      // example:
-      // await changePasswordMutation(data).unwrap();
-
-      setConfirmAction(null);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleLogout = async () => {
     try {
       localLogout();
@@ -186,9 +169,6 @@ export function SuperAdminSidebar() {
         open={confirmAction?.type === 'change-password'}
         onOpenChange={(open) => {
           if (!open) setConfirmAction(null);
-        }}
-        onConfirm={async (data) => {
-          await handleChangePassword(data);
         }}
       />
 

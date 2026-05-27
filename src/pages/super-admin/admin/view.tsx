@@ -300,7 +300,7 @@ export default function AdminViewPage() {
                     {admin.address || '-'}
                   </p>
                 </div>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">City</p>
                     <p className="text-foreground font-medium mt-1">

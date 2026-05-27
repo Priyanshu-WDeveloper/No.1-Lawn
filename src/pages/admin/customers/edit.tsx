@@ -276,7 +276,7 @@ export default function CustomerEditPage() {
             {
               icon: <User className="h-5 w-5 text-white" />,
               title: 'Customer Information',
-              subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+              subtitle: 'Please verify the customer information below',
               fields: [
                 { icon: <User className="h-3 w-3" />, label: 'First Name', value: formValues.firstName },
                 { icon: <User className="h-3 w-3" />, label: 'Last Name', value: formValues.lastName },

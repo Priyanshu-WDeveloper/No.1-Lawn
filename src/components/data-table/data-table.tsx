@@ -423,13 +423,13 @@ export default function DataTable<T extends DataTableData>({
       <CardContent className="px-6 flex-1 flex flex-col  ">
         {/* Filter Row */}
         <div className="flex items-center justify-between gap-3 mb-3 flex-wrap">
-          <div className="relative flex-1 max-w-md min-w-[200px]">
+          <div className="relative flex-1 max-w-md max-sm:max-w-none min-w-[260px]">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder={searchPlaceholder}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 pr-12 rounded-xl border-border bg-background h-10"
+              className="pl-8 sm:pl-10 pr-6 sm:pr-12 text-xs sm:text-sm rounded-xl border-border bg-background h-10"
             />
             {search && (
               <button

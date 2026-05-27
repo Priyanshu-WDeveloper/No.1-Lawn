@@ -107,28 +107,27 @@ export default function DashboardPage() {
       <main className="flex-1 h-full px-4">
         <div className="min-h-full">
           {/* Validity Warning */}
-          {daysLeft !== null &&
-            daysLeft <= 7 && (
-              <div
-                className={`rounded-xl mt-1 px-4 sm:px-5 py-4 text-center ${
-                  daysLeft <= 3
-                    ? 'bg-red-50 border border-red-100'
-                    : 'bg-amber-50 border border-amber-100'
+          {daysLeft !== null && daysLeft <= 7 && (
+            <div
+              className={` mx-[-15px] py-4 text-center ${
+                daysLeft <= 3
+                  ? 'bg-red-50 border border-red-100'
+                  : 'bg-amber-50 border border-amber-100'
+              }`}
+            >
+              <p
+                className={`text-sm font-medium ${
+                  daysLeft <= 3 ? 'text-red-600' : 'text-amber-600'
                 }`}
               >
-                <p
-                  className={`text-sm font-medium ${
-                    daysLeft <= 3 ? 'text-red-600' : 'text-amber-600'
-                  }`}
-                >
-                  Your subscription expires on{' '}
-                  {format(new Date(user!.validity), 'MMM dd, yyyy')}
-                  {daysLeft <= 0
-                    ? ' (expired)'
-                    : ` (in ${daysLeft} day${daysLeft > 1 ? 's' : ''})`}
-                </p>
-              </div>
-            )}
+                Your subscription expires on{' '}
+                {format(new Date(user!.validity), 'MMM dd, yyyy')}
+                {daysLeft <= 0
+                  ? ' (expired)'
+                  : ` (in ${daysLeft} day${daysLeft > 1 ? 's' : ''})`}
+              </p>
+            </div>
+          )}
 
           {/* Header */}
           <Navbar
@@ -137,7 +136,7 @@ export default function DashboardPage() {
           />
 
           {/* Stats */}
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-2 xl:grid-cols-4">
             {stats.map((item, index) => {
               const Icon = item.icon;
 

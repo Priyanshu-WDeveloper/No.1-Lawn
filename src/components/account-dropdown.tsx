@@ -93,7 +93,7 @@ export default function AccountDropdown({
                   {user?.fullName ? getInitials(user.fullName) : 'A'}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-sm font-medium text-[#6b7280]">
+              {/* <span className="text-sm font-medium text-[#6b7280]">
                 {user?.role === 1
                   ? 'Super Admin'
                   : user?.role === 2
@@ -101,7 +101,7 @@ export default function AccountDropdown({
                     : superAccess
                       ? 'Super Admin'
                       : 'Admin'}
-              </span>
+              </span> */}
             </div>
             <div className="hidden sm:flex items-center gap-3">
               <Avatar className="h-8 w-8">
@@ -154,9 +154,7 @@ export default function AccountDropdown({
           {!superAccess && daysLeft !== null && daysLeft <= 7 && (
             <div
               className={`flex items-start justify-between rounded-xl px-4 py-3 ${
-                daysLeft <= 3
-                  ? 'bg-red-50'
-                  : 'bg-amber-50'
+                daysLeft <= 3 ? 'bg-red-50' : 'bg-amber-50'
               }`}
             >
               <div className="flex items-start gap-2">
@@ -169,7 +167,9 @@ export default function AccountDropdown({
                 <div>
                   <span
                     className={`text-sm font-medium ${
-                      daysLeft <= 3 ? 'text-red-600' : 'text-amber-600'
+                      daysLeft <= 3
+                        ? 'text-red-600'
+                        : 'text-amber-600'
                     }`}
                   >
                     {daysLeft <= 0
@@ -178,7 +178,9 @@ export default function AccountDropdown({
                   </span>
                   <p
                     className={`text-xs ${
-                      daysLeft <= 3 ? 'text-red-400' : 'text-amber-400'
+                      daysLeft <= 3
+                        ? 'text-red-400'
+                        : 'text-amber-400'
                     }`}
                   >
                     Expires{' '}
@@ -238,9 +240,6 @@ export default function AccountDropdown({
         <ChangeAdminPasswordDialog
           open={showChangePassword}
           onOpenChange={setShowChangePassword}
-          onConfirm={async (data) => {
-            console.log(data);
-          }}
         />
       </DropdownMenuContent>
     </DropdownMenu>

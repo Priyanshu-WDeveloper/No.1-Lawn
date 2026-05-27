@@ -121,54 +121,50 @@ export default function CustomerViewPage() {
 
             {/* Header Section */}
             <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] mb-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16 bg-primary text-white">
+              <div className="flex flex-col gap-4 lg:gap-0 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex items-center gap-4 min-w-0">
+                  <Avatar className="h-16 w-16 bg-primary text-white shrink-0">
                     <AvatarFallback className="text-xl font-bold">
                       {getInitials(customer.fullName)}
                     </AvatarFallback>
                   </Avatar>
-                  <div>
-                    <h1 className="text-2xl font-bold text-foreground">
-                      {customer.fullName}
-                    </h1>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <h1 className="text-2xl font-bold text-foreground">
+                        {customer.fullName}
+                      </h1>
+                      <StatusBadge
+                        status={customer.status}
+                        config={STATUS_CONFIG.customer}
+                      />
+                    </div>
                     <p className="text-muted-foreground text-sm">
                       Customer ID: {customer.customerId}
                     </p>
                   </div>
                 </div>
-                <div className="flex items-start gap-3">
+
+                <div className="flex items-center justify-between lg:justify-end gap-3 border-t lg:border-t-0 pt-4 lg:pt-0">
                   <div className="text-right">
-                    <StatusBadge
-                      status={customer.status}
-                      config={STATUS_CONFIG.customer}
-                    />
+                    <span
+                      className={`text-lg font-semibold ${
+                        customer.balance < 0
+                          ? 'text-red-500'
+                          : 'text-primary'
+                      }`}
+                    >
+                      {customer.balance < 0 ? '-' : ''}$
+                      {Math.abs(customer.balance).toFixed(2)}
+                    </span>
 
-                    <div className="mt-2">
-                      <span
-                        className={`text-lg font-semibold ${
-                          customer.balance < 0
-                            ? 'text-red-500'
-                            : 'text-primary'
-                        }`}
-                      >
-                        {customer.balance < 0 ? '-' : ''}$
-                        {Math.abs(customer.balance).toFixed(2)}
-                      </span>
-
-                      <p className="text-xs text-muted-foreground">Balance</p>
-                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Balance
+                    </p>
                   </div>
 
                   <DropdownMenu>
-                    <DropdownMenuTrigger className="rounded-xl">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-xl"
-                      >
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
+                    <DropdownMenuTrigger className="flex size-10 items-center justify-center rounded-xl text-green-700 hover:bg-green-50">
+                      <MoreVertical className="h-4 w-4" />
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent
@@ -224,18 +220,6 @@ export default function CustomerViewPage() {
                           Set Active
                         </DropdownMenuItem>
                       )}
-                      {/* <DropdownMenuItem
-                        onClick={() =>
-                          console.log(
-                            'Delete customer:',
-                            customer._id,
-                          )
-                        }
-                        className="cursor-pointer text-red-500 focus:text-red-500"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete Customer
-                      </DropdownMenuItem> */}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -267,7 +251,9 @@ export default function CustomerViewPage() {
                   <div className="flex items-center gap-3">
                     <Mail className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm text-muted-foreground">Email</p>
+                      <p className="text-sm text-muted-foreground">
+                        Email
+                      </p>
                       <p className="text-foreground font-medium">
                         {customer.email}
                       </p>
@@ -276,7 +262,9 @@ export default function CustomerViewPage() {
                   <div className="flex items-center gap-3">
                     <Phone className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="text-sm text-muted-foreground">Phone</p>
+                      <p className="text-sm text-muted-foreground">
+                        Phone
+                      </p>
                       <p className="text-foreground font-medium">
                         {customer.countryCode} {customer.phoneNumber}
                       </p>
@@ -286,102 +274,112 @@ export default function CustomerViewPage() {
               </div>
 
               {/* Account Summary Card */}
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] ">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <CreditCard className="h-4 w-4 text-primary" />
+              <div className="flex flex-col-reverse sm:flex-row-reverse gap-6">
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] ">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <CreditCard className="h-4 w-4 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground">
+                      Account Summary
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-semibold text-foreground">
-                    Account Summary
-                  </h3>
-                </div>
-                {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-6"> */}
-                <div className="space-y-4">
-                  {/* <div>
+                  {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-6"> */}
+                  <div className="space-y-4">
+                    {/* <div>
                     <p className="text-sm text-muted-foreground">Status</p>
                     <StatusBadge
                       status={customer.status}
                       config={STATUS_CONFIG.customer}
                     />
                   </div> */}
-                  {/* <div>
+                    {/* <div>
                     <p className="text-sm text-muted-foreground">Managed By</p>
                     <p className="text-foreground font-medium mt-1">
                       {customer.parentAdmin || '-'}
                     </p>
                   </div> */}
-                  <div>
-                    <p className="text-sm text-muted-foreground">Created At</p>
-                    <p className="text-foreground font-medium mt-1">
-                      {formatDate(customer.createdAt)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">
-                      Last Updated
-                    </p>
-                    <p className="text-foreground font-medium mt-1">
-                      {formatDate(customer.updatedAt)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Address Details Card */}
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] md:col-span-2">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <MapPin className="h-4 w-4 text-primary" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-foreground">
-                    Address Details
-                  </h3>
-                </div>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-                    <div className="flex-1">
+                    <div>
                       <p className="text-sm text-muted-foreground">
-                        Street Address
+                        Created At
                       </p>
-                      <p className="text-foreground font-medium">
-                        {customer.address || '-'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-4 gap-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">City</p>
-                      <p className="text-foreground font-medium">
-                        {customer.city || '-'}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">State</p>
-                      <p className="text-foreground font-medium">
-                        {customer.state || '-'}
+                      <p className="text-foreground font-medium mt-1">
+                        {formatDate(customer.createdAt)}
                       </p>
                     </div>
                     <div>
                       <p className="text-sm text-muted-foreground">
-                        Postal Code
+                        Last Updated
                       </p>
-                      <p className="text-foreground font-medium">
-                        {customer.postalCode || '-'}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Country</p>
-                      <p className="text-foreground font-medium">
-                        {customer.country || '-'}
+                      <p className="text-foreground font-medium mt-1">
+                        {formatDate(customer.updatedAt)}
                       </p>
                     </div>
                   </div>
+                </div>
 
-                  {/* Embedded Google Map */}
-                  {/* {lat && lng && (
+                {/* Address Details Card */}
+                <div className="bg-white rounded-xl p-6 shadow-sm border border-[#ececec] md:col-span-2">
+                  <div className="flex items-center gap-2 mb-4">
+                    <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <MapPin className="h-4 w-4 text-primary" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground">
+                      Address Details
+                    </h3>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-3">
+                      <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-sm text-muted-foreground">
+                          Street Address
+                        </p>
+                        <p className="text-foreground font-medium">
+                          {customer.address || '-'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div>
+                        <p className="text-sm text-muted-foreground">
+                          City
+                        </p>
+                        <p className="text-foreground font-medium">
+                          {customer.city || '-'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">
+                          State
+                        </p>
+                        <p className="text-foreground font-medium">
+                          {customer.state || '-'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">
+                          Postal Code
+                        </p>
+                        <p className="text-foreground font-medium">
+                          {customer.postalCode || '-'}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">
+                          Country
+                        </p>
+                        <p className="text-foreground font-medium">
+                          {customer.country || '-'}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Embedded Google Map */}
+                    {/* {lat && lng && (
                     <StaticMap lat={lat} lng={lng} height={250} />
                   )} */}
+                  </div>
                 </div>
               </div>
             </div>

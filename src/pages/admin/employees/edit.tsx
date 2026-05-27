@@ -663,7 +663,7 @@ export default function EditEmployeePage() {
             {
               icon: <User className="h-5 w-5 text-white" />,
               title: 'Employee Information',
-              subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+              subtitle: 'Please verify the employee information below',
               image: formValues.profileImage
                 ? {
                     src: formValues.profileImage,

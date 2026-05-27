@@ -128,7 +128,7 @@ export default function InvoiceManagementPage() {
   return (
     <AppLayout>
       <div className="flex flex-1 flex-col">
-        <div className="flex-1 w-full px-5 py-4 min-h-0 flex flex-col">
+        <div className="flex-1 w-full px-2 sm:px-5 py-1 sm:py-4 min-h-0 flex flex-col">
           <div className="flex w-full flex-col flex-1">
             <Navbar
               title="Invoice Management"

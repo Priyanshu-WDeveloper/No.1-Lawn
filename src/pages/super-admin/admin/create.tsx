@@ -444,7 +444,7 @@ export default function CreateAdminPage() {
               {
                 icon: <User className="h-5 w-5 text-white" />,
                 title: 'Admin Information',
-                subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+                subtitle: 'Please verify the admin information below',
                 image: formValues.profileImage
                   ? {
                       src: formValues.profileImage,
@@ -600,7 +600,7 @@ export default function CreateAdminPage() {
             isSubmitting={isLoading}
             isLastStep={currentStep === steps.length}
             isFirstStep={currentStep === 1}
-            submitLabel="Create Admin"
+            submitLabel="Add Admin"
             formRef={formRef}
           >
             {renderStepContent()}

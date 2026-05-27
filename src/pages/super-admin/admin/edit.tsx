@@ -495,7 +495,7 @@ export default function AdminEditPage() {
               {
                 icon: <User className="h-5 w-5 text-white" />,
                 title: 'Admin Information',
-                subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+                subtitle: 'Please verify the admin information below',
                 image: profileImg
                   ? {
                       src: profileImg,

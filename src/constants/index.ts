@@ -22,6 +22,7 @@ export const ROUTES = {
   JOBS_CREATE: '/jobs/create',
   JOBS_VIEW: '/jobs/:id',
   JOBS_EDIT: '/jobs/edit/:id',
+  JOBS_VIEW_MANAGE: '/jobs/manage-view/:id',
   MANAGE_JOBS: '/manage-jobs',
   SCHEDULED_JOBS: '/scheduled-jobs',
   INVOICES: '/invoices',

@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import {
+  ArrowLeft,
   Bell,
   Check,
   Trash2,
@@ -8,9 +9,17 @@ import {
   Info,
   CheckCircle,
   XCircle,
+  Ellipsis,
 } from 'lucide-react';
 import { AppLayout } from '@/components/layout/app-layout';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import { useNavigate } from 'react-router-dom';
 import { useGetNotificationsQuery } from '@/API/api';
 
 type NotificationType = 'info' | 'success' | 'warning' | 'error';
@@ -94,6 +103,8 @@ const getNotificationStyles = (type: NotificationType) => {
 };
 
 export default function NotificationsPage() {
+  const navigate = useNavigate();
+
   const { data: apiNotifications } = useGetNotificationsQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
@@ -149,9 +160,19 @@ export default function NotificationsPage() {
 "
         >
           <div className="mx-auto">
+            {/* Back Button */}
+            <Button
+              variant="ghost"
+              onClick={() => navigate(-1)}
+              className="mb-4 text-muted-foreground hover:text-primary hover:bg-primary/10"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 min-w-0 shrink">
                 <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Bell className="h-6 w-6 text-primary" />
                 </div>
@@ -168,13 +189,19 @@ export default function NotificationsPage() {
               </div>
 
               {unreadCount > 0 && (
-                <Button
-                  onClick={markAllAsRead}
-                  className="h-10 px-4 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-medium"
-                >
-                  <Check className="h-4 w-4 mr-2" />
-                  Mark all as read
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="h-8 w-8 rounded-lg hover:bg-muted flex items-center justify-center text-muted-foreground transition-colors">
+                      <Ellipsis className="h-5 w-5" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={markAllAsRead}>
+                      <Check className="h-4 w-4" />
+                      Mark all as read
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
             </div>
 

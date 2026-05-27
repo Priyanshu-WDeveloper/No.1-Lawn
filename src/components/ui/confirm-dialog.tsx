@@ -8,16 +8,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
-export function ConfirmDialog({
-  open,
-  onOpenChange,
-  title = 'Confirm',
-  description = 'Are you sure you want to proceed?',
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
-  onConfirm,
-  variant = 'destructive',
-}: {
+type ConfirmDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title?: string;
@@ -32,28 +23,123 @@ export function ConfirmDialog({
     | 'secondary'
     | 'ghost'
     | 'link';
-}) {
+};
+
+export function ConfirmDialog({
+  open,
+  onOpenChange,
+  title = 'Confirm Action',
+  description = 'This action may affect your data. Please confirm to continue.',
+  confirmText = 'Continue',
+  cancelText = 'Cancel',
+  onConfirm,
+  variant = 'destructive',
+}: ConfirmDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="rounded-3xl sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="text-xl">{title}</DialogTitle>
-          <DialogDescription className="text-base">
-            {description}
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter className="gap-3">
+      <DialogContent
+        className="
+          w-[calc(100%-24px)]
+          sm:max-w-md
+          rounded-3xl
+          border-0
+          p-0
+          overflow-hidden
+          shadow-2xl
+          bg-white dark:bg-zinc-950
+        "
+      >
+        {/* Top Gradient Section */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-orange-500/5 to-transparent" />
+
+          <div className="relative flex flex-col items-center px-6 pt-8 sm:px-8">
+            {/* Icon */}
+            {/* <div
+              className="
+                flex items-center justify-center
+                size-16 sm:size-18
+                rounded-2xl
+                bg-red-500/10
+                border border-red-500/20
+                shadow-sm
+              "
+            >
+              <AlertTriangle className="size-8 text-red-500" />
+            </div> */}
+
+            <DialogHeader className="mt-5 text-center space-y-3">
+              <DialogTitle
+                className="
+                  text-xl sm:text-2xl
+                  font-semibold
+                  tracking-tight
+                  text-zinc-900 dark:text-zinc-100
+                "
+              >
+                {title}
+              </DialogTitle>
+
+              <DialogDescription
+                className="
+                  text-sm sm:text-base
+                  leading-relaxed
+                  text-zinc-500 dark:text-zinc-400
+                  max-w-sm
+                  mx-auto
+                "
+              >
+                {description}
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <DialogFooter
+          className="
+            flex-col-reverse sm:flex-row
+            gap-3
+            px-6 pb-6 pt-6
+            sm:px-8
+            bg-zinc-50/80 dark:bg-zinc-900/50
+            border-t border-zinc-200/60 dark:border-zinc-800
+          "
+        >
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="flex-1"
+            className="
+              h-12
+              w-full
+              sm:flex-1
+              rounded-2xl
+              border-zinc-300
+              text-base
+              font-medium
+              transition-all
+              hover:bg-zinc-100
+              dark:hover:bg-zinc-800
+            "
           >
             {cancelText}
           </Button>
+
           <Button
             variant={variant}
             onClick={onConfirm}
-            className="flex-1"
+            className="
+              h-12
+              w-full
+              sm:flex-1
+              rounded-2xl
+              text-base
+              font-medium
+              shadow-lg
+              transition-all
+              hover:scale-[1.02]
+              active:scale-[0.98]
+            "
           >
             {confirmText}
           </Button>

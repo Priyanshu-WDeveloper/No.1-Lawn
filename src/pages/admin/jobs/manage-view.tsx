@@ -12,7 +12,6 @@ import {
   RefreshCw,
   DollarSign,
   Ban,
-  Check,
   FileDown,
   Pencil,
   Mail,
@@ -27,7 +26,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
@@ -45,11 +43,9 @@ import { StatusBadge } from '@/components/data-table/status-badge';
 import Loader from '@/components/loader';
 import { STATUS_CONFIG } from '@/constants/status-config';
 import { SearchableSelect } from '@/components/ui/searchable-select';
-import { CompleteJobDialog } from '@/components/admin/complete-job-dialog';
 import {
   useGetJobByIdQuery,
   useCancelJobMutation,
-  useCompleteJobMutation,
   useGetJobReceiptQuery,
   useAssignJobEmployeeMutation,
   useGetEmployeesQuery,
@@ -126,7 +122,6 @@ export default function JobViewPage() {
   });
 
   const [cancelJob] = useCancelJobMutation();
-  const [completeJob] = useCompleteJobMutation();
   const { data: receiptData } = useGetJobReceiptQuery(id ?? '', {
     skip: !id || !job || (job?.receiptUrl != null),
   });
@@ -138,7 +133,6 @@ export default function JobViewPage() {
 
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState('');
-  const [completeDialogOpen, setCompleteDialogOpen] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
   const employeeOptions = useMemo(
@@ -269,16 +263,6 @@ export default function JobViewPage() {
                       </DropdownMenuItem>
                       {resolvedJob.status === 'pending' && (
                         <>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() =>
-                              setCompleteDialogOpen(true)
-                            }
-                            className="cursor-pointer text-primary focus:text-primary"
-                          >
-                            <Check className="mr-2 h-4 w-4" />
-                            Complete
-                          </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => setCancelDialogOpen(true)}
                             className="cursor-pointer text-red-500 focus:text-red-500"
@@ -296,25 +280,15 @@ export default function JobViewPage() {
               {/* Action buttons row */}
               <div className="mt-4 flex items-center gap-2 border-t border-[#ececec] pt-4">
                 {resolvedJob.status === 'pending' && (
-                  <>
-                    <Button
-                      size="sm"
-                      className="bg-green-600 hover:bg-green-700 text-white rounded-xl h-9"
-                      onClick={() => setCompleteDialogOpen(true)}
-                    >
-                      <Check className="h-4 w-4 mr-1" />
-                      Mark Complete
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="text-red-500 border-red-200 hover:bg-red-50 rounded-xl h-9"
-                      onClick={() => setCancelDialogOpen(true)}
-                    >
-                      <Ban className="h-4 w-4 mr-1" />
-                      Cancel Job
-                    </Button>
-                  </>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-red-500 border-red-200 hover:bg-red-50 rounded-xl h-9"
+                    onClick={() => setCancelDialogOpen(true)}
+                  >
+                    <Ban className="h-4 w-4 mr-1" />
+                    Cancel Job
+                  </Button>
                 )}
                 {(resolvedJob.receiptUrl ||
                   (receiptData as { receiptUrl?: string } | undefined)
@@ -678,17 +652,6 @@ export default function JobViewPage() {
           </div>
         </div>
       </div>
-
-      <CompleteJobDialog
-        open={completeDialogOpen}
-        onOpenChange={setCompleteDialogOpen}
-        onConfirm={async (receivePrice) => {
-          if (!id) return;
-          await completeJob({ jobId: id, receivePrice }).unwrap();
-          toast.success('Job completed successfully');
-          setCompleteDialogOpen(false);
-        }}
-      />
 
       <Dialog
         open={cancelDialogOpen}

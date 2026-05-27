@@ -167,7 +167,7 @@ export default function ManageJobsPage() {
           <button
             type="button"
             onClick={() =>
-              navigate(ROUTES.JOBS_VIEW.replace(':id', row._id ?? ''))
+              navigate(ROUTES.JOBS_VIEW_MANAGE.replace(':id', row._id ?? ''))
             }
             className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md text-sm font-medium bg-[#f5f5f5] text-[#374151] hover:bg-[#e5e5e5] transition-colors"
           >
@@ -210,7 +210,7 @@ export default function ManageJobsPage() {
   return (
     <AppLayout>
       <div className="flex flex-1 flex-col">
-        <div className="flex-1 w-full px-5 py-4 min-h-0 flex flex-col">
+        <div className="flex-1 w-full px-2 sm:px-5 py-1 sm:py-4 min-h-0 flex flex-col">
           <div className="flex w-full flex-col flex-1">
             <Navbar
               title="Manage Jobs"

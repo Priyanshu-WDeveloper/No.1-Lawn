@@ -18,6 +18,8 @@ import {
   Eye,
   EyeOff,
   CheckCircle2,
+  Loader2,
+  X,
 } from 'lucide-react';
 import { useSuperAdminChangePasswordMutation } from '@/API/api';
 
@@ -49,16 +51,11 @@ const changePasswordSchema = z
 interface ChangePasswordDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: (data: {
-    currentPassword: string;
-    newPassword: string;
-  }) => Promise<void>;
 }
 
 export function ChangeSuperAdminPasswordDialog({
   open,
   onOpenChange,
-  // onConfirm,
 }: ChangePasswordDialogProps) {
   const [loading, setLoading] = useState(false);
 
@@ -174,35 +171,43 @@ export function ChangeSuperAdminPasswordDialog({
         }
       }}
     >
-      <DialogContent className="max-h-[95vh] overflow-y-auto rounded-[30px] border-0 p-0 sm:max-w-lg">
+      <DialogContent className="[&>button]:hidden w-[calc(100%-20px)] sm:max-w-xl overflow-hidden rounded-[36px] border-0 bg-transparent p-0 shadow-[0_30px_90px_rgba(0,0,0,0.22)]">
+        <div className="overflow-hidden rounded-[36px] bg-white">
         {/* Header */}
-        <div className="relative  bg-gradient-to-br from-green-600 to-green-700 px-6 pt-7 pb-20">
+          <div className="relative rounded-t-[36px] bg-gradient-to-br from-green-600 to-green-700 px-5 pt-6 pb-4 sm:px-8 sm:pt-8 sm:pb-18">
           {/* Background circles */}
-          <div className="absolute inset-0 opacity-10">
+          <div className="hidden sm:block absolute inset-0 opacity-10">
             <div className="absolute top-6 right-8 h-28 w-28 rounded-full bg-white" />
-
             <div className="absolute top-20 right-24 h-16 w-16 rounded-full bg-white" />
           </div>
 
+          {/* Close Button */}
+          <button
+            onClick={() => onOpenChange(false)}
+            className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-white/80 backdrop-blur-md transition-all hover:bg-white/25 hover:text-white sm:right-5 sm:top-5 sm:h-11 sm:w-11"
+          >
+            <X className="h-5 w-5" />
+          </button>
+
           <DialogHeader className="relative z-10">
-            <DialogTitle className="text-3xl font-bold text-white">
+            <DialogTitle className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
               Change Password
             </DialogTitle>
 
-            <p className="mt-2 text-sm text-green-50">
+            <p className="mt-2 hidden text-sm leading-relaxed text-green-50/90 sm:block">
               Keep your account secure
             </p>
           </DialogHeader>
 
           {/* Center Icon */}
-          <div className="absolute left-1/2 bottom-0 flex h-24 w-24 -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full border-8 border-white bg-white shadow-xl">
+          <div className="absolute left-1/2 bottom-0 hidden sm:flex h-24 w-24 -translate-x-1/2 translate-y-1/2 items-center justify-center rounded-full border-8 border-white bg-white shadow-xl">
             <ShieldCheck className="h-10 w-10 text-green-600" />
           </div>
         </div>
 
         {/* Content */}
-        <div className="bg-white px-6 pt-16 pb-6">
-          <div className="space-y-5">
+        <div className="bg-white px-5 pb-5 pt-10 sm:px-8 sm:pb-7 sm:pt-24">
+          <div className="space-y-4 sm:space-y-5">
             {/* Current Password */}
             <div>
               <label className="mb-2 block text-sm font-semibold uppercase tracking-wide text-green-700">
@@ -392,7 +397,7 @@ export function ChangeSuperAdminPasswordDialog({
             </div> */}
 
             {/* Buttons */}
-            <div className="flex gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row gap-4 pt-2">
               <Button
                 type="button"
                 variant="outline"
@@ -409,10 +414,15 @@ export function ChangeSuperAdminPasswordDialog({
                 disabled={isLoading}
                 className="h-12 flex-1 rounded-xl bg-green-600 text-white hover:bg-green-700"
               >
-                {isLoading ? 'Updating...' : 'Update Password'}
+                {isLoading ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  'Update Password'
+                )}
               </Button>
             </div>
           </div>
+        </div>
         </div>
       </DialogContent>
     </Dialog>

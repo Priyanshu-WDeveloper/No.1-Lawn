@@ -625,7 +625,7 @@ export default function CreateEmployeePage() {
             {
               icon: <User className="h-5 w-5 text-white" />,
               title: 'Employee Information',
-              subtitle: `${formValues.email} · ${formValues.countryCode} ${formValues.phoneNumber}`,
+              subtitle: 'Please verify the employee information below',
               image: formValues.profileImage
                 ? {
                     src: formValues.profileImage,
@@ -736,7 +736,7 @@ export default function CreateEmployeePage() {
             isSubmitting={isCreating}
             isLastStep={currentStep === steps.length}
             isFirstStep={currentStep === 1}
-            submitLabel="Create Employee"
+            submitLabel="Add Employee"
             formRef={formRef}
           >
             {renderStepContent()}
